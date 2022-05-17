@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
                     replaceFragment(new HomeFragment());
                     break;
                 case R.id.delivery:
+                    replaceFragment(new DeliveryFragment());
                     break;
                 case R.id.store:
                     replaceFragment(new StoreFragment());

@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -47,6 +48,7 @@ public class LoginActivity extends AppCompatActivity {
         Button loginBtn = findViewById(R.id.loginBtn_login);
         ImageButton loginClose = findViewById(R.id.login_closeBtn);
         Button ggBtn = findViewById(R.id.googleBtn);
+        Button fbBtn = findViewById(R.id.facebookBtn);
 
         loginClose.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,6 +92,12 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 signIn();
+            }
+        });
+        fbBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(LoginActivity.this, FacebookAuthActivity.class));
             }
         });
     }

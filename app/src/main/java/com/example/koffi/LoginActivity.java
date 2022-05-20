@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.navigation.Navigation;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -11,11 +12,13 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -42,13 +45,22 @@ public class LoginActivity extends AppCompatActivity {
     private GoogleSignInClient mGoogleSignInClient;
     private final static int RC_SIGN_IN = 100;
     private FirebaseAuth auth;
+    EditText edtEmail;
+    EditText edtPass;
+    Button staffLogin;
+    ImageButton closeStaffLogin;
+    ProgressBar pb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.fragment_login);
 
         auth = FirebaseAuth.getInstance();
+        userLogin();
+    }
+
+    private void userLogin() {
         String regexStr = "^[+]?[0-9]{9,13}$";
         EditText editText = findViewById(R.id.editText);
         Button loginBtn = findViewById(R.id.loginBtn_login);
@@ -56,6 +68,14 @@ public class LoginActivity extends AppCompatActivity {
         Button ggBtn = findViewById(R.id.googleBtn);
         Button fbBtn = findViewById(R.id.facebookBtn);
         ProgressBar progressBar = findViewById(R.id.login_progress_bar);
+        TextView staffLogin = findViewById(R.id.textViewStaffLogin);
+        staffLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setContentView(R.layout.fragment_staff_login);
+                staffLogin();
+            }
+        });
 
         loginClose.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,7 +93,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if (editText.getText().toString().length() >= 9 && editText.getText().toString().length() <= 13
-                && editText.getText().toString().matches(regexStr)) {
+                        && editText.getText().toString().matches(regexStr)) {
                     loginBtn.setBackgroundTintList(ContextCompat.getColorStateList(LoginActivity.this, R.color.purple_200));
                     loginBtn.setEnabled(true);
                 } else {
@@ -137,7 +157,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -183,7 +202,6 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            FirebaseUser user = auth.getCurrentUser();
                             startActivity(new Intent(LoginActivity.this, MainActivity.class));
                             Toast.makeText(LoginActivity.this, "Đăng nhập thành công", Toast.LENGTH_LONG).show();
                         }
@@ -193,5 +211,75 @@ public class LoginActivity extends AppCompatActivity {
                         }
                     }
                 });
+    }
+
+    public void setTextChangedListener(EditText text) {
+        text.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                String email = edtEmail.getText().toString().trim();
+                String password = edtPass.getText().toString().trim();
+                if (Patterns.EMAIL_ADDRESS.matcher(email).matches() && password.length() >= 6) {
+                    staffLogin.setEnabled(true);
+                    staffLogin.setBackgroundTintList(ContextCompat.getColorStateList(LoginActivity.this, R.color.purple_200));
+                } else {
+                    staffLogin.setEnabled(false);
+                    staffLogin.setBackgroundTintList(ContextCompat.getColorStateList(LoginActivity.this, R.color.disable));
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+    }
+    private void staffLogin() {
+        edtEmail = findViewById(R.id.editTextEmail);
+        edtPass = findViewById(R.id.editTextPassword);
+        staffLogin = findViewById(R.id.staffLoginBtn);
+        closeStaffLogin = findViewById(R.id.staffLogin_closeBtn);
+        pb = findViewById(R.id.staffLogin_progress_bar);
+        staffLogin.setEnabled(false);
+        setTextChangedListener(edtEmail);
+        setTextChangedListener(edtPass);
+        closeStaffLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setContentView(R.layout.fragment_login);
+                userLogin();
+            }
+        });
+        staffLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                pb.setVisibility(View.VISIBLE);
+                staffLogin.setVisibility(View.INVISIBLE);
+                String email = edtEmail.getText().toString().trim();
+                String password = edtPass.getText().toString().trim();
+                auth.signInWithEmailAndPassword(email, password)
+                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if (task.isSuccessful()) {
+                                    pb.setVisibility(View.INVISIBLE);
+                                    staffLogin.setVisibility(View.VISIBLE);
+                                    Toast.makeText(LoginActivity.this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
+                                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                                }
+                                else {
+                                    pb.setVisibility(View.INVISIBLE);
+                                    staffLogin.setVisibility(View.VISIBLE);
+                                    Toast.makeText(LoginActivity.this, "Đăng nhập thất bại!", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+            }
+        });
     }
 }

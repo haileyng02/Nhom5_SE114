@@ -210,13 +210,13 @@ public class OTPActivity extends AppCompatActivity {
                     input4.getText().toString() + input5.getText().toString() + input6.getText().toString();
             if (verificationId != null) {
                 progressBar.setVisibility(View.VISIBLE);
-                System.out.println("verification id: " + verificationId + "\notp: " + otp);
                 PhoneAuthCredential phoneAuthCredential = PhoneAuthProvider.getCredential(verificationId, otp);
                 FirebaseAuth.getInstance().signInWithCredential(phoneAuthCredential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         progressBar.setVisibility(View.INVISIBLE);
                         if (task.isSuccessful()) {
+                            Toast.makeText(OTPActivity.this, "Đăng nhập thành công", Toast.LENGTH_LONG).show();
                             startActivity(new Intent(OTPActivity.this, MainActivity.class));
                             finish();
                         } else {

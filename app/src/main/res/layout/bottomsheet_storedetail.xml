@@ -58,7 +58,7 @@
                     android:text="KOFFI" />
 
                 <TextView
-                    android:id="@+id/bottomsheet_shortaddress"
+                    android:id="@+id/storedetail_shortaddress"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Tầng 50 Bitexco Tower"
@@ -103,6 +103,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
                         <TextView
+                            android:id="@+id/storedetail_fulladdress"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="@color/black"
@@ -184,10 +185,11 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
                         <TextView
+                            android:id="@+id/storedetail_contact"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="@color/black"
-                            android:text="0344242643" />
+                            android:text="Liên hệ: 0344242643" />
 
                         <LinearLayout
                             android:layout_width="match_parent"

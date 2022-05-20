@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -24,11 +25,16 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.PhoneAuthCredential;
+import com.google.firebase.auth.PhoneAuthProvider;
+
+import java.util.concurrent.TimeUnit;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -49,6 +55,7 @@ public class LoginActivity extends AppCompatActivity {
         ImageButton loginClose = findViewById(R.id.login_closeBtn);
         Button ggBtn = findViewById(R.id.googleBtn);
         Button fbBtn = findViewById(R.id.facebookBtn);
+        ProgressBar progressBar = findViewById(R.id.login_progress_bar);
 
         loginClose.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,6 +91,35 @@ public class LoginActivity extends AppCompatActivity {
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                progressBar.setVisibility(View.VISIBLE);
+                loginBtn.setVisibility(View.INVISIBLE);
+                PhoneAuthProvider.getInstance().verifyPhoneNumber("+84" + editText.getText().toString(),
+                        60, TimeUnit.SECONDS, LoginActivity.this,
+                        new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+                            @Override
+                            public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
+                                progressBar.setVisibility(View.INVISIBLE);
+                                loginBtn.setVisibility(View.VISIBLE);
+                            }
+
+                            @Override
+                            public void onVerificationFailed(@NonNull FirebaseException e) {
+                                progressBar.setVisibility(View.INVISIBLE);
+                                loginBtn.setVisibility(View.VISIBLE);
+                                Toast.makeText(LoginActivity.this, "Xác thực đăng nhập thất bại", Toast.LENGTH_LONG).show();
+                            }
+
+                            @Override
+                            public void onCodeSent(@NonNull String s, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
+                                progressBar.setVisibility(View.INVISIBLE);
+                                loginBtn.setVisibility(View.VISIBLE);
+                                Intent intent = new Intent(LoginActivity.this, OTPActivity.class);
+                                intent.putExtra("mobile", editText.getText().toString());
+                                intent.putExtra("verificationId", s);
+                                startActivity(intent);
+                                super.onCodeSent(s, forceResendingToken);
+                            }
+                        });
 
             }
         });

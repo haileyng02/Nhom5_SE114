@@ -69,6 +69,9 @@ public class StoreFragment extends Fragment {
                 View bottomSheetView = LayoutInflater.from(getContext()).inflate(R.layout.bottomsheet_storedetail,
                         (LinearLayout)view.findViewById(R.id.store_bottomsheet));
                 bottomSheetDialog.setContentView(bottomSheetView);
+                //Assign data
+
+                //Show dialog
                 bottomSheetDialog.show();
             }
         });

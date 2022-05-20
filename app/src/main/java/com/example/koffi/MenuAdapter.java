@@ -70,7 +70,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
         MenuItemAdapter itemAdapter = new MenuItemAdapter(context,menuArray.get(position).items);
         holder.listView.setAdapter(itemAdapter);
         ViewGroup.LayoutParams lp = holder.listView.getLayoutParams();
-        lp.height = menuArray.get(position).items.size()*420;
+        lp.height = menuArray.get(position).items.size()*450;
         holder.listView.setLayoutParams(lp);
     }
 

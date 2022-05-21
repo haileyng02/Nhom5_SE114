@@ -72,6 +72,21 @@ public class MenuFragment extends Fragment {
         Toolbar toolbar = view.findViewById(R.id.menu_toolbar);
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
 
+        db = FirebaseFirestore.getInstance();
+
+        gridView = view.findViewById(R.id.category_gridview);
+        recyclerView = view.findViewById(R.id.menu_recycler);
+
+        menuArray = new ArrayList<Category>();
+        getMenuArray();
+
+        categoryAdapter = new CategoryAdapter(getContext(),menuArray);
+        gridView.setAdapter(categoryAdapter);
+
+        menuAdapter = new MenuAdapter(getContext(), menuArray);
+        recyclerView.setAdapter(menuAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
         //Toolbar title (To change category)
         LinearLayout changeCategory = view.findViewById(R.id.changeCategory);
         changeCategory.setOnClickListener(new View.OnClickListener() {
@@ -90,21 +105,6 @@ public class MenuFragment extends Fragment {
                 bottomSheetDialog.show();
             }
         });
-
-        db = FirebaseFirestore.getInstance();
-
-        gridView = view.findViewById(R.id.category_gridview);
-        recyclerView = view.findViewById(R.id.menu_recycler);
-
-        menuArray = new ArrayList<Category>();
-        getMenuArray();
-
-        categoryAdapter = new CategoryAdapter(getContext(),menuArray);
-        gridView.setAdapter(categoryAdapter);
-
-        menuAdapter = new MenuAdapter(getContext(), menuArray);
-        recyclerView.setAdapter(menuAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
     }
 

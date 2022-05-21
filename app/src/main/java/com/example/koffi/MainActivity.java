@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.coupon:
                     break;
                 case R.id.other:
+                    replaceFragment(new OtherFragment());
                     break;
             }
             return true;

@@ -1,16 +1,29 @@
 package com.example.koffi;
 
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.LinearLayout;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -29,6 +42,8 @@ public class MenuFragment extends Fragment {
     private ArrayList<Category> menuArray;
     private CategoryAdapter categoryAdapter;
     private MenuAdapter menuAdapter;
+    private LinearLayout menuLinear;
+    private LinearLayout rootLinear;
 
 
     public MenuFragment() {
@@ -68,7 +83,13 @@ public class MenuFragment extends Fragment {
         gridView.setAdapter(categoryAdapter);
 
 
+        menuAdapter = new MenuAdapter(getContext(), menuArray);
+
+        recyclerView.setAdapter(menuAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
     }
+
 
     public void getMenuArray() {
         db.collection("menu").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -87,21 +108,23 @@ public class MenuFragment extends Fragment {
                                         MenuItem menuItem = new MenuItem(itemDocument.getId(),itemDocument.getString("name"),
                                                 itemDocument.getString("image"),itemDocument.getLong("price"),itemDocument.getString("description"));
                                         itemsArray.add(menuItem);
+
                                     }
+                                    Category category = new Category(categoryDocument.getId(),
+                                            categoryDocument.getString("name"),categoryDocument.getString("image"),itemsArray);
+                                    menuArray.add(category);
+                                    categoryAdapter.notifyDataSetChanged();
+                                    menuAdapter.notifyDataSetChanged();
+                                }
+                                else {
+                                    System.out.println("Error getting documents."+ task.getException());
                                 }
                             }
                         });
-
-                        if (categoryDocument.getId()=="category-4")
-                            Toast.makeText(getContext(),categoryDocument.getString("name"),Toast.LENGTH_LONG).show();
-
-                        Category category = new Category(categoryDocument.getId(),
-                                categoryDocument.getString("name"),categoryDocument.getString("image"),itemsArray);
-                        menuArray.add(category);
                     }
-                    categoryAdapter.notifyDataSetChanged();
                 }
             }
         });
+
     }
 }

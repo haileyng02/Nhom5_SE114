@@ -78,10 +78,16 @@ public class MenuFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 //Bottom sheet dialog
-                /*BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(itemView.getContext(),R.style.BottomSheetDialogTheme);
-                View bottomSheetView = LayoutInflater.from(itemView.getContext()).inflate(R.layout.bottomsheet_itemdetail,
-                        (LinearLayout)itemView.findViewById(R.id.menu_bottomsheet));
-                bottomSheetDialog.setContentView(bottomSheetView);*/
+                BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext(),R.style.BottomSheetDialogTheme);
+                View bottomSheetView = LayoutInflater.from(getContext()).inflate(R.layout.bottomsheet_category,
+                        (LinearLayout)view.findViewById(R.id.menu_bottomsheet));
+                bottomSheetDialog.setContentView(bottomSheetView);
+
+                //Handle Grid View
+                GridView gridView = bottomSheetView.findViewById(R.id.category_gridview_bottomsheet);
+
+                //Show dialog
+                bottomSheetDialog.show();
             }
         });
 

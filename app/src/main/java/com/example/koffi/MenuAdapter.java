@@ -7,6 +7,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -14,6 +15,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -31,12 +34,31 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
             listView = itemView.findViewById(R.id.menuList);
             text = itemView.findViewById(R.id.categoryName);
 
+            //Bottom Sheet Dialog
+            BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(itemView.getContext(),R.style.BottomSheetDialogTheme);
+            View bottomSheetView = LayoutInflater.from(itemView.getContext()).inflate(R.layout.bottomsheet_itemdetail,
+                    (LinearLayout)itemView.findViewById(R.id.menu_bottomsheet));
+            bottomSheetDialog.setContentView(bottomSheetView);
+
+            //Topping ListView
+            ListView toppingListView = bottomSheetView.findViewById(R.id.topping_listview);
+            ToppingAdapter toppingAdapter = new ToppingAdapter(context);
+            toppingListView.setAdapter(toppingAdapter);
+            setListViewHeight(toppingListView);
+
+
+
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    MenuItem menuItem = (MenuItem) listView.getItemAtPosition(i);
-                    Bundle bundle = new Bundle();
-                    bundle.putString("key", menuItem.name);
+
+
+                    //Topping ListView
+
+                    //Assign data
+
+                    //Show dialog
+                    bottomSheetDialog.show();
                 }
             });
         }
@@ -69,9 +91,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
 
         MenuItemAdapter itemAdapter = new MenuItemAdapter(context,menuArray.get(position).items);
         holder.listView.setAdapter(itemAdapter);
-        ViewGroup.LayoutParams lp = holder.listView.getLayoutParams();
-        lp.height = menuArray.get(position).items.size()*450;
-        holder.listView.setLayoutParams(lp);
+        setListViewHeight(holder.listView);
     }
 
     @Override
@@ -79,4 +99,19 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
         return menuArray.size();
     }
 
+    public void setListViewHeight(ListView listview) {
+        ListAdapter listadp = listview.getAdapter();
+        if (listadp != null) {
+            int totalHeight = 0;
+            for (int i = 0; i < listadp.getCount(); i++) {
+                View listItem = listadp.getView(i, null, listview);
+                listItem.measure(0, 0);
+                totalHeight += listItem.getMeasuredHeight();
+            }
+            ViewGroup.LayoutParams params = listview.getLayoutParams();
+            params.height = totalHeight + (listview.getDividerHeight() * (listadp.getCount() - 1));
+            listview.setLayoutParams(params);
+            //listview.requestLayout();
+        }
+    }
 }

@@ -29,6 +29,7 @@
         <entry key="..\:/UIT/nmuddd/DoAn/Koffi/app/src/main/res/layout/activity_intro.xml" value="0.4" />
         <entry key="..\:/UIT/nmuddd/DoAn/Koffi/app/src/main/res/layout/activity_login.xml" value="0.2" />
         <entry key="..\:/UIT/nmuddd/DoAn/Koffi/app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="..\:/UIT/nmuddd/DoAn/Koffi/app/src/main/res/layout/bottomsheet_category.xml" value="0.2" />
         <entry key="..\:/UIT/nmuddd/DoAn/Koffi/app/src/main/res/layout/bottomsheet_itemdetail.xml" value="0.2" />
         <entry key="..\:/UIT/nmuddd/DoAn/Koffi/app/src/main/res/layout/bottomsheet_menuitem.xml" value="0.2" />
         <entry key="..\:/UIT/nmuddd/DoAn/Koffi/app/src/main/res/layout/bottomsheet_storedetail.xml" value="0.2" />
@@ -37,7 +38,7 @@
         <entry key="..\:/UIT/nmuddd/DoAn/Koffi/app/src/main/res/layout/fragment_blank2.xml" value="0.1" />
         <entry key="..\:/UIT/nmuddd/DoAn/Koffi/app/src/main/res/layout/fragment_delivery.xml" value="0.2" />
         <entry key="..\:/UIT/nmuddd/DoAn/Koffi/app/src/main/res/layout/fragment_home.xml" value="0.17361740707162285" />
-        <entry key="..\:/UIT/nmuddd/DoAn/Koffi/app/src/main/res/layout/fragment_menu.xml" value="0.264" />
+        <entry key="..\:/UIT/nmuddd/DoAn/Koffi/app/src/main/res/layout/fragment_menu.xml" value="0.13552787663107949" />
         <entry key="..\:/UIT/nmuddd/DoAn/Koffi/app/src/main/res/layout/fragment_other.xml" value="0.2" />
         <entry key="..\:/UIT/nmuddd/DoAn/Koffi/app/src/main/res/layout/fragment_other_host.xml" value="0.264" />
         <entry key="..\:/UIT/nmuddd/DoAn/Koffi/app/src/main/res/layout/fragment_store.xml" value="0.176" />

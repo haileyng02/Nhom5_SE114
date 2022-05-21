@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bottomsheet_bg"
-    android:backgroundTint="#F5F5F5"
-    android:orientation="vertical">
+    android:backgroundTint="#F5F5F5">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"

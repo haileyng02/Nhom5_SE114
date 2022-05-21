@@ -72,19 +72,6 @@ public class MenuFragment extends Fragment {
         Toolbar toolbar = view.findViewById(R.id.menu_toolbar);
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
 
-        //Toolbar title (To change category)
-        LinearLayout changeCategory = view.findViewById(R.id.changeCategory);
-        changeCategory.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //Bottom sheet dialog
-                /*BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(itemView.getContext(),R.style.BottomSheetDialogTheme);
-                View bottomSheetView = LayoutInflater.from(itemView.getContext()).inflate(R.layout.bottomsheet_itemdetail,
-                        (LinearLayout)itemView.findViewById(R.id.menu_bottomsheet));
-                bottomSheetDialog.setContentView(bottomSheetView);*/
-            }
-        });
-
         db = FirebaseFirestore.getInstance();
 
         gridView = view.findViewById(R.id.category_gridview);
@@ -99,6 +86,26 @@ public class MenuFragment extends Fragment {
         menuAdapter = new MenuAdapter(getContext(), menuArray);
         recyclerView.setAdapter(menuAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        //Toolbar title (To change category)
+        LinearLayout changeCategory = view.findViewById(R.id.changeCategory);
+        changeCategory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Bottom sheet dialog
+                BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext(),R.style.BottomSheetDialogTheme);
+                View bottomSheetView = LayoutInflater.from(getContext()).inflate(R.layout.bottomsheet_category,
+                        (LinearLayout)view.findViewById(R.id.menu_bottomsheet));
+                bottomSheetDialog.setContentView(bottomSheetView);
+
+                //Handle Grid View
+                gridView = bottomSheetView.findViewById(R.id.category_gridview_bottomsheet);
+                gridView.setAdapter(categoryAdapter);
+
+                //Show dialog
+                bottomSheetDialog.show();
+            }
+        });
 
     }
 

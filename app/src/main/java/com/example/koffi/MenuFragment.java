@@ -99,7 +99,8 @@ public class MenuFragment extends Fragment {
                 bottomSheetDialog.setContentView(bottomSheetView);
 
                 //Handle Grid View
-                GridView gridView = bottomSheetView.findViewById(R.id.category_gridview_bottomsheet);
+                gridView = bottomSheetView.findViewById(R.id.category_gridview_bottomsheet);
+                gridView.setAdapter(categoryAdapter);
 
                 //Show dialog
                 bottomSheetDialog.show();

@@ -6,9 +6,9 @@ public class Category {
     String id;
     String name;
     String image;
-    ArrayList<MenuItem> items;
+    ArrayList<Item> items;
 
-    public Category(String id, String name, String image, ArrayList<MenuItem> items) {
+    public Category(String id, String name, String image, ArrayList<Item> items) {
         this.id = id;
         this.name = name;
         this.image = image;

@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldPath;
@@ -92,6 +93,25 @@ public class MenuFragment extends Fragment {
         recyclerView.setAdapter(menuAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
+        //Toolbar title (To change category)
+        LinearLayout changeCategory = view.findViewById(R.id.changeCategory);
+        changeCategory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Bottom sheet dialog
+                BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext(),R.style.BottomSheetDialogTheme);
+                View bottomSheetView = LayoutInflater.from(getContext()).inflate(R.layout.bottomsheet_category,
+                        (LinearLayout)view.findViewById(R.id.menu_bottomsheet));
+                bottomSheetDialog.setContentView(bottomSheetView);
+
+                //Handle Grid View
+                gridView = bottomSheetView.findViewById(R.id.category_gridview_bottomsheet);
+                gridView.setAdapter(categoryAdapter);
+
+                //Show dialog
+                bottomSheetDialog.show();
+            }
+        });
     }
 
     private void loadMenu() {

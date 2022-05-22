@@ -110,13 +110,13 @@ public class MenuFragment extends Fragment {
                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                             if (task.isSuccessful()) {
                                 DocumentSnapshot document = task.getResult();
-                                ArrayList<MenuItem> itemsArray = new ArrayList<MenuItem>();
+                                ArrayList<Item> itemsArray = new ArrayList<Item>();
                                 categoryDocument.collection("items").get()
                                         .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                             @Override
                                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                                 for (QueryDocumentSnapshot itemDocument : task.getResult()) {
-                                                    MenuItem menuItem = new MenuItem(itemDocument.getId(), itemDocument.getString("name"),
+                                                    Item menuItem = new Item(itemDocument.getId(), itemDocument.getString("name"),
                                                             itemDocument.getString("image"), itemDocument.getLong("price"), itemDocument.getString("description"));
                                                     itemsArray.add(menuItem);
                                                 }
@@ -152,7 +152,7 @@ public class MenuFragment extends Fragment {
 //            public void onComplete(@NonNull Task<QuerySnapshot> task) {
 //                if (task.isSuccessful()) {
 //                    for (QueryDocumentSnapshot categoryDocument : task.getResult()) {
-//                        ArrayList<MenuItem> itemsArray = new ArrayList<MenuItem>();
+//                        ArrayList<Item> itemsArray = new ArrayList<Item>();
 //                        db.collection("menu")
 //                                .document(categoryDocument.getId())
 //                                .collection("items")
@@ -161,7 +161,7 @@ public class MenuFragment extends Fragment {
 //                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
 //                                if (task.isSuccessful()) {
 //                                    for (QueryDocumentSnapshot itemDocument : task.getResult()) {
-//                                        MenuItem menuItem = new MenuItem(itemDocument.getId(),itemDocument.getString("name"),
+//                                        Item menuItem = new Item(itemDocument.getId(),itemDocument.getString("name"),
 //                                                itemDocument.getString("image"),itemDocument.getLong("price"),itemDocument.getString("description"));
 //                                        itemsArray.add(menuItem);
 //

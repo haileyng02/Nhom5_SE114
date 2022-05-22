@@ -7,12 +7,14 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -45,9 +47,19 @@ public class ProfileFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        //Toolbar
         Toolbar toolbar = (Toolbar) view.findViewById(R.id.profile_toolbar);
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
 
-
+        //Back to main
+        ImageButton backBtn = view.findViewById(R.id.profile_back);
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bundle bundle = new Bundle();
+                bundle.putString("back","other");
+                Navigation.findNavController(view).navigate(R.id.action_global_mainFragment,bundle);
+            }
+        });
     }
 }

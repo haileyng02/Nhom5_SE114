@@ -46,6 +46,13 @@ public class MainFragment extends Fragment {
         //Bottom Navigation View setting
         replaceFragment(new HomeFragment());
 
+        //Back action handler
+        if (getArguments()!=null)
+            switch (getArguments().getString("back")){
+                case "other":
+                    replaceFragment(new OtherFragment());
+            }
+
         BottomNavigationView bottomNavigationView = view.findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setOnItemSelectedListener(item -> {
             switch (item.getItemId()) {

@@ -212,15 +212,13 @@ public class MenuFragment extends Fragment {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                searchView.clearFocus();
+                menuAdapter.getFilter().filter(query);
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                String text = newText.toLowerCase(Locale.ROOT);
-                menuArray.clear();
-
+                menuAdapter.getFilter().filter(newText);
                 return false;
             }
         });

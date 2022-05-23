@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+
         <entry key="..\:/Trang/Java/Nhom5_SE114/app/src/main/res/layout/activity_intro.xml" value="0.14130434782608695" />
         <entry key="..\:/Trang/Java/Nhom5_SE114/app/src/main/res/layout/activity_login.xml" value="0.2524850894632207" />
         <entry key="..\:/Trang/Java/Nhom5_SE114/app/src/main/res/layout/activity_main.xml" value="0.14130434782608695" />
@@ -15,8 +16,10 @@
         <entry key="..\:/Trang/Java/Nhom5_SE114/app/src/main/res/layout/fragment_staff_login.xml" value="0.22" />
         <entry key="..\:/Trang/Java/Nhom5_SE114/app/src/main/res/layout/store_listitem.xml" value="0.1743659420289855" />
         <entry key="..\:/Trang/Java/Nhom5_SE114/app/src/main/res/menu/menufrag_option_menu.xml" value="0.1" />
+
         <entry key="..\:/UIT/nmuddd/DoAn/Koffi/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.1" />
         <entry key="..\:/UIT/nmuddd/DoAn/Koffi/app/src/main/res/drawable/bottomsheet_bg.xml" value="0.1" />
+        <entry key="..\:/UIT/nmuddd/DoAn/Koffi/app/src/main/res/drawable/edittext_profile.xml" value="0.1205" />
         <entry key="..\:/UIT/nmuddd/DoAn/Koffi/app/src/main/res/drawable/ic_baseline_local_phone_24.xml" value="0.213" />
         <entry key="..\:/UIT/nmuddd/DoAn/Koffi/app/src/main/res/drawable/ic_launcher_background.xml" value="0.1" />
         <entry key="..\:/UIT/nmuddd/DoAn/Koffi/app/src/main/res/drawable/phone_input.xml" value="0.1845" />
@@ -30,15 +33,29 @@
         <entry key="..\:/UIT/nmuddd/DoAn/Koffi/app/src/main/res/layout/activity_login.xml" value="0.2" />
         <entry key="..\:/UIT/nmuddd/DoAn/Koffi/app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="..\:/UIT/nmuddd/DoAn/Koffi/app/src/main/res/layout/bottomsheet_menuitem.xml" value="0.2" />
+
+        <entry key="..\:/UIT/nmuddd/DoAn/Koffi/app/src/main/res/layout/bottomsheet_profile_avatar.xml" value="0.195382642154767" />
+        <entry key="..\:/UIT/nmuddd/DoAn/Koffi/app/src/main/res/layout/bottomsheet_profile_gender.xml" value="0.195382642154767" />
+        <entry key="..\:/UIT/nmuddd/DoAn/Koffi/app/src/main/res/layout/bottomsheet_storedetail.xml" value="0.2" />
+
         <entry key="..\:/UIT/nmuddd/DoAn/Koffi/app/src/main/res/layout/bottomsheet_storedetail.xml" value="0.264" />
+
         <entry key="..\:/UIT/nmuddd/DoAn/Koffi/app/src/main/res/layout/category_gridview_item.xml" value="0.264" />
         <entry key="..\:/UIT/nmuddd/DoAn/Koffi/app/src/main/res/layout/fragment_blank.xml" value="0.1" />
         <entry key="..\:/UIT/nmuddd/DoAn/Koffi/app/src/main/res/layout/fragment_blank2.xml" value="0.1" />
         <entry key="..\:/UIT/nmuddd/DoAn/Koffi/app/src/main/res/layout/fragment_delivery.xml" value="0.2" />
         <entry key="..\:/UIT/nmuddd/DoAn/Koffi/app/src/main/res/layout/fragment_home.xml" value="0.17361740707162285" />
+
+        <entry key="..\:/UIT/nmuddd/DoAn/Koffi/app/src/main/res/layout/fragment_login.xml" value="0.195382642154767" />
+        <entry key="..\:/UIT/nmuddd/DoAn/Koffi/app/src/main/res/layout/fragment_main.xml" value="0.1" />
+        <entry key="..\:/UIT/nmuddd/DoAn/Koffi/app/src/main/res/layout/fragment_menu.xml" value="0.13552787663107949" />
+        <entry key="..\:/UIT/nmuddd/DoAn/Koffi/app/src/main/res/layout/fragment_other.xml" value="0.264" />
+
         <entry key="..\:/UIT/nmuddd/DoAn/Koffi/app/src/main/res/layout/fragment_menu.xml" value="0.14393939393939395" />
         <entry key="..\:/UIT/nmuddd/DoAn/Koffi/app/src/main/res/layout/fragment_other.xml" value="0.2" />
+
         <entry key="..\:/UIT/nmuddd/DoAn/Koffi/app/src/main/res/layout/fragment_other_host.xml" value="0.264" />
+        <entry key="..\:/UIT/nmuddd/DoAn/Koffi/app/src/main/res/layout/fragment_profile.xml" value="0.2" />
         <entry key="..\:/UIT/nmuddd/DoAn/Koffi/app/src/main/res/layout/fragment_store.xml" value="0.176" />
         <entry key="..\:/UIT/nmuddd/DoAn/Koffi/app/src/main/res/layout/listview_menu_item.xml" value="0.1" />
         <entry key="..\:/UIT/nmuddd/DoAn/Koffi/app/src/main/res/layout/recycler_item_menu.xml" value="0.4" />

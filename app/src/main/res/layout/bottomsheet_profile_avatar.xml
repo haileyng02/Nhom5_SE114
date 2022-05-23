@@ -3,6 +3,7 @@
     android:id="@+id/avatar_bottomsheet"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/white"
     android:dividerPadding="15dp"
     android:orientation="vertical">
 

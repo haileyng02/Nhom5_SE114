@@ -2,6 +2,22 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".OtherFragment" />
+    tools:context=".OtherFragment" >
+
+    <Button
+        android:id="@+id/Vechungtoi"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/primary"
+        android:text="Về chúng tôi" />
+
+    <Button
+        android:id="@+id/Dieukhoan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/primary"
+        android:text="Điều khoản" />
+</LinearLayout>

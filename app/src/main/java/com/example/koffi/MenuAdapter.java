@@ -7,6 +7,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -20,9 +22,48 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Locale;
 
-public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
+public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> implements Filterable {
 
+
+
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence charSequence) {
+                String search = charSequence.toString().toLowerCase(Locale.ROOT);
+                if (search.isEmpty()) {
+                    menuArray = menuArrayOld;
+                }
+                else {
+                    ArrayList<Category> list = new ArrayList<>();
+                    for (Category category : menuArrayOld) {
+                        ArrayList<Item> itemsArray = new ArrayList<Item>();
+                        for (Item item : category.items) {
+                            if (item.name.toLowerCase(Locale.ROOT).contains(search)) {
+                                Item menuItem = new Item(item.id, item.name, item.image, item.price, item.description);
+                                itemsArray.add(menuItem);
+                            }
+                        }
+                        Category categoryNew = new Category(category.id, category.name, category.image, itemsArray);
+                        list.add(categoryNew);
+                        menuArray = list;
+                    }
+                }
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = menuArray;
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+                menuArray = (ArrayList<Category>) filterResults.values;
+                notifyDataSetChanged();
+            }
+        };
+    }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
         TextView text;
@@ -63,11 +104,12 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
 
     Context context;
     ArrayList<Category> menuArray;
-
+    ArrayList<Category> menuArrayOld;
 
     public MenuAdapter(Context context, ArrayList<Category> menuArray) {
         this.context = context;
         this.menuArray = menuArray;
+        this.menuArrayOld = menuArray;
     }
 
     @NonNull

@@ -25,7 +25,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -43,6 +45,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class MenuFragment extends Fragment {
 
@@ -104,6 +107,14 @@ public class MenuFragment extends Fragment {
         recyclerView.setAdapter(menuAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                recyclerView.scrollToPosition(i);
+                recyclerView.getChildAt(i).requestFocus();
+            }
+        });
+
         //Toolbar title (To change category)
         LinearLayout changeCategory = view.findViewById(R.id.changeCategory);
         changeCategory.setOnClickListener(new View.OnClickListener() {
@@ -118,11 +129,25 @@ public class MenuFragment extends Fragment {
                 //Handle Grid View
                 gridView = bottomSheetView.findViewById(R.id.category_gridview_bottomsheet);
                 gridView.setAdapter(categoryAdapter);
-
+                gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                        recyclerView.scrollToPosition(i);
+                        recyclerView.getChildAt(i).requestFocus();
+                    }
+                });
+                ImageButton closeView = bottomSheetDialog.findViewById(R.id.itemdetail_closeBtn);
+                closeView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        bottomSheetDialog.dismiss();
+                    }
+                });
                 //Show dialog
                 bottomSheetDialog.show();
             }
         });
+
     }
 
     private void loadMenu() {
@@ -184,43 +209,21 @@ public class MenuFragment extends Fragment {
 
         MenuItem searchItem = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                searchView.clearFocus();
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                String text = newText.toLowerCase(Locale.ROOT);
+                menuArray.clear();
+
+                return false;
+            }
+        });
     }
-//    public void getMenuArray() {
-//        db.collection("menu")
-//                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//            @Override
-//            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                if (task.isSuccessful()) {
-//                    for (QueryDocumentSnapshot categoryDocument : task.getResult()) {
-//                        ArrayList<Item> itemsArray = new ArrayList<Item>();
-//                        db.collection("menu")
-//                                .document(categoryDocument.getId())
-//                                .collection("items")
-//                                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//                            @Override
-//                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                                if (task.isSuccessful()) {
-//                                    for (QueryDocumentSnapshot itemDocument : task.getResult()) {
-//                                        Item menuItem = new Item(itemDocument.getId(),itemDocument.getString("name"),
-//                                                itemDocument.getString("image"),itemDocument.getLong("price"),itemDocument.getString("description"));
-//                                        itemsArray.add(menuItem);
-//
-//                                    }
-//                                    Category category = new Category(categoryDocument.getId(),
-//                                            categoryDocument.getString("name"),categoryDocument.getString("image"),itemsArray);
-//                                    menuArray.add(category);
-//                                    categoryAdapter.notifyDataSetChanged();
-//                                    menuAdapter.notifyDataSetChanged();
-//                                }
-//                                else {
-//                                    System.out.println("Error getting documents."+ task.getException());
-//                                }
-//                            }
-//                        });
-//                    }
-//                }
-//            }
-//        });
-//
-//    }
+
 }

@@ -14,14 +14,6 @@
       },
       "oauth_client": [
         {
-          "client_id": "1053884085279-2hqta4bq1njhje7nakt8ndqmvr4tc94e.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.koffi",
-            "certificate_hash": "24ec05180e404e70a5ae99736ba5ccea1c8855fc"
-          }
-        },
-        {
           "client_id": "1053884085279-q3fj4mkhg8oli5o7b38d51grkgp59p8q.apps.googleusercontent.com",
           "client_type": 3
         }

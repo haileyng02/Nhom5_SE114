@@ -72,8 +72,16 @@ public class OtherFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        View otherFragmentView = view;
+        //Terms
+        LinearLayout terms = view.findViewById(R.id.other_terms);
+        terms.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Navigation.findNavController(getView()).navigate(R.id.action_mainFragment_to_termFragment);
+            }
+        });
 
+        //Profile
         LinearLayout profile = view.findViewById(R.id.other_profile);
         profile.setOnClickListener(new View.OnClickListener() {
             @Override

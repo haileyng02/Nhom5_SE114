@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,7 +44,9 @@ public class TermFragment extends Fragment {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                activity.onBackPressed();
+                Bundle bundle = new Bundle();
+                bundle.putString("back","other");
+                Navigation.findNavController(view).navigate(R.id.action_global_mainFragment,bundle);
             }
         });
         WebView webView= view.findViewById(R.id.webTerm);

@@ -6,26 +6,33 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.sql.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class ToppingAdapter extends BaseAdapter {
-    private Context context;
-    private ArrayList<String> toppingArray;
+    public Context context;
+    public ArrayList<Topping> toppingArray;
 
-    public ToppingAdapter(Context context) {
+    public ToppingAdapter(Context context, ArrayList<Topping> toppingArray) {
         this.context = context;
-
-        toppingArray = new ArrayList<String>();
-        toppingArray.add("Thạch Dừa/ Coconut Jelly");
-        toppingArray.add("Thạch Sương Sáo/Glass Jelly");
-        toppingArray.add("Thạch Băng Tuyết");
-        toppingArray.add("Trân Châu Caramel/ Caramel Pearl");
-        toppingArray.add("Trân Châu Baby");
-        toppingArray.add("Trân Châu Hoàng Kim");
-        toppingArray.add("Rau Câu");
-        toppingArray.add("Pudding");
+        this.toppingArray = toppingArray;
     }
 
     @Override
@@ -49,8 +56,27 @@ public class ToppingAdapter extends BaseAdapter {
         view = inflater.inflate(R.layout.listview_topping,null);
 
         CheckBox checkBox = view.findViewById(R.id.checkBox);
-        checkBox.setText(toppingArray.get(i));
+        checkBox.setText(toppingArray.get(i).name);
+        TextView price = view.findViewById(R.id.toppingPrice);
+        price.setText(Long.toString(toppingArray.get(i).price));
 
         return view;
+    }
+
+
+    public void setListViewHeight(ListView listview) {
+        ListAdapter listadp = listview.getAdapter();
+        if (listadp != null) {
+            int totalHeight = 0;
+            for (int i = 0; i < listadp.getCount(); i++) {
+                View listItem = listadp.getView(i, null, listview);
+                listItem.measure(0, 0);
+                totalHeight += listItem.getMeasuredHeight();
+            }
+            ViewGroup.LayoutParams params = listview.getLayoutParams();
+            params.height = totalHeight + (listview.getDividerHeight() * (listadp.getCount() - 1));
+            listview.setLayoutParams(params);
+            //listview.requestLayout();
+        }
     }
 }

@@ -7,22 +7,35 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Locale;
+//import com.makeramen.roundedimageview.RoundedImageView;
 
 public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> implements Filterable {
 
@@ -81,18 +94,121 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> im
                     (LinearLayout)itemView.findViewById(R.id.menu_bottomsheet));
             bottomSheetDialog.setContentView(bottomSheetView);
 
-            //Topping ListView
+//Topping ListView
             ListView toppingListView = bottomSheetView.findViewById(R.id.topping_listview);
-            ToppingAdapter toppingAdapter = new ToppingAdapter(context);
-            toppingListView.setAdapter(toppingAdapter);
-            setListViewHeight(toppingListView);
 
+            ArrayList<Topping> toppingArray = new ArrayList<Topping>();
+
+            ToppingAdapter toppingAdapter = new ToppingAdapter(context, toppingArray);
+            toppingListView.setAdapter(toppingAdapter);
+            toppingAdapter.setListViewHeight(toppingListView);
+
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            db.collection("toppings").get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                                Topping topping = new Topping(documentSnapshot.getId(), documentSnapshot.getString("name"),
+                                        documentSnapshot.getLong("price"));
+                                toppingArray.add(topping);
+                            }
+                            for (Topping topping : toppingArray) {
+                                System.out.println("result " + topping.name);
+                            }
+                            toppingAdapter.notifyDataSetChanged();
+                        }
+                    });
+
+            for (Topping topping : toppingArray) {
+                System.out.println("result 2 " + topping.name);
+            }
 
 
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                     //Assign data
+                    Item item = (Item) listView.getItemAtPosition(i);
+                    TextView tvName = bottomSheetView.findViewById(R.id.tvName);
+                    tvName.setText(item.name);
+
+                    ImageView imageView = bottomSheetView.findViewById(R.id.itemdetail_image);
+                    int drawableId = view.getResources().getIdentifier(item.image, "drawable", context.getPackageName());
+                    imageView.setImageResource(drawableId);
+
+                    TextView tvPrice = bottomSheetView.findViewById(R.id.tvPrice);
+                    tvPrice.setText(item.price.toString());
+
+                    TextView tvDes = bottomSheetView.findViewById(R.id.tvDescription);
+                    tvDes.setText(item.description);
+
+                    ImageButton closeView = bottomSheetDialog.findViewById(R.id.itemdetail_closeBtn);
+                    closeView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            bottomSheetDialog.dismiss();
+                        }
+                    });
+
+                    TextView tvNumber = bottomSheetDialog.findViewById(R.id.tvNumber);
+                    Button totalBtn = bottomSheetView.findViewById(R.id.itemTotalPrice);
+                    long number = Long.parseLong(tvNumber.getText().toString());
+                    tvNumber.setText(Long.toString(number));
+                    total = number * item.price;
+                    totalBtn.setText(Long.toString(total));
+
+                    ImageButton plusBtn = bottomSheetDialog.findViewById(R.id.plusButton);
+                    plusBtn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            long number = Long.parseLong(tvNumber.getText().toString()) + 1;
+                            tvNumber.setText(Long.toString(number));
+                            totalBtn.setText(Long.toString(number * item.price));
+                        }
+                    });
+
+                    ImageButton minusBtn = bottomSheetDialog.findViewById(R.id.minusButton);
+                    minusBtn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            long number = Long.parseLong(tvNumber.getText().toString()) - 1;
+                            if (number >= 0) {
+                                tvNumber.setText(Long.toString(number));
+                                totalBtn.setText(Long.toString(number * item.price));
+                            }
+                        }
+                    });
+
+                    RadioButton sizeM = bottomSheetView.findViewById(R.id.sizeM_radio);
+                    RadioButton sizeL = bottomSheetView.findViewById(R.id.sizeL_radio);
+                    sizeM.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                        @Override
+                        public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                            if (b) {
+                                sizeL.setChecked(false);
+                                isL = false;
+                            }
+                            if (isL)
+                                totalBtn.setText(Long.toString(total + 6000));
+                            else
+                                totalBtn.setText(Long.toString(total));
+                        }
+                    });
+                    sizeL.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                        @Override
+                        public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                            if (b) {
+                                sizeM.setChecked(false);
+                                isL = true;
+                            }
+                            if (isL)
+                                totalBtn.setText(Long.toString(total + 6000));
+                            else
+                                totalBtn.setText(Long.toString(total));
+                        }
+                    });
+
 
                     //Show dialog
                     bottomSheetDialog.show();
@@ -101,6 +217,8 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> im
         }
 
     }
+    long total;
+    boolean isL = false;
 
     Context context;
     ArrayList<Category> menuArray;

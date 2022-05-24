@@ -36,7 +36,10 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldPath;
@@ -57,7 +60,7 @@ public class MenuFragment extends Fragment {
     private MenuAdapter menuAdapter;
     private LinearLayout menuLinear;
     private LinearLayout rootLinear;
-
+    private BottomAppBar bottomAppBar;
 
     public MenuFragment() {
         // Required empty public constructor
@@ -148,6 +151,11 @@ public class MenuFragment extends Fragment {
             }
         });
 
+        bottomAppBar = getView().findViewById(R.id.bottomAppBar);
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) {
+            bottomAppBar.setVisibility(View.INVISIBLE);
+        }
     }
 
     private void loadMenu() {

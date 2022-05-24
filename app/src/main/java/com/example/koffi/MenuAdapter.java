@@ -94,14 +94,13 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> im
                     (LinearLayout)itemView.findViewById(R.id.menu_bottomsheet));
             bottomSheetDialog.setContentView(bottomSheetView);
 
-//Topping ListView
+            //Topping ListView
             ListView toppingListView = bottomSheetView.findViewById(R.id.topping_listview);
 
             ArrayList<Topping> toppingArray = new ArrayList<Topping>();
 
             ToppingAdapter toppingAdapter = new ToppingAdapter(context, toppingArray);
             toppingListView.setAdapter(toppingAdapter);
-            toppingAdapter.setListViewHeight(toppingListView);
 
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             db.collection("toppings").get()
@@ -117,6 +116,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> im
                                 System.out.println("result " + topping.name);
                             }
                             toppingAdapter.notifyDataSetChanged();
+                            setListViewHeight(toppingListView);
                         }
                     });
 

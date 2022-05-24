@@ -2,6 +2,7 @@ package com.example.koffi;
 
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -51,6 +53,8 @@ public class ProfileFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        View testView = view;
+
         //Toolbar
         Toolbar toolbar = (Toolbar) view.findViewById(R.id.profile_toolbar);
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
@@ -65,6 +69,16 @@ public class ProfileFragment extends Fragment {
                 Navigation.findNavController(view).navigate(R.id.action_global_mainFragment,bundle);
             }
         });
+
+        OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
+            @Override
+            public void handleOnBackPressed() {
+                Bundle bundle = new Bundle();
+                bundle.putString("back","other");
+                Navigation.findNavController(view).navigate(R.id.action_global_mainFragment,bundle);
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(),callback);
 
         //Bottom sheet avatar
         ConstraintLayout avatar = view.findViewById(R.id.profile_avatar);

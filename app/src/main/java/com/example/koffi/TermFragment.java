@@ -3,6 +3,7 @@ package com.example.koffi;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -52,7 +53,6 @@ public class TermFragment extends Fragment {
         WebView webView= view.findViewById(R.id.webTerm);
         webView.loadUrl("file:///android_asset/Dieukhoan.html");
 
-        }
-
+    }
 
 }

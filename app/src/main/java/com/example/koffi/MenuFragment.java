@@ -25,6 +25,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
@@ -121,6 +122,15 @@ public class MenuFragment extends Fragment {
 
                 //Show dialog
                 bottomSheetDialog.show();
+            }
+        });
+
+        //Navigate to checkout
+        LinearLayout totalPrice = view.findViewById(R.id.totalPrice);
+        totalPrice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Navigation.findNavController(view).navigate(R.id.action_mainFragment_to_checkOutFragment);
             }
         });
     }

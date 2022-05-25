@@ -1,6 +1,7 @@
 package com.example.koffi;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -28,6 +29,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -146,6 +149,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> im
 
                     TextView tvNumber = bottomSheetDialog.findViewById(R.id.tvNumber);
                     Button totalBtn = bottomSheetView.findViewById(R.id.itemTotalPrice);
+                    totalBtn.setEnabled(false);
                     number = Long.parseLong(tvNumber.getText().toString());
                     tvNumber.setText(Long.toString(number));
                     unit = item.price;
@@ -166,7 +170,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> im
                         @Override
                         public void onClick(View view) {
                             number = Long.parseLong(tvNumber.getText().toString()) - 1;
-                            if (number >= 0) {
+                            if (number > 0) {
                                 tvNumber.setText(Long.toString(number));
                                 checkListViewCheckBox(toppingListView, toppingArray, bottomSheetView, number);
                             }
@@ -189,6 +193,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> im
                                 sizePrice = 0;
                             }
                             checkListViewCheckBox(toppingListView, toppingArray, bottomSheetView, number);
+                            totalBtn.setEnabled(true);
                         }
                     });
                     sizeL.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -205,6 +210,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> im
                                 sizePrice = 0;
                             }
                             checkListViewCheckBox(toppingListView, toppingArray, bottomSheetView, number);
+                            totalBtn.setEnabled(true);
                         }
                     });
 
@@ -215,6 +221,16 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> im
                             CheckBox checkBox = toppingListView.getChildAt(i).findViewById(R.id.checkBox);
                             checkBox.setChecked(!checkBox.isChecked());
                             checkListViewCheckBox(toppingListView, toppingArray, bottomSheetView, number);
+                        }
+                    });
+
+                    totalBtn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                            if (user == null) {
+                                Toast.makeText(bottomSheetDialog.getContext(), "Vui lòng đăng nhập để tiếp tục!", Toast.LENGTH_SHORT).show();
+                            }
                         }
                     });
                     //Show dialog

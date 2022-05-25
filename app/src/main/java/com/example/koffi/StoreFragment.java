@@ -10,15 +10,26 @@ import androidx.fragment.app.Fragment;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -30,6 +41,7 @@ public class StoreFragment extends Fragment {
     StoreAdapter adapter;
 
     EditText editText;
+    static final String TAG = "Read Data Activity";
 
     public StoreFragment() {
         // Required empty public constructor
@@ -58,6 +70,25 @@ public class StoreFragment extends Fragment {
 
         listView = view.findViewById(R.id.storesListView);
         storeArray = new ArrayList<Store>();
+        adapter = new StoreAdapter(getContext(),storeArray);
+        listView.setAdapter(adapter);
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("stores").get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                            Store store = new Store(documentSnapshot.getId(), documentSnapshot.getString("address"), documentSnapshot.getString("image"), documentSnapshot.getString("PhoneNumber"));
+                            storeArray.add(store);
+                        }
+                        for (Store store : storeArray) {
+                            System.out.println("result " + store.address);
+                        }
+                        adapter.notifyDataSetChanged();
+                    }
+                });
+
         //Search store
         editText = view.findViewById(R.id.addressEdit);
         editText.addTextChangedListener(new TextWatcher() {
@@ -78,27 +109,6 @@ public class StoreFragment extends Fragment {
         });
 
 
-        //Dữ liệu mẫu
-        Store store1 = new Store("store-1","Tầng 50 Bitexco Tower, 2 Hải Triều, Phường Bến Nghé, Quận 1","store_1","0344242643");
-        Store store2 = new Store("store-2","10/16 Đoàn Thị Điểm, phường 1, quận Phú Nhuận","store_2","0932708316");
-        Store store3 = new Store("store-3","139/23 Đinh Bộ Lĩnh, phường 26, quận Bình Thạnh","store_3","0975305060");
-        Store store4 = new Store("store-4","573/10 Sư Vạn Hạnh, phường 13, quận 10","store_4","0528325771");
-        Store store5 = new Store("store-5","21/42 Giang Văn Minh, quận Ba Đình, Hà Nội","store_5","09374671294");
-        Store store6 = new Store("store-6","37 Quang Trung, quận Hoàn Kiếm, Hà Nội","store_6","0543678129");
-        Store store7 = new Store("store-7","21 Xuân Diệu, quận Tây Hồ, Hà Nội","store_7","0743768208");
-        Store store8 = new Store("store-8","36 Ấu Triệu, quận Hoàn Kiếm, Hà Nội","store_8","0375638120");
-        storeArray.add(store1);
-        storeArray.add(store2);
-        storeArray.add(store3);
-        storeArray.add(store4);
-        storeArray.add(store5);
-        storeArray.add(store6);
-        storeArray.add(store7);
-        storeArray.add(store8);
-
-        adapter = new StoreAdapter(getContext(),storeArray);
-        listView.setAdapter(adapter);
-
         //Store Detail Bottom Sheet
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -108,7 +118,32 @@ public class StoreFragment extends Fragment {
                         (LinearLayout)view.findViewById(R.id.store_bottomsheet));
                 bottomSheetDialog.setContentView(bottomSheetView);
                 //Assign data
+                Store store = (Store) listView.getItemAtPosition(i);
 
+                String address = store.address;
+                String shortenedAddress = address.substring(0,address.indexOf(","));
+
+                TextView shortAddressText = bottomSheetView.findViewById(R.id.storedetail_shortaddress);
+                shortAddressText.setText(shortenedAddress);
+
+                TextView addressText = bottomSheetView.findViewById(R.id.storedetail_fulladdress);
+                addressText.setText(address);
+
+                TextView phoneText = bottomSheetView.findViewById(R.id.storedetail_contact);
+                phoneText.setText("Liên hệ: "+store.phoneNumber);
+
+                RoundedImageView storeImage = bottomSheetView.findViewById(R.id.bottomsheet_image);
+                int drawableId = view.getResources().getIdentifier(store.image, "drawable", getContext().getPackageName());
+                storeImage.setImageResource(drawableId);
+
+                //Hide bottomsheet
+                ImageButton closeBtn = bottomSheetView.findViewById(R.id.store_closeBtn);
+                closeBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        bottomSheetDialog.dismiss();
+                    }
+                });
                 //Show dialog
                 bottomSheetDialog.show();
             }
@@ -125,4 +160,6 @@ public class StoreFragment extends Fragment {
         }
         adapter.filteredList(filteredList);
     }
+
+
 }

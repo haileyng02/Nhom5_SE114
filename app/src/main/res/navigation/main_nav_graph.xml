@@ -35,7 +35,11 @@
         android:id="@+id/checkOutFragment"
         android:name="com.example.koffi.CheckOutFragment"
         android:label="fragment_check_out"
-        tools:layout="@layout/fragment_check_out" />
+        tools:layout="@layout/fragment_check_out" >
+        <action
+            android:id="@+id/action_checkOutFragment_to_addressFragment22"
+            app:destination="@id/addressFragment2" />
+    </fragment>
     <fragment
         android:id="@+id/addressFragment2"
         android:name="com.example.koffi.AddressFragment"

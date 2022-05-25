@@ -9,6 +9,7 @@
     tools:context=".AddAddressFragment">
 
     <androidx.appcompat.widget.Toolbar
+        android:id="@+id/addaddress_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         android:background="@color/white"
@@ -45,12 +46,14 @@
                     android:text="Tên địa chỉ"
                     android:textSize="16sp"
                     android:textStyle="bold" />
+
                 <EditText
+                    android:id="@+id/address_nameEdit"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:hint="Nhà/Cơ quan/Gym..."
                     android:background="@drawable/edittext_profile"
-                    android:padding="15dp"/>
+                    android:hint="Nhà/Cơ quan/Gym..."
+                    android:padding="15dp" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -77,43 +80,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:hint="Cổng, số tầng,..."
-                    android:background="@drawable/edittext_profile"
-                    android:padding="15dp"/>
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="15dp"
-                android:padding="15dp"
-                android:background="@color/white"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:text="Tên người nhận*"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:hint="Nhập tên"
-                    android:background="@drawable/edittext_profile"
-                    android:padding="15dp"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginBottom="10dp"
-                    android:text="Số điện thoại*"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:hint="Nhập số điện thoại"
-                    android:inputType="number"
                     android:background="@drawable/edittext_profile"
                     android:padding="15dp"/>
             </LinearLayout>

@@ -101,16 +101,35 @@
                                 android:textStyle="bold" />
                         </LinearLayout>
                     </LinearLayout>
+
                     <LinearLayout
+                        android:id="@+id/checkout_chooseAddress"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical">
-                        <TextView
+
+                        <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Chọn địa chỉ"
-                            android:textColor="@color/black"/>
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Chọn địa chỉ"
+                                android:textColor="@color/black"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:text="Chọn địa chỉ"
+                                android:textColor="@color/black" />
+                        </LinearLayout>
+
 
                         <ImageView
                             android:id="@+id/imageView11"
@@ -134,6 +153,7 @@
                         android:orientation="horizontal">
 
                         <LinearLayout
+                            android:id="@+id/checkout_receiver"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -331,29 +351,35 @@
                         android:textColor="@color/black"
                         android:textSize="18sp"
                         android:textStyle="bold" />
+
                     <LinearLayout
+                        android:id="@+id/checkout_payment"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
                         android:padding="15dp">
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="Bấm để chọn phương thức thanh toán"
-                            android:textColor="#2549B9"/>
+                            android:textColor="#2549B9" />
+
                         <ImageView
                             android:layout_width="15dp"
                             android:layout_height="15dp"
                             android:src="@drawable/next" />
                     </LinearLayout>
                 </LinearLayout>
+
                 <LinearLayout
+                    android:id="@+id/checkout_deleteorder"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:padding="15dp"
-                    android:background="@color/white">
+                    android:background="@color/white"
+                    android:padding="15dp">
 
                     <ImageView
                         android:id="@+id/imageView12"
@@ -361,12 +387,13 @@
                         android:layout_height="20dp"
                         android:src="@drawable/icon_trash"
                         app:tint="#FF0000" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="15dp"
                         android:text="Xóa đơn hàng"
-                        android:textColor="#FF0000"/>
+                        android:textColor="#FF0000" />
                 </LinearLayout>
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>

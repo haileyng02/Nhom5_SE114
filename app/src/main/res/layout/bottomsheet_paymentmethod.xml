@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/paymentmethod_bottomsheet"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bottomsheet_bg"
-    android:backgroundTint="#F6F6F6"
     android:orientation="vertical">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#FFFFFF"
         android:paddingVertical="15dp"
         android:text="Phương thức thanh toán"
         android:textAlignment="center"
@@ -28,7 +27,8 @@
         android:layout_height="wrap_content"
         android:padding="15dp"
         android:text="Vui lòng chọn phương thức thanh toán phù hợp cho đơn hàng của bạn."
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        android:background="#F6F6F6"/>
 
     <LinearLayout
         android:layout_width="match_parent"

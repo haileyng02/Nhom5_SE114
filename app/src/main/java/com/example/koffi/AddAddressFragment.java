@@ -2,11 +2,15 @@ package com.example.koffi;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import androidx.appcompat.widget.Toolbar;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -60,5 +64,28 @@ public class AddAddressFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_add_address, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        //Set address name
+        String type="";
+        if (getArguments()!=null) {
+            type = getArguments().getString("type");
+        }
+        EditText nameEdit = view.findViewById(R.id.address_nameEdit);
+        if (type!="" && !type.equals("Normal"))
+            nameEdit.setText(type);
+
+        //Toolbar
+        Toolbar toolbar = (Toolbar) view.findViewById(R.id.addaddress_toolbar);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().onBackPressed();
+            }
+        });
     }
 }

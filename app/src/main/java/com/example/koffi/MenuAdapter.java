@@ -306,7 +306,6 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> im
             ViewGroup.LayoutParams params = listview.getLayoutParams();
             params.height = totalHeight + (listview.getDividerHeight() * (listadp.getCount() - 1));
             listview.setLayoutParams(params);
-            //listview.requestLayout();
         }
     }
 }

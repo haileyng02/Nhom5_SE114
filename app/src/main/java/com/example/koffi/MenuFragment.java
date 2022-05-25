@@ -157,6 +157,15 @@ public class MenuFragment extends Fragment {
         if (user == null) {
             bottomAppBar.setVisibility(View.INVISIBLE);
         }
+
+        //Navigate to checkout
+        LinearLayout totalPrice = view.findViewById(R.id.totalPrice);
+        totalPrice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Navigation.findNavController(view).navigate(R.id.action_mainFragment_to_checkOutFragment);
+            }
+        });
     }
 
     ProgressDialog pd;
@@ -241,5 +250,42 @@ public class MenuFragment extends Fragment {
             }
         });
     }
-
+//    public void getMenuArray() {
+//        db.collection("menu")
+//                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//            @Override
+//            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                if (task.isSuccessful()) {
+//                    for (QueryDocumentSnapshot categoryDocument : task.getResult()) {
+//                        ArrayList<Item> itemsArray = new ArrayList<Item>();
+//                        db.collection("menu")
+//                                .document(categoryDocument.getId())
+//                                .collection("items")
+//                                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                            @Override
+//                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                                if (task.isSuccessful()) {
+//                                    for (QueryDocumentSnapshot itemDocument : task.getResult()) {
+//                                        Item menuItem = new Item(itemDocument.getId(),itemDocument.getString("name"),
+//                                                itemDocument.getString("image"),itemDocument.getLong("price"),itemDocument.getString("description"));
+//                                        itemsArray.add(menuItem);
+//
+//                                    }
+//                                    Category category = new Category(categoryDocument.getId(),
+//                                            categoryDocument.getString("name"),categoryDocument.getString("image"),itemsArray);
+//                                    menuArray.add(category);
+//                                    categoryAdapter.notifyDataSetChanged();
+//                                    menuAdapter.notifyDataSetChanged();
+//                                }
+//                                else {
+//                                    System.out.println("Error getting documents."+ task.getException());
+//                                }
+//                            }
+//                        });
+//                    }
+//                }
+//            }
+//        });
+//
+//    }
 }

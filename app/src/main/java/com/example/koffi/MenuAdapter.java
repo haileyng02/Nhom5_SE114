@@ -19,6 +19,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.navigation.Navigation;
@@ -112,18 +113,10 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> im
                                         documentSnapshot.getLong("price"));
                                 toppingArray.add(topping);
                             }
-                            for (Topping topping : toppingArray) {
-                                System.out.println("result " + topping.name);
-                            }
                             toppingAdapter.notifyDataSetChanged();
                             setListViewHeight(toppingListView);
                         }
                     });
-
-            for (Topping topping : toppingArray) {
-                System.out.println("result 2 " + topping.name);
-            }
-
 
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
@@ -153,18 +146,18 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> im
 
                     TextView tvNumber = bottomSheetDialog.findViewById(R.id.tvNumber);
                     Button totalBtn = bottomSheetView.findViewById(R.id.itemTotalPrice);
-                    long number = Long.parseLong(tvNumber.getText().toString());
+                    number = Long.parseLong(tvNumber.getText().toString());
                     tvNumber.setText(Long.toString(number));
-                    total = number * item.price;
-                    totalBtn.setText(Long.toString(total));
+                    unit = item.price;
+                    totalBtn.setText(Long.toString(unit));
 
                     ImageButton plusBtn = bottomSheetDialog.findViewById(R.id.plusButton);
                     plusBtn.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            long number = Long.parseLong(tvNumber.getText().toString()) + 1;
+                            number = Long.parseLong(tvNumber.getText().toString()) + 1;
                             tvNumber.setText(Long.toString(number));
-                            totalBtn.setText(Long.toString(number * item.price));
+                            checkListViewCheckBox(toppingListView, toppingArray, bottomSheetView, number);
                         }
                     });
 
@@ -172,10 +165,10 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> im
                     minusBtn.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            long number = Long.parseLong(tvNumber.getText().toString()) - 1;
+                            number = Long.parseLong(tvNumber.getText().toString()) - 1;
                             if (number >= 0) {
                                 tvNumber.setText(Long.toString(number));
-                                totalBtn.setText(Long.toString(number * item.price));
+                                checkListViewCheckBox(toppingListView, toppingArray, bottomSheetView, number);
                             }
                         }
                     });
@@ -189,10 +182,13 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> im
                                 sizeL.setChecked(false);
                                 isL = false;
                             }
-                            if (isL)
-                                totalBtn.setText(Long.toString(total + 6000));
-                            else
-                                totalBtn.setText(Long.toString(total));
+                            if (isL) {
+                                sizePrice = 6000;
+                            }
+                            else {
+                                sizePrice = 0;
+                            }
+                            checkListViewCheckBox(toppingListView, toppingArray, bottomSheetView, number);
                         }
                     });
                     sizeL.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -202,14 +198,25 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> im
                                 sizeM.setChecked(false);
                                 isL = true;
                             }
-                            if (isL)
-                                totalBtn.setText(Long.toString(total + 6000));
-                            else
-                                totalBtn.setText(Long.toString(total));
+                            if (isL) {
+                                sizePrice = 6000;
+                            }
+                            else {
+                                sizePrice = 0;
+                            }
+                            checkListViewCheckBox(toppingListView, toppingArray, bottomSheetView, number);
                         }
                     });
 
-
+                    toppingListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                            System.out.println("clicked");
+                            CheckBox checkBox = toppingListView.getChildAt(i).findViewById(R.id.checkBox);
+                            checkBox.setChecked(!checkBox.isChecked());
+                            checkListViewCheckBox(toppingListView, toppingArray, bottomSheetView, number);
+                        }
+                    });
                     //Show dialog
                     bottomSheetDialog.show();
                 }
@@ -219,6 +226,22 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> im
     }
     long total;
     boolean isL = false;
+    long unit;
+    long sizePrice = 0;
+    long number;
+
+    private void checkListViewCheckBox(ListView toppingListView, ArrayList<Topping> toppingArray, View bottomSheetView, long number) {
+        long sum = 0;
+        for (int n = 0; n < 8; n++) {
+            CheckBox itemCheckBox = toppingListView.getChildAt(n).findViewById(R.id.checkBox);
+            if (itemCheckBox.isChecked()) {
+                sum += toppingArray.get(n).price;
+                System.out.println("result: " + sum);
+            }
+        }
+        Button totalBtn = bottomSheetView.findViewById(R.id.itemTotalPrice);
+        totalBtn.setText(Long.toString((unit + sum + sizePrice) * number));
+    }
 
     Context context;
     ArrayList<Category> menuArray;

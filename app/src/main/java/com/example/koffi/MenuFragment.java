@@ -1,5 +1,6 @@
 package com.example.koffi;
 
+import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
@@ -158,7 +159,11 @@ public class MenuFragment extends Fragment {
         }
     }
 
+    ProgressDialog pd;
     private void loadMenu() {
+        pd = new ProgressDialog(getActivity());
+        pd.setTitle("Đang tải menu...");
+        pd.show();
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -197,6 +202,11 @@ public class MenuFragment extends Fragment {
                                                     else if (i == 5) displayMenu(6);
                                                     else if (i == 6) displayMenu(7);
                                                     else if (i == 7) displayMenu(8);
+                                                    else if (i == 8) {
+                                                        gridView.setVisibility(View.VISIBLE);
+                                                        recyclerView.setVisibility(View.VISIBLE);
+                                                        pd.dismiss();
+                                                    }
                                                 }
                                             }
                                         });

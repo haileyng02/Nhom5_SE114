@@ -70,6 +70,7 @@
 
                 <GridView
                     android:id="@+id/category_gridview"
+                    android:visibility="invisible"
                     android:layout_width="match_parent"
                     android:layout_height="220dp"
                     android:layout_marginBottom="15dp"
@@ -80,6 +81,7 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/menu_recycler"
+                    android:visibility="invisible"
                     android:layout_width="match_parent"
                     android:layout_height="4600dp" />
 

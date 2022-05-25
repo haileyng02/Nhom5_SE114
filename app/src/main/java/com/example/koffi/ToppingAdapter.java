@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -36,6 +37,16 @@ public class ToppingAdapter extends BaseAdapter {
     }
 
     @Override
+    public boolean areAllItemsEnabled() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled(int position) {
+        return true;
+    }
+
+    @Override
     public int getCount() {
         return toppingArray.size();
     }
@@ -60,6 +71,8 @@ public class ToppingAdapter extends BaseAdapter {
         TextView price = view.findViewById(R.id.toppingPrice);
         price.setText(Long.toString(toppingArray.get(i).price));
 
+
         return view;
     }
+
 }

@@ -7,6 +7,9 @@ public class Topping implements Comparable<Topping> {
         this.price = price;
     }
 
+    public Topping() {
+    }
+
     public String id;
     public String name;
     public long price;

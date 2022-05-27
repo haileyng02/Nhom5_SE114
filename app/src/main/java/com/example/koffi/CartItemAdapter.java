@@ -55,10 +55,14 @@ public class CartItemAdapter extends BaseAdapter {
         quantityText.setText(itemArray.get(i).quantity+"x");
 
         TextView nameText = view.findViewById(R.id.cart_name);
-        nameText.setText(itemArray.get(i).item.name);
+        nameText.setText(itemArray.get(i).item);
 
+        String toppingNote = "";
+        for (Topping topping : itemArray.get(i).toppings) {
+            toppingNote += ", " + topping.name;
+        }
         TextView noteText = view.findViewById(R.id.cart_note);
-        noteText.setText(itemArray.get(i).note);
+        noteText.setText(itemArray.get(i).note + toppingNote);
 
         TextView priceText = view.findViewById(R.id.cart_price);
         priceText.setText(itemArray.get(i).price+"đ");

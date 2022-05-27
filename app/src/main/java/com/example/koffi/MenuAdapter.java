@@ -31,7 +31,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -150,7 +152,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> im
                     TextView tvNumber = bottomSheetDialog.findViewById(R.id.tvNumber);
                     Button totalBtn = bottomSheetView.findViewById(R.id.itemTotalPrice);
                     totalBtn.setEnabled(false);
-                    number = Long.parseLong(tvNumber.getText().toString());
+                    number = Integer.parseInt(tvNumber.getText().toString());
                     tvNumber.setText(Long.toString(number));
                     unit = item.price;
                     totalBtn.setText(Long.toString(unit));
@@ -159,7 +161,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> im
                     plusBtn.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            number = Long.parseLong(tvNumber.getText().toString()) + 1;
+                            number = Integer.parseInt(tvNumber.getText().toString()) + 1;
                             tvNumber.setText(Long.toString(number));
                             checkListViewCheckBox(toppingListView, toppingArray, bottomSheetView, number);
                         }
@@ -169,16 +171,21 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> im
                     minusBtn.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            number = Long.parseLong(tvNumber.getText().toString()) - 1;
+                            if (Long.parseLong(tvNumber.getText().toString()) - 1 >= 0)
+                            number = Integer.parseInt(tvNumber.getText().toString()) - 1;
                             if (number > 0) {
                                 tvNumber.setText(Long.toString(number));
                                 checkListViewCheckBox(toppingListView, toppingArray, bottomSheetView, number);
+                            } else if (number == 0) {
+                                tvNumber.setText(Long.toString(number));
+                                totalBtn.setText("Bỏ chọn sản phẩm");
                             }
                         }
                     });
 
                     RadioButton sizeM = bottomSheetView.findViewById(R.id.sizeM_radio);
                     RadioButton sizeL = bottomSheetView.findViewById(R.id.sizeL_radio);
+
                     sizeM.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                         @Override
                         public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -214,10 +221,10 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> im
                         }
                     });
 
+                    ArrayList<Topping> toppingToCart = new ArrayList<>();
                     toppingListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                            System.out.println("clicked");
                             CheckBox checkBox = toppingListView.getChildAt(i).findViewById(R.id.checkBox);
                             checkBox.setChecked(!checkBox.isChecked());
                             checkListViewCheckBox(toppingListView, toppingArray, bottomSheetView, number);
@@ -230,7 +237,38 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> im
                             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                             if (user == null) {
                                 Toast.makeText(bottomSheetDialog.getContext(), "Vui lòng đăng nhập để tiếp tục!", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Query query = db.collection("order")
+                                        .whereEqualTo("userID", FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                        .whereEqualTo("status", 0);
+                                query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            if (task.getResult().size() == 0) {
+                                                System.out.println("Cart not exists");
+                                                Order order = new Order(
+                                                        FirebaseAuth.getInstance().getCurrentUser().getUid(), 0
+                                                );
+                                                db.collection("order")
+                                                        .add(order);
+                                            }
+                                            else {
+                                                total = Long.parseLong(totalBtn.getText().toString());
+                                                size = sizeL.isChecked() ? "Upsize" : "Vừa";
+                                                for (int i = 0; i < 8; i++) {
+                                                    CheckBox checkBox = toppingListView.getChildAt(i).findViewById(R.id.checkBox);
+                                                    if (checkBox.isChecked()) {
+                                                        toppingToCart.add(toppingArray.get(i));
+                                                    }
+                                                }
+                                                addItemToCart(db, item.name, toppingToCart);
+                                            }
+                                        }
+                                    }
+                                });
                             }
+                            bottomSheetDialog.dismiss();
                         }
                     });
                     //Show dialog
@@ -244,7 +282,8 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> im
     boolean isL = false;
     long unit;
     long sizePrice = 0;
-    long number;
+    int number;
+    String size;
 
     private void checkListViewCheckBox(ListView toppingListView, ArrayList<Topping> toppingArray, View bottomSheetView, long number) {
         long sum = 0;
@@ -257,6 +296,64 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> im
         }
         Button totalBtn = bottomSheetView.findViewById(R.id.itemTotalPrice);
         totalBtn.setText(Long.toString((unit + sum + sizePrice) * number));
+    }
+
+    private void addItemToCart(FirebaseFirestore db, String itemName, ArrayList<Topping> toppingArray) {
+        Query query = db.collection("order")
+                .whereEqualTo("userID", FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .whereEqualTo("status", 0);
+        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot doc : task.getResult()) {
+                        db.collection("cartItems")
+                                .whereEqualTo("cartID", doc.getId())
+                                .whereEqualTo("item", itemName).get()
+                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            if (task.getResult().size() == 0) {
+                                                CartItem cartItem = new CartItem(doc.getId(), itemName, number, total, size, toppingArray);
+                                                db.collection("cartItems").add(cartItem);
+                                            }
+                                            else {
+                                                for (QueryDocumentSnapshot snapshot : task.getResult()) {
+                                                    CartItem result = snapshot.toObject(CartItem.class);
+                                                    //Convert toppings to string
+                                                    String arrayFromDb = result.note;
+                                                    String current = size;
+                                                    for (Topping topping : toppingArray) {
+                                                        current += topping.id;
+                                                    }
+                                                    for (Topping topping : result.toppings) {
+                                                        arrayFromDb += topping.id;
+                                                    }
+                                                    System.out.println("Topping array: " + current);
+                                                    System.out.println("Topping array from db: " + arrayFromDb);
+
+                                                    if (current.equals(arrayFromDb)) {
+                                                        long newQuatity = result.quantity + number;
+                                                        long newPrice = result.price + total;
+                                                        db.collection("cartItems")
+                                                                .document(snapshot.getId())
+                                                                .update("quantity", newQuatity, "price", newPrice);
+                                                        break;
+                                                    } else {
+                                                        CartItem cartItem = new CartItem(doc.getId(), itemName, number, total, size, toppingArray);
+                                                        db.collection("cartItems").add(cartItem);
+                                                        break;
+                                                    }
+                                                }
+                                             }
+                                        }
+                                    }
+                                });
+                    }
+                }
+            }
+        });
     }
 
     Context context;

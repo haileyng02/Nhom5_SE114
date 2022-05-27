@@ -27,11 +27,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -129,6 +131,12 @@ public class MenuFragment extends Fragment {
                 View bottomSheetView = LayoutInflater.from(getContext()).inflate(R.layout.bottomsheet_category,
                         (LinearLayout)view.findViewById(R.id.menu_bottomsheet));
                 bottomSheetDialog.setContentView(bottomSheetView);
+
+                ListView toppingListView = bottomSheetView.findViewById(R.id.topping_listview);
+                for (int i = 0; i < 8; i++) {
+                    CheckBox checkBox = toppingListView.getChildAt(i).findViewById(R.id.checkBox);
+                    checkBox.setChecked(false);
+                }
 
                 //Handle Grid View
                 gridView = bottomSheetView.findViewById(R.id.category_gridview_bottomsheet);

@@ -92,9 +92,15 @@ public class CheckOutFragment extends Fragment {
 
         //Cart list
         //Sample data
-        cart.add(new CartItem(new Item("123","Cà phê","hotcoffee_1",new Long(30000),""),2,new Long(35000),"Upsize"));
-        cart.add(new CartItem(new Item("123","Trà sữa","milktea_1",new Long(40000),""),1,new Long(45000),"Trân châu hoàng kim, Ít ngọt"));
-        cart.add(new CartItem(new Item("123","Nước ngọt","iceddrinks_1",new Long(50000),""),2,new Long(55000),"Upsize, Rau câu"));
+//        cart.add(new CartItem(new Item("123","Cà phê","hotcoffee_1",new Long(30000),""),2,new Long(35000),"Upsize"));
+//        cart.add(new CartItem(new Item("123","Trà sữa","milktea_1",new Long(40000),""),1,new Long(45000),"Trân châu hoàng kim, Ít ngọt"));
+//        cart.add(new CartItem(new Item("123","Nước ngọt","iceddrinks_1",new Long(50000),""),2,new Long(55000),"Upsize, Rau câu"));
+//        ArrayList<Topping> toppings = new ArrayList<Topping>();
+//        toppings.add(new Topping("1", "Trân châu", 6000));
+//        toppings.add(new Topping("2", "Rau câu", 8000));
+//        cart.add(new CartItem("1", "Trân châu", 1, Long.parseLong("30000"), "Vừa", toppings));
+
+
 
         ListView cartList = view.findViewById(R.id.cartList);
         CartItemAdapter cartAdapter = new CartItemAdapter(getContext(),cart);

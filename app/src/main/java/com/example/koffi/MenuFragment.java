@@ -1,5 +1,6 @@
 package com.example.koffi;
 
+import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
@@ -26,16 +27,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldPath;
@@ -44,6 +51,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class MenuFragment extends Fragment {
 
@@ -55,7 +63,7 @@ public class MenuFragment extends Fragment {
     private MenuAdapter menuAdapter;
     private LinearLayout menuLinear;
     private LinearLayout rootLinear;
-
+    private BottomAppBar bottomAppBar;
 
     public MenuFragment() {
         // Required empty public constructor
@@ -105,6 +113,14 @@ public class MenuFragment extends Fragment {
         recyclerView.setAdapter(menuAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                recyclerView.scrollToPosition(i);
+                recyclerView.getChildAt(i).requestFocus();
+            }
+        });
+
         //Toolbar title (To change category)
         LinearLayout changeCategory = view.findViewById(R.id.changeCategory);
         changeCategory.setOnClickListener(new View.OnClickListener() {
@@ -116,14 +132,39 @@ public class MenuFragment extends Fragment {
                         (LinearLayout)view.findViewById(R.id.menu_bottomsheet));
                 bottomSheetDialog.setContentView(bottomSheetView);
 
+                ListView toppingListView = bottomSheetView.findViewById(R.id.topping_listview);
+                for (int i = 0; i < 8; i++) {
+                    CheckBox checkBox = toppingListView.getChildAt(i).findViewById(R.id.checkBox);
+                    checkBox.setChecked(false);
+                }
+
                 //Handle Grid View
                 gridView = bottomSheetView.findViewById(R.id.category_gridview_bottomsheet);
                 gridView.setAdapter(categoryAdapter);
-
+                gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                        recyclerView.scrollToPosition(i);
+                        recyclerView.getChildAt(i).requestFocus();
+                    }
+                });
+                ImageButton closeView = bottomSheetDialog.findViewById(R.id.itemdetail_closeBtn);
+                closeView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        bottomSheetDialog.dismiss();
+                    }
+                });
                 //Show dialog
                 bottomSheetDialog.show();
             }
         });
+
+        bottomAppBar = getView().findViewById(R.id.bottomAppBar);
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) {
+            bottomAppBar.setVisibility(View.INVISIBLE);
+        }
 
         //Navigate to checkout
         LinearLayout totalPrice = view.findViewById(R.id.totalPrice);
@@ -135,7 +176,11 @@ public class MenuFragment extends Fragment {
         });
     }
 
+    ProgressDialog pd;
     private void loadMenu() {
+        pd = new ProgressDialog(getActivity(),R.style.ProgressStyle);
+        pd.setTitle("Đang tải menu...");
+        pd.show();
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -174,6 +219,11 @@ public class MenuFragment extends Fragment {
                                                     else if (i == 5) displayMenu(6);
                                                     else if (i == 6) displayMenu(7);
                                                     else if (i == 7) displayMenu(8);
+                                                    else if (i == 8) {
+                                                        gridView.setVisibility(View.VISIBLE);
+                                                        recyclerView.setVisibility(View.VISIBLE);
+                                                        pd.dismiss();
+                                                    }
                                                 }
                                             }
                                         });
@@ -194,6 +244,19 @@ public class MenuFragment extends Fragment {
 
         MenuItem searchItem = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                menuAdapter.getFilter().filter(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                menuAdapter.getFilter().filter(newText);
+                return false;
+            }
+        });
     }
 //    public void getMenuArray() {
 //        db.collection("menu")

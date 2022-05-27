@@ -245,6 +245,8 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> im
                                     @Override
                                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                         if (task.isSuccessful()) {
+                                            total = Long.parseLong(totalBtn.getText().toString());
+                                            size = sizeL.isChecked() ? "Upsize" : "Vừa";
                                             if (task.getResult().size() == 0) {
                                                 System.out.println("Cart not exists");
                                                 Order order = new Order(
@@ -252,10 +254,9 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> im
                                                 );
                                                 db.collection("order")
                                                         .add(order);
+                                                addItemToCart(db, item.name, toppingToCart);
                                             }
                                             else {
-                                                total = Long.parseLong(totalBtn.getText().toString());
-                                                size = sizeL.isChecked() ? "Upsize" : "Vừa";
                                                 for (int i = 0; i < 8; i++) {
                                                     CheckBox checkBox = toppingListView.getChildAt(i).findViewById(R.id.checkBox);
                                                     if (checkBox.isChecked()) {

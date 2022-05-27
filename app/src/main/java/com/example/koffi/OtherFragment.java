@@ -81,6 +81,15 @@ public class OtherFragment extends Fragment {
             }
         });
 
+        //Contact
+        LinearLayout contact = view.findViewById(R.id.other_contact);
+        contact.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Navigation.findNavController(getView()).navigate(R.id.action_mainFragment_to_contactFragment);
+            }
+        });
+
         //Profile
         LinearLayout profile = view.findViewById(R.id.other_profile);
         profile.setOnClickListener(new View.OnClickListener() {
@@ -98,6 +107,16 @@ public class OtherFragment extends Fragment {
                 Bundle bundle = new Bundle();
                 bundle.putString("from","Other");
                 Navigation.findNavController(getView()).navigate(R.id.action_mainFragment_to_addressFragment2,bundle);
+            }
+        });
+
+        //Logout
+        LinearLayout logout = view.findViewById(R.id.other_logout);
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DialogLogOut louOutDialog = new DialogLogOut(getContext());
+                louOutDialog.show();
             }
         });
     }

@@ -159,4 +159,18 @@ public class CheckOutFragment extends Fragment {
         lp.height= Resources.getSystem().getDisplayMetrics().heightPixels;
         bottomSheetView.setLayoutParams(lp);
     }
+    public void deliveryMethod(){
+        LinearLayout delivery = getView().findViewById(R.id.checkout_delivery);
+        LinearLayout takeaway = getView().findViewById(R.id.checkout_takeaway);
+
+        delivery.setVisibility(View.VISIBLE);
+        takeaway.setVisibility(View.GONE);
+    }
+    public void takeAwayMethod() {
+        LinearLayout delivery = getView().findViewById(R.id.checkout_delivery);
+        LinearLayout takeaway = getView().findViewById(R.id.checkout_takeaway);
+
+        delivery.setVisibility(View.GONE);
+        takeaway.setVisibility(View.VISIBLE);
+    }
 }

@@ -133,6 +133,25 @@ public class MenuFragment extends Fragment {
                 Navigation.findNavController(view).navigate(R.id.action_mainFragment_to_checkOutFragment);
             }
         });
+
+        //Change order method
+        LinearLayout orderMethod = view.findViewById(R.id.menu_ordermethod);
+        orderMethod.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Bottom sheet dialog
+                BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext(),R.style.BottomSheetDialogTheme);
+                View bottomSheetView = LayoutInflater.from(getContext()).inflate(R.layout.bottomsheet_ordermethod,
+                        (LinearLayout)view.findViewById(R.id.ordermethod_bottomsheet));
+                bottomSheetDialog.setContentView(bottomSheetView);
+
+                //Handle bottom sheet
+
+
+                //Show dialog
+                bottomSheetDialog.show();
+            }
+        });
     }
 
     private void loadMenu() {

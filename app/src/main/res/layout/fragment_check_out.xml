@@ -66,12 +66,15 @@
                 android:orientation="vertical">
 
                 <LinearLayout
+                    android:id="@+id/checkout_delivery"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:padding="15dp"
                     android:background="@color/white"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:padding="15dp"
+                    android:visibility="gone">
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -86,6 +89,7 @@
                             android:textColor="@color/black"
                             android:textSize="18sp"
                             android:textStyle="bold" />
+
                         <LinearLayout
                             android:layout_width="80dp"
                             android:layout_height="30dp"
@@ -138,14 +142,15 @@
                             android:src="@drawable/next" />
 
                     </LinearLayout>
+
                     <EditText
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
                         android:layout_marginVertical="15dp"
-                        android:padding="15dp"
                         android:background="@drawable/phone_input"
+                        android:hint="Thêm hướng dẫn giao hàng"
                         android:inputType="text"
-                        android:hint="Thêm hướng dẫn giao hàng"/>
+                        android:padding="15dp" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -181,16 +186,19 @@
                                 android:textColor="#E1E1E1"
                                 android:textStyle="bold" />
                         </LinearLayout>
+
                         <LinearLayout
                             android:layout_width="1dp"
                             android:layout_height="match_parent"
-                            android:background= "#E1E1E1"/>
+                            android:background="#E1E1E1" />
+
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:paddingLeft="15dp"
+                            android:layout_weight="1"
                             android:orientation="vertical"
-                            android:layout_weight="1">
+                            android:paddingLeft="15dp">
+
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -202,6 +210,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
                                 android:text="Sớm nhất có thể" />
+
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -210,6 +219,97 @@
                                 android:text="- - - - - - - - - - - - - - - - - - - - - - - - - -"
                                 android:textColor="#E1E1E1"
                                 android:textStyle="bold" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/checkout_takeaway"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:padding="15dp"
+                    android:background="@color/white"
+                    android:orientation="vertical">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="15dp"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Tự đến lấy"
+                            android:textColor="@color/black"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+                        <LinearLayout
+                            android:layout_width="80dp"
+                            android:layout_height="30dp"
+                            android:background="@drawable/shape_white_rounded_medium"
+                            android:backgroundTint="#FFF4C2"
+                            android:gravity="center">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Thay đổi"
+                                android:textColor="@color/primary"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/takeaway_store"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingVertical="15dp"
+                        android:gravity="center_vertical">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:paddingRight="50dp"
+                            android:orientation="vertical">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Tầng 50 Bitexco Tower"
+                                android:textColor="@color/black"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Tầng 50 Bitexco Tower, 2 Hải Triều, Phường Bến Nghé, Quận 1"/>
+                        </LinearLayout>
+                        <ImageView
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
+                            android:src="@drawable/next"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#DBDBDB"/>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingVertical="15dp"
+                        android:gravity="center_vertical">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:paddingRight="50dp"
+                            android:orientation="vertical">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="15-30 phút"
+                                android:textColor="@color/black"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Càng sớm càng tốt"/>
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>

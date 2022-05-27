@@ -1,6 +1,7 @@
 package com.example.koffi;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -272,6 +273,16 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> im
                             bottomSheetDialog.dismiss();
                         }
                     });
+
+                    //Dismiss listener
+                    bottomSheetDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                        @Override
+                        public void onDismiss(DialogInterface dialogInterface) {
+                            sizeM.setChecked(false);
+                            sizeL.setChecked(false);
+                        }
+                    });
+
                     //Show dialog
                     bottomSheetDialog.show();
                 }

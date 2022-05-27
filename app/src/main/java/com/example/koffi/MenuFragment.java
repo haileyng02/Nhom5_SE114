@@ -178,7 +178,7 @@ public class MenuFragment extends Fragment {
 
     ProgressDialog pd;
     private void loadMenu() {
-        pd = new ProgressDialog(getActivity());
+        pd = new ProgressDialog(getActivity(),R.style.ProgressStyle);
         pd.setTitle("Đang tải menu...");
         pd.show();
         new Thread(new Runnable() {

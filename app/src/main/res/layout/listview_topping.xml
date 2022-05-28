@@ -5,11 +5,16 @@
 
     <CheckBox
         android:id="@+id/checkBox"
+        android:focusable="false"
+        android:clickable="false"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:text="Pudding" />
+
     <TextView
+        android:id="@+id/toppingPrice"
+        android:clickable="false"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="6000đ" />

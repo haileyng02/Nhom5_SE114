@@ -2,6 +2,7 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/menu_fragment"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     tools:context=".MenuFragment">
@@ -70,6 +71,7 @@
 
                 <GridView
                     android:id="@+id/category_gridview"
+                    android:visibility="invisible"
                     android:layout_width="match_parent"
                     android:layout_height="220dp"
                     android:layout_marginBottom="15dp"
@@ -80,6 +82,7 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/menu_recycler"
+                    android:visibility="invisible"
                     android:layout_width="match_parent"
                     android:layout_height="4600dp" />
 
@@ -88,6 +91,7 @@
     </LinearLayout>
 
     <com.google.android.material.bottomappbar.BottomAppBar
+        android:id="@+id/bottomAppBar"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_gravity="bottom">
@@ -144,12 +148,13 @@
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
                     android:singleLine="true"
-                    android:text="Đường Hàn Thuyên, khu phố 6 P, Thủ Đức, Thành phố Hồ Chí Minh, Việt Nam"
+                    android:text="Sản phẩm sẽ được giao đến địa chỉ bạn chọn"
                     android:textColor="@color/black" />
             </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/totalPrice"
+                android:visibility="gone"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginRight="15dp"
@@ -166,6 +171,7 @@
                     android:gravity="center">
 
                     <TextView
+                        android:id="@+id/numberOfItems"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="1"
@@ -173,6 +179,7 @@
                 </LinearLayout>
 
                 <TextView
+                    android:id="@+id/totalItemsPrice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="10dp"

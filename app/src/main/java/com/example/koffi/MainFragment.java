@@ -49,8 +49,12 @@ public class MainFragment extends Fragment {
         //Back action handler
         if (getArguments()!=null)
             switch (getArguments().getString("back")){
+                case "menu":
+                    replaceFragment(new MenuFragment());
+                    break;
                 case "other":
                     replaceFragment(new OtherFragment());
+                    break;
             }
 
         BottomNavigationView bottomNavigationView = view.findViewById(R.id.bottomNavigationView);

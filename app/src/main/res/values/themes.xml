@@ -24,4 +24,7 @@
         <item name="android:background">@android:color/transparent</item>
         <item name="behavior_peekHeight">800dp</item>
     </style>
+    <style name="ProgressStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorAccent">#795C34</item>
+    </style>
 </resources>

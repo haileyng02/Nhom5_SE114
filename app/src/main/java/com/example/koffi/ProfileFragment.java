@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -168,16 +169,26 @@ public class ProfileFragment extends Fragment {
             Toolbar toolbar = (Toolbar) view.findViewById(R.id.profile_toolbar);
             ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
 
-            //Back to main
-            ImageButton backBtn = view.findViewById(R.id.profile_back);
-            backBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Bundle bundle = new Bundle();
-                    bundle.putString("back", "other");
-                    Navigation.findNavController(view).navigate(R.id.action_global_mainFragment, bundle);
-                }
-            });
+        //Back to main
+        ImageButton backBtn = view.findViewById(R.id.profile_back);
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bundle bundle = new Bundle();
+                bundle.putString("back","other");
+                Navigation.findNavController(view).navigate(R.id.action_global_mainFragment,bundle);
+            }
+        });
+
+        OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
+            @Override
+            public void handleOnBackPressed() {
+                Bundle bundle = new Bundle();
+                bundle.putString("back","other");
+                Navigation.findNavController(view).navigate(R.id.action_global_mainFragment,bundle);
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(),callback);
 
             //Bottom sheet avatar
             ConstraintLayout avatar = view.findViewById(R.id.profile_avatar);

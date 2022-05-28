@@ -70,5 +70,16 @@ public class OtherFragment extends Fragment {
 
             }
         });
+
+        //Address
+        LinearLayout address = view.findViewById(R.id.other_address);
+        address.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bundle bundle = new Bundle();
+                bundle.putString("from","Other");
+                Navigation.findNavController(getView()).navigate(R.id.action_mainFragment_to_addressFragment2,bundle);
+            }
+        });
     }
 }

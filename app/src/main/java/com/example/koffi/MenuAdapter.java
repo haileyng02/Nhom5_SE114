@@ -151,6 +151,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> im
                     });
 
                     TextView tvNumber = bottomSheetDialog.findViewById(R.id.tvNumber);
+                    tvNumber.setText("1");
                     Button totalBtn = bottomSheetView.findViewById(R.id.itemTotalPrice);
                     totalBtn.setEnabled(false);
                     number = Integer.parseInt(tvNumber.getText().toString());
@@ -172,14 +173,11 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> im
                     minusBtn.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            if (Long.parseLong(tvNumber.getText().toString()) - 1 >= 0)
+                            if (Long.parseLong(tvNumber.getText().toString()) - 1 > 0)
                             number = Integer.parseInt(tvNumber.getText().toString()) - 1;
                             if (number > 0) {
                                 tvNumber.setText(Long.toString(number));
                                 checkListViewCheckBox(toppingListView, toppingArray, bottomSheetView, number);
-                            } else if (number == 0) {
-                                tvNumber.setText(Long.toString(number));
-                                totalBtn.setText("Bỏ chọn sản phẩm");
                             }
                         }
                     });
@@ -248,24 +246,13 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> im
                                         if (task.isSuccessful()) {
                                             total = Long.parseLong(totalBtn.getText().toString());
                                             size = sizeL.isChecked() ? "Upsize" : "Vừa";
-                                            if (task.getResult().size() == 0) {
-                                                System.out.println("Cart not exists");
-                                                Order order = new Order(
-                                                        FirebaseAuth.getInstance().getCurrentUser().getUid(), 0
-                                                );
-                                                db.collection("order")
-                                                        .add(order);
-                                                addItemToCart(db, item.name, toppingToCart);
-                                            }
-                                            else {
-                                                for (int i = 0; i < 8; i++) {
-                                                    CheckBox checkBox = toppingListView.getChildAt(i).findViewById(R.id.checkBox);
-                                                    if (checkBox.isChecked()) {
-                                                        toppingToCart.add(toppingArray.get(i));
-                                                    }
+                                            for (int i = 0; i < 8; i++) {
+                                                CheckBox checkBox = toppingListView.getChildAt(i).findViewById(R.id.checkBox);
+                                                if (checkBox.isChecked()) {
+                                                    toppingToCart.add(toppingArray.get(i));
                                                 }
-                                                addItemToCart(db, item.name, toppingToCart);
                                             }
+                                            addItemToCart(db, item.name, toppingToCart);
                                         }
                                     }
                                 });
@@ -360,6 +347,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> im
                                                 }
                                              }
                                         }
+                                        Toast.makeText(context.getApplicationContext(), "Thêm vào giỏ hàng", Toast.LENGTH_SHORT).show();
                                     }
                                 });
                     }

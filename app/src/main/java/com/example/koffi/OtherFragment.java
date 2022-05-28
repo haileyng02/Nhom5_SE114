@@ -66,19 +66,6 @@ public class OtherFragment extends Fragment {
                 Navigation.findNavController(getView()).navigate(R.id.action_mainFragment_to_profileFragment);
             }
         });
-        LinearLayout logout= view.findViewById(R.id.other_logout);
-        logout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                FirebaseAuth.getInstance().signOut();
-                Intent intent = new Intent(getActivity(), LoginActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-
-
-            }
-        });
 
         //Address
         LinearLayout address = view.findViewById(R.id.other_address);

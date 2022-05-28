@@ -327,7 +327,6 @@
                     android:padding="20dp">
 
                     <LinearLayout
-                        android:id="@+id/other_logout"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"

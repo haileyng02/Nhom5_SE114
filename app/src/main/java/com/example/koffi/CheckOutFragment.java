@@ -23,8 +23,15 @@ import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -55,6 +62,7 @@ public class CheckOutFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_check_out, container, false);
     }
 
+    ArrayList<CartItem> cart;
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -88,8 +96,8 @@ public class CheckOutFragment extends Fragment {
                 takeAwayMethod();
         }
 
-        ArrayList<CartItem> cart = new ArrayList<CartItem>();
-
+        cart = new ArrayList<CartItem>();
+        cart = getArguments().getParcelableArrayList("cartItems");
         //Receiver information
         LinearLayout receiver = view.findViewById(R.id.checkout_receiver);
         receiver.setOnClickListener(new View.OnClickListener() {
@@ -119,9 +127,13 @@ public class CheckOutFragment extends Fragment {
 
         //Cart list
         //Sample data
-        cart.add(new CartItem(new Item("123","Cà phê","hotcoffee_1",new Long(30000),""),2,new Long(35000),"Upsize"));
-        cart.add(new CartItem(new Item("123","Trà sữa","milktea_1",new Long(40000),""),1,new Long(45000),"Trân châu hoàng kim, Ít ngọt"));
-        cart.add(new CartItem(new Item("123","Nước ngọt","iceddrinks_1",new Long(50000),""),2,new Long(55000),"Upsize, Rau câu"));
+//        cart.add(new CartItem(new Item("123","Cà phê","hotcoffee_1",new Long(30000),""),2,new Long(35000),"Upsize"));
+//        cart.add(new CartItem(new Item("123","Trà sữa","milktea_1",new Long(40000),""),1,new Long(45000),"Trân châu hoàng kim, Ít ngọt"));
+//        cart.add(new CartItem(new Item("123","Nước ngọt","iceddrinks_1",new Long(50000),""),2,new Long(55000),"Upsize, Rau câu"));
+//        ArrayList<Topping> toppings = new ArrayList<Topping>();
+//        toppings.add(new Topping("1", "Trân châu", 6000));
+//        toppings.add(new Topping("2", "Rau câu", 8000));
+//        cart.add(new CartItem("1", "Trân châu", 1, Long.parseLong("30000"), "Vừa", toppings));
 
         ListView cartList = view.findViewById(R.id.cartList);
         CartItemAdapter cartAdapter = new CartItemAdapter(getContext(),cart);
@@ -175,6 +187,48 @@ public class CheckOutFragment extends Fragment {
 
                 //Show dialog
                 bottomSheetDialog.show();
+            }
+        });
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        LinearLayout deleteOrder = view.findViewById(R.id.checkout_deleteorder);
+        deleteOrder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Query query = db.collection("order")
+                        .whereEqualTo("userID", FirebaseAuth.getInstance().getCurrentUser().getUid())
+                        .whereEqualTo("status", 0);
+                query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                                db.collection("cartItems")
+                                        .whereEqualTo("cartID", documentSnapshot.getId()).get()
+                                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                if (task.isSuccessful()) {
+                                                    for (QueryDocumentSnapshot snapshot : task.getResult()) {
+                                                        db.collection("cartItems")
+                                                                .document(snapshot.getId())
+                                                                .delete()
+                                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                    @Override
+                                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                                        cart.clear();
+                                                                        cartAdapter.notifyDataSetChanged();
+                                                                    }
+                                                                });
+                                                    }
+                                                }
+                                            }
+                                        });
+                            }
+                        }
+                    }
+                });
             }
         });
     }

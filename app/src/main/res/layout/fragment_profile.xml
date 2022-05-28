@@ -146,11 +146,12 @@
                     android:background="@android:color/transparent"
                     android:hint="Chọn ngày sinh"
                     android:padding="15dp"
+                    android:textColor="@color/black"
                     android:textColorHint="#909090"
                     android:textSize="18sp" />
 
                 <ImageView
-                    android:id="@+id/imageView9"
+                    android:id="@+id/imageCalendar"
                     android:layout_width="18dp"
                     android:layout_height="18dp"
                     android:layout_gravity="center"
@@ -174,6 +175,7 @@
                     android:padding="15dp"
                     android:text="Không xác định"
                     android:textColor="@color/black"
+                    android:textColorHint="#909090"
                     android:textSize="18sp" />
 
                 <ImageView
@@ -187,6 +189,7 @@
             </LinearLayout>
 
             <Button
+                android:id="@+id/btnUpdateProfile"
                 android:layout_width="match_parent"
                 android:layout_height="55dp"
                 android:layout_marginTop="20dp"

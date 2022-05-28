@@ -17,6 +17,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -27,8 +28,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
                 android:layout_marginLeft="10dp"
+                android:layout_marginBottom="15dp"
                 android:text="Tiện ích"
                 android:textColor="@color/black"
                 android:textSize="20sp"
@@ -81,12 +82,13 @@
                     android:textColor="@color/black"
                     android:textSize="16sp" />
             </LinearLayout>
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
                 android:layout_marginTop="30dp"
                 android:layout_marginBottom="15dp"
-                android:layout_marginLeft="10dp"
                 android:text="Hỗ trợ"
                 android:textColor="@color/black"
                 android:textSize="20sp"
@@ -178,9 +180,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
                 android:layout_marginTop="30dp"
                 android:layout_marginBottom="15dp"
-                android:layout_marginLeft="10dp"
                 android:text="Tài khoản"
                 android:textColor="@color/black"
                 android:textSize="20sp"
@@ -192,15 +194,14 @@
                 android:layout_marginBottom="50dp"
                 android:background="@drawable/shape_white_rounded"
                 android:elevation="1dp"
-                android:orientation="vertical"
-                >
+                android:orientation="vertical">
 
                 <LinearLayout
                     android:id="@+id/other_profile"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:padding="20dp"
-                    android:gravity="center_vertical">
+                    android:gravity="center_vertical"
+                    android:padding="20dp">
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -239,8 +240,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:padding="20dp"
-                    android:gravity="center_vertical">
+                    android:gravity="center_vertical"
+                    android:padding="20dp">
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -270,6 +271,7 @@
                         android:layout_height="15dp"
                         android:src="@drawable/next" />
                 </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
@@ -278,8 +280,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:padding="20dp"
-                    android:gravity="center_vertical">
+                    android:gravity="center_vertical"
+                    android:padding="20dp">
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -309,6 +311,7 @@
                         android:layout_height="15dp"
                         android:src="@drawable/next" />
                 </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
@@ -317,10 +320,11 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:padding="20dp"
-                    android:gravity="center_vertical">
+                    android:gravity="center_vertical"
+                    android:padding="20dp">
 
                     <LinearLayout
+                        android:id="@+id/other_logout"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"

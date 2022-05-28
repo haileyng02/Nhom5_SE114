@@ -1,5 +1,7 @@
 package com.example.koffi;
 
+import static android.content.ContentValues.TAG;
+
 import android.content.res.Resources;
 import android.database.DataSetObserver;
 import android.os.Bundle;
@@ -13,6 +15,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.Navigation;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,13 +25,17 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -63,10 +70,21 @@ public class CheckOutFragment extends Fragment {
     }
 
     ArrayList<CartItem> cart;
+    long total;
+    long subtotal;
+    long number;
+    FirebaseFirestore db;
+    TextView tvSubtotal;
+    TextView tvTotal;
+    TextView tvTotal2;
+    TextView tvNumber;
+    CartItemAdapter cartAdapter;
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        db = FirebaseFirestore.getInstance();
         //Back pressed
         OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
             @Override
@@ -98,6 +116,22 @@ public class CheckOutFragment extends Fragment {
 
         cart = new ArrayList<CartItem>();
         cart = getArguments().getParcelableArrayList("cartItems");
+        total = 0;
+        subtotal = 0;
+        for (CartItem item : cart) {
+            subtotal += item.price;
+        }
+        total = subtotal;
+        tvSubtotal = view.findViewById(R.id.cart_subtotal);
+        tvSubtotal.setText(subtotal + "");
+        tvTotal = view.findViewById(R.id.cart_total);
+        tvTotal2 = view.findViewById(R.id.cart_total2);
+        tvTotal.setText(total + "đ");
+        tvTotal2.setText(total + "đ");
+        tvNumber = view.findViewById(R.id.numberOfItems);
+        number = getArguments().getLong("numberOfItems");
+        tvNumber.setText(number + " sản phẩm");
+
         //Receiver information
         LinearLayout receiver = view.findViewById(R.id.checkout_receiver);
         receiver.setOnClickListener(new View.OnClickListener() {
@@ -125,6 +159,47 @@ public class CheckOutFragment extends Fragment {
             }
         });
 
+        //Listen to data change
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            Query query = db.collection("order")
+                    .whereEqualTo("userID", FirebaseAuth.getInstance().getCurrentUser().getUid())
+                    .whereEqualTo("status", 0);
+            query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot doc : task.getResult()) {
+                            db.collection("cartItems").whereEqualTo("cartID", doc.getId())
+                                    .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                                            if (error != null) {
+                                                Log.w(TAG, "listen:error", error);
+                                                return;
+                                            }
+                                            System.out.println("Db updated");
+                                            reloadCart();
+                                            for (DocumentChange dc : value.getDocumentChanges()) {
+                                                switch (dc.getType()) {
+                                                    case ADDED:
+                                                        Log.d(TAG, "New cart item: " + dc.getDocument().getData());
+                                                        break;
+                                                    case MODIFIED:
+                                                        Log.d(TAG, "Modified cart item: " + dc.getDocument().getData());
+                                                        break;
+                                                    case REMOVED:
+                                                        Log.d(TAG, "Removed cart item: " + dc.getDocument().getData());
+                                                        break;
+                                                }
+                                            }
+                                        }
+                                    });
+
+                        }
+                    }
+                }
+            });
+        }
         //Cart list
         //Sample data
 //        cart.add(new CartItem(new Item("123","Cà phê","hotcoffee_1",new Long(30000),""),2,new Long(35000),"Upsize"));
@@ -136,7 +211,7 @@ public class CheckOutFragment extends Fragment {
 //        cart.add(new CartItem("1", "Trân châu", 1, Long.parseLong("30000"), "Vừa", toppings));
 
         ListView cartList = view.findViewById(R.id.cartList);
-        CartItemAdapter cartAdapter = new CartItemAdapter(getContext(),cart);
+        cartAdapter = new CartItemAdapter(getContext(),cart);
         cartAdapter.registerDataSetObserver(new DataSetObserver() {
             @Override
             public void onChanged() {
@@ -219,6 +294,10 @@ public class CheckOutFragment extends Fragment {
                                                                     public void onComplete(@NonNull Task<Void> task) {
                                                                         cart.clear();
                                                                         cartAdapter.notifyDataSetChanged();
+                                                                        tvNumber.setText("0 sản phẩm");
+                                                                        tvSubtotal.setText("0đ");
+                                                                        tvTotal.setText("0đ");
+                                                                        tvTotal2.setText("0đ");
                                                                     }
                                                                 });
                                                     }
@@ -232,6 +311,52 @@ public class CheckOutFragment extends Fragment {
             }
         });
     }
+
+    private void reloadCart() {
+        cart.clear();
+        total = 0;
+        subtotal = 0;
+        number = 0;
+        Query query = db.collection("order")
+                .whereEqualTo("userID", FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .whereEqualTo("status", 0);
+        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot doc : task.getResult()) {
+                        db.collection("cartItems").whereEqualTo("cartID", doc.getId())
+                                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    if (task.getResult().size() == 0) {
+                                        tvNumber.setText("0 sản phẩm");
+                                        tvSubtotal.setText("0đ");
+                                        tvTotal.setText("0đ");
+                                        tvTotal2.setText("0đ");
+                                    }
+                                    for (QueryDocumentSnapshot snapshot : task.getResult()) {
+                                        CartItem cartItem = snapshot.toObject(CartItem.class);
+                                        cart.add(cartItem);
+                                        subtotal += cartItem.price;
+                                        number += cartItem.quantity;
+                                    }
+                                    total = subtotal;
+                                    tvNumber.setText(number + " sản phẩm");
+                                    tvSubtotal.setText(subtotal + "đ");
+                                    tvTotal.setText(total + "đ");
+                                    tvTotal2.setText(total + "đ");
+                                    cartAdapter.notifyDataSetChanged();
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+        });
+    }
+
     public void setListViewHeight(ListView listview) {
         ListAdapter listAdapter = listview.getAdapter();
         if (listAdapter != null) {

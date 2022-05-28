@@ -78,7 +78,7 @@ public class CartItemAdapter extends BaseAdapter {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()) {
-                                        itemArray.remove(i);
+//                                        itemArray.remove(i);
                                         notifyDataSetChanged();
                                         Toast.makeText(context.getApplicationContext(), "Xóa khỏi giỏ hàng", Toast.LENGTH_SHORT).show();
                                     }

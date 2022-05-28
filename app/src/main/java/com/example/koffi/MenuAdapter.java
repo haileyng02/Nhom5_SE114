@@ -124,6 +124,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> im
                         }
                     });
 
+
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -253,11 +254,11 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> im
                                                 }
                                             }
                                             addItemToCart(db, item.name, toppingToCart);
+                                            bottomSheetDialog.dismiss();
                                         }
                                     }
                                 });
                             }
-                            bottomSheetDialog.dismiss();
                         }
                     });
 
@@ -267,6 +268,11 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> im
                         public void onDismiss(DialogInterface dialogInterface) {
                             sizeM.setChecked(false);
                             sizeL.setChecked(false);
+
+                            for (int n = 0; n < 8; n++) {
+                                CheckBox checkBox = toppingListView.getChildAt(n).findViewById(R.id.checkBox);
+                                checkBox.setChecked(false);
+                            }
                         }
                     });
 

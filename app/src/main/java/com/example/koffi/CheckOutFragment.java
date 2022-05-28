@@ -4,15 +4,20 @@ import android.content.res.Resources;
 import android.database.DataSetObserver;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
@@ -32,6 +37,8 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class CheckOutFragment extends Fragment {
+
+    Button changeOrderMethodBtn;
 
     public CheckOutFragment() {
         // Required empty public constructor
@@ -60,14 +67,34 @@ public class CheckOutFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        //Navigate to Address Fragment
-        LinearLayout chooseAddress = view.findViewById(R.id.checkout_chooseAddress);
-        chooseAddress.setOnClickListener(new View.OnClickListener() {
+        //Back pressed
+        OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
+            @Override
+            public void handleOnBackPressed() {
+                Bundle bundle = new Bundle();
+                bundle.putString("back","menu");
+                Navigation.findNavController(view).navigate(R.id.action_global_mainFragment,bundle);
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(),callback);
+
+        //Toolbar
+        Toolbar toolbar = (Toolbar) view.findViewById(R.id.checkout_toolbar);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Navigation.findNavController(getView()).navigate(R.id.action_checkOutFragment_to_addressFragment22);
+                getActivity().onBackPressed();
             }
         });
+
+        //Handle order method
+        if (getArguments()!=null) {
+            int method = getArguments().getInt("method");
+            if (method==0)
+                deliveryMethod();
+            else if (method==1)
+                takeAwayMethod();
+        }
 
         cart = new ArrayList<CartItem>();
         cart = getArguments().getParcelableArrayList("cartItems");
@@ -130,6 +157,17 @@ public class CheckOutFragment extends Fragment {
 
                 //Show dialog
                 bottomSheetDialog.show();
+            }
+        });
+
+        //Add more item
+        Button addBtn = view.findViewById(R.id.checkout_addBtn);
+        addBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bundle bundle = new Bundle();
+                bundle.putString("back","menu");
+                Navigation.findNavController(view).navigate(R.id.action_global_mainFragment,bundle);
             }
         });
 
@@ -212,5 +250,94 @@ public class CheckOutFragment extends Fragment {
         ViewGroup.LayoutParams lp =bottomSheetView.getLayoutParams();
         lp.height= Resources.getSystem().getDisplayMetrics().heightPixels;
         bottomSheetView.setLayoutParams(lp);
+    }
+    public void deliveryMethod(){
+        LinearLayout delivery = getView().findViewById(R.id.checkout_delivery);
+        LinearLayout takeaway = getView().findViewById(R.id.checkout_takeaway);
+
+        delivery.setVisibility(View.VISIBLE);
+        takeaway.setVisibility(View.GONE);
+
+        //Change orderMethod
+        changeOrderMethodBtn = getView().findViewById(R.id.checkout_delivery_changeBtn);
+        changeOrderMethodBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                changeOrderOnClick();
+            }
+        });
+
+        //Navigate to Address Fragment
+        LinearLayout chooseAddress = getView().findViewById(R.id.checkout_chooseAddress);
+        chooseAddress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Navigation.findNavController(getView()).navigate(R.id.action_checkOutFragment_to_addressFragment22);
+            }
+        });
+    }
+    public void takeAwayMethod() {
+        LinearLayout delivery = getView().findViewById(R.id.checkout_delivery);
+        LinearLayout takeaway = getView().findViewById(R.id.checkout_takeaway);
+
+        delivery.setVisibility(View.GONE);
+        takeaway.setVisibility(View.VISIBLE);
+
+        //Change orderMethod
+        changeOrderMethodBtn = getView().findViewById(R.id.checkout_takeaway_changeBtn);
+        changeOrderMethodBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                changeOrderOnClick();
+            }
+        });
+
+        //Choose store
+        LinearLayout chooseAddress = getView().findViewById(R.id.takeaway_store);
+        chooseAddress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bundle bundle = new Bundle();
+                bundle.putString("back","store");
+                Navigation.findNavController(getView()).navigate(R.id.action_global_mainFragment,bundle);
+            }
+        });
+    }
+    public void changeOrderOnClick() {
+        //Bottom sheet dialog
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext(),R.style.BottomSheetDialogTheme);
+        View bottomSheetView = LayoutInflater.from(getContext()).inflate(R.layout.bottomsheet_ordermethod,
+                (LinearLayout)getView().findViewById(R.id.ordermethod_bottomsheet));
+        bottomSheetDialog.setContentView(bottomSheetView);
+
+        //Handle bottom sheet
+        Button editDeliveryBtn = bottomSheetView.findViewById(R.id.delivery_editBtn);
+        Button editTABtn = bottomSheetView.findViewById(R.id.takeaway_editBtn);
+
+        editDeliveryBtn.setVisibility(View.GONE);
+        editTABtn.setVisibility(View.GONE);
+
+        //Delivery
+        LinearLayout delivery = bottomSheetView.findViewById(R.id.ordermethod_delivery);
+        delivery.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                deliveryMethod();
+                bottomSheetDialog.dismiss();
+            }
+        });
+
+        //Take away
+        LinearLayout takeaway = bottomSheetView.findViewById(R.id.ordermethod_takeaway);
+        takeaway.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                takeAwayMethod();
+                bottomSheetDialog.dismiss();
+            }
+        });
+
+        //Show dialog
+        bottomSheetDialog.show();
     }
 }

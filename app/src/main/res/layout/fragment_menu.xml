@@ -102,6 +102,7 @@
             android:paddingVertical="8dp">
 
             <LinearLayout
+                android:id="@+id/menu_ordermethod"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -120,7 +121,7 @@
                         android:background="@drawable/shape_round"
                         android:backgroundTint="#FFF4C2">
                         <ImageView
-                            android:id="@+id/imageView4"
+                            android:id="@+id/menu_methodImage"
                             android:layout_width="15dp"
                             android:layout_height="15dp"
                             android:layout_weight="1"
@@ -128,6 +129,7 @@
 
                     </LinearLayout>
                     <TextView
+                        android:id="@+id/menu_methodText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="5dp"
@@ -144,6 +146,7 @@
                 </LinearLayout>
 
                 <TextView
+                    android:id="@+id/menu_addressText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ellipsize="end"

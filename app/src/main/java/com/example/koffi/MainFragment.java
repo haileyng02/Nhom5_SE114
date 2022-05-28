@@ -52,6 +52,9 @@ public class MainFragment extends Fragment {
                 case "menu":
                     replaceFragment(new MenuFragment());
                     break;
+                case "store":
+                    replaceFragment(new StoreFragment());
+                    break;
                 case "other":
                     replaceFragment(new OtherFragment());
                     break;

@@ -21,6 +21,9 @@
         <action
             android:id="@+id/action_mainFragment_to_addressFragment2"
             app:destination="@id/addressFragment2" />
+        <action
+            android:id="@+id/action_mainFragment_to_contactFragment"
+            app:destination="@id/contactFragment" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
@@ -54,4 +57,9 @@
         android:name="com.example.koffi.AddAddressFragment"
         android:label="fragment_add_address"
         tools:layout="@layout/fragment_add_address" />
+    <fragment
+        android:id="@+id/contactFragment"
+        android:name="com.example.koffi.ContactFragment"
+        android:label="fragment_contact"
+        tools:layout="@layout/fragment_contact" />
 </navigation>

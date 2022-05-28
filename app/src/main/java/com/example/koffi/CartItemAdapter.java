@@ -8,6 +8,17 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
@@ -36,20 +47,50 @@ public class CartItemAdapter extends BaseAdapter {
         return i;
     }
 
+    FirebaseFirestore db;
+    String docID = "";
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
         LayoutInflater inflater = LayoutInflater.from(context);
         view = inflater.inflate(R.layout.listview_cartitem,null);
 
+        db = FirebaseFirestore.getInstance();
         LinearLayout deleteBtn =  view.findViewById(R.id.cart_deleteBtn);
         deleteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                itemArray.remove(i);
-                notifyDataSetChanged();
+                Query query = db.collection("cartItems")
+                        .whereEqualTo("cartID", itemArray.get(i).cartID)
+                        .whereEqualTo("item", itemArray.get(i).item)
+                        .whereEqualTo("note", itemArray.get(i).note)
+                        .whereEqualTo("toppings", itemArray.get(i).toppings);
+                query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                                docID = documentSnapshot.getId();
+                            }
+                            System.out.println("Doc: " + docID);
+                            db.collection("cartItems").document(docID)
+                                    .delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        itemArray.remove(i);
+                                        notifyDataSetChanged();
+                                        Toast.makeText(context.getApplicationContext(), "Xóa khỏi giỏ hàng", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
             }
         });
+
+
 
         TextView quantityText = view.findViewById(R.id.cart_quantity);
         quantityText.setText(itemArray.get(i).quantity+"x");

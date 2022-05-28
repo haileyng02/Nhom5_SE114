@@ -21,8 +21,13 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -126,5 +131,26 @@ public class HomeFragment extends Fragment {
                 startActivity(new Intent(getContext(),LoginActivity.class));
             }
         });
+
+        //Create cart for user if not exists
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            Query query = db.collection("order")
+                    .whereEqualTo("userID", FirebaseAuth.getInstance().getCurrentUser().getUid())
+                    .whereEqualTo("status", 0);
+            query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.getResult().size() == 0) {
+                        System.out.println("Cart not exists");
+                        Order order = new Order(
+                                FirebaseAuth.getInstance().getCurrentUser().getUid(), 0
+                        );
+                        db.collection("order")
+                                .add(order);
+                    }
+                }
+            });
+        }
     }
 }

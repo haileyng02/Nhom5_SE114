@@ -148,12 +148,13 @@
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
                     android:singleLine="true"
-                    android:text="Đường Hàn Thuyên, khu phố 6 P, Thủ Đức, Thành phố Hồ Chí Minh, Việt Nam"
+                    android:text="Sản phẩm sẽ được giao đến địa chỉ bạn chọn"
                     android:textColor="@color/black" />
             </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/totalPrice"
+                android:visibility="gone"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginRight="15dp"
@@ -170,6 +171,7 @@
                     android:gravity="center">
 
                     <TextView
+                        android:id="@+id/numberOfItems"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="1"
@@ -177,6 +179,7 @@
                 </LinearLayout>
 
                 <TextView
+                    android:id="@+id/totalItemsPrice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="10dp"

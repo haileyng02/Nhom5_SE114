@@ -3,6 +3,14 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/SE114/Nhom5_SE114/app/src/main/res/layout/activity_login.xml" value="0.25416666666666665" />
+        <entry key="..\:/SE114/Nhom5_SE114/app/src/main/res/layout/bottomsheet_itemdetail.xml" value="0.25416666666666665" />
+        <entry key="..\:/SE114/Nhom5_SE114/app/src/main/res/layout/bottomsheet_profile_avatar.xml" value="0.264" />
+        <entry key="..\:/SE114/Nhom5_SE114/app/src/main/res/layout/bottomsheet_profile_gender.xml" value="0.25416666666666665" />
+        <entry key="..\:/SE114/Nhom5_SE114/app/src/main/res/layout/fragment_login.xml" value="0.25416666666666665" />
+        <entry key="..\:/SE114/Nhom5_SE114/app/src/main/res/layout/fragment_main.xml" value="0.25416666666666665" />
+        <entry key="..\:/SE114/Nhom5_SE114/app/src/main/res/layout/fragment_other.xml" value="0.264" />
+        <entry key="..\:/SE114/Nhom5_SE114/app/src/main/res/layout/fragment_profile.xml" value="0.2" />
         <entry key="..\:/Trang/Java/Nhom5_SE114/app/src/main/res/layout/activity_intro.xml" value="0.14130434782608695" />
         <entry key="..\:/Trang/Java/Nhom5_SE114/app/src/main/res/layout/activity_login.xml" value="0.2524850894632207" />
         <entry key="..\:/Trang/Java/Nhom5_SE114/app/src/main/res/layout/activity_main.xml" value="0.14130434782608695" />
@@ -40,6 +48,8 @@
         <entry key="..\:/UIT/nmuddd/DoAn/Koffi/app/src/main/res/layout/bottomsheet_checkout_receiver.xml" value="0.195382642154767" />
         <entry key="..\:/UIT/nmuddd/DoAn/Koffi/app/src/main/res/layout/bottomsheet_itemdetail.xml" value="0.1" />
         <entry key="..\:/UIT/nmuddd/DoAn/Koffi/app/src/main/res/layout/bottomsheet_menuitem.xml" value="0.2" />
+        <entry key="..\:/UIT/nmuddd/DoAn/Koffi/app/src/main/res/layout/bottomsheet_profile_avatar.xml" value="0.195382642154767" />
+        <entry key="..\:/UIT/nmuddd/DoAn/Koffi/app/src/main/res/layout/bottomsheet_profile_gender.xml" value="0.195382642154767" />
         <entry key="..\:/UIT/nmuddd/DoAn/Koffi/app/src/main/res/layout/bottomsheet_paymentmethod.xml" value="0.32407407407407407" />
         <entry key="..\:/UIT/nmuddd/DoAn/Koffi/app/src/main/res/layout/bottomsheet_storedetail.xml" value="0.264" />
         <entry key="..\:/UIT/nmuddd/DoAn/Koffi/app/src/main/res/layout/category_gridview_item.xml" value="0.264" />
@@ -50,6 +60,8 @@
         <entry key="..\:/UIT/nmuddd/DoAn/Koffi/app/src/main/res/layout/fragment_check_out.xml" value="0.264" />
         <entry key="..\:/UIT/nmuddd/DoAn/Koffi/app/src/main/res/layout/fragment_delivery.xml" value="0.2" />
         <entry key="..\:/UIT/nmuddd/DoAn/Koffi/app/src/main/res/layout/fragment_home.xml" value="0.17361740707162285" />
+        <entry key="..\:/UIT/nmuddd/DoAn/Koffi/app/src/main/res/layout/fragment_login.xml" value="0.195382642154767" />
+        <entry key="..\:/UIT/nmuddd/DoAn/Koffi/app/src/main/res/layout/fragment_main.xml" value="0.1" />
         <entry key="..\:/UIT/nmuddd/DoAn/Koffi/app/src/main/res/layout/fragment_login.xml" value="0.1" />
         <entry key="..\:/UIT/nmuddd/DoAn/Koffi/app/src/main/res/layout/fragment_menu.xml" value="0.14393939393939395" />
         <entry key="..\:/UIT/nmuddd/DoAn/Koffi/app/src/main/res/layout/fragment_other.xml" value="0.2" />

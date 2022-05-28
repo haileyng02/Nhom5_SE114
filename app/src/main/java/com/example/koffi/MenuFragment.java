@@ -11,6 +11,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -27,6 +29,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -55,6 +58,13 @@ public class MenuFragment extends Fragment {
     private MenuAdapter menuAdapter;
     private LinearLayout menuLinear;
     private LinearLayout rootLinear;
+
+    private int orderMethod=0;
+    private ImageView methodImage;
+    private TextView methodText;
+    private TextView addressText;
+
+    String address=null;
 
 
     public MenuFragment() {
@@ -130,11 +140,17 @@ public class MenuFragment extends Fragment {
         totalPrice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Navigation.findNavController(view).navigate(R.id.action_mainFragment_to_checkOutFragment);
+                Bundle bundle = new Bundle();
+                bundle.putInt("method",orderMethod);
+                Navigation.findNavController(view).navigate(R.id.action_mainFragment_to_checkOutFragment,bundle);
             }
         });
 
         //Change order method
+        methodImage = view.findViewById(R.id.menu_methodImage);
+        methodText = view.findViewById(R.id.menu_methodText);
+        addressText = view.findViewById(R.id.menu_addressText);
+
         LinearLayout orderMethod = view.findViewById(R.id.menu_ordermethod);
         orderMethod.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -146,7 +162,35 @@ public class MenuFragment extends Fragment {
                 bottomSheetDialog.setContentView(bottomSheetView);
 
                 //Handle bottom sheet
+                //Delivery
+                LinearLayout delivery = bottomSheetView.findViewById(R.id.ordermethod_delivery);
+                delivery.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        setOrderMethod(0);
+                        bottomSheetDialog.dismiss();
+                    }
+                });
 
+                //Take away
+                LinearLayout takeaway = bottomSheetView.findViewById(R.id.ordermethod_takeaway);
+                takeaway.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        setOrderMethod(1);
+                        bottomSheetDialog.dismiss();
+                    }
+                });
+
+                //Take away edit
+                Button editStoreBtn = bottomSheetView.findViewById(R.id.takeaway_editBtn);
+                editStoreBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        bottomSheetDialog.dismiss();
+                        replaceStoreFragment();
+                    }
+                });
 
                 //Show dialog
                 bottomSheetDialog.show();
@@ -213,6 +257,37 @@ public class MenuFragment extends Fragment {
 
         MenuItem searchItem = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) searchItem.getActionView();
+    }
+
+    public void replaceStoreFragment() {
+        FragmentManager fragmentManager = getParentFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.frameLayout,new StoreFragment());
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+    }
+    public void setOrderMethod(int method) {
+        if (method==0 || method==1) {
+            orderMethod = method;
+
+            String methodIcon, text;
+            if (orderMethod==0) {
+                methodIcon="icon_delivery";
+                text="Giao đến";
+            }
+            else {
+                methodIcon="icon_takeaway";
+                text="Đến lấy tại";
+            }
+
+            int drawableId = getView().getResources().getIdentifier(methodIcon, "drawable", getContext().getPackageName());
+            methodImage.setImageResource(drawableId);
+            methodText.setText(text);
+            if (address != null)
+                addressText.setText(address);
+            else
+                addressText.setText("Chọn địa chỉ");
+        }
     }
 //    public void getMenuArray() {
 //        db.collection("menu")

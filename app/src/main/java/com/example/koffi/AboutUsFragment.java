@@ -45,5 +45,5 @@ public class AboutUsFragment extends Fragment {
 
         WebView webView= view.findViewById(R.id.webAboutUs);
         webView.loadUrl("file:///android_asset/GioiThieuKoffi.html");
-        }
+    }
 }

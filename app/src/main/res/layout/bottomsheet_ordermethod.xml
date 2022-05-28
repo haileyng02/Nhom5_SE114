@@ -34,6 +34,7 @@
         android:layout_height="1dp"
         android:background="#DEDFD9"/>
     <LinearLayout
+        android:id="@+id/ordermethod_delivery"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="15dp"
@@ -75,6 +76,7 @@
         </LinearLayout>
 
         <Button
+            android:id="@+id/delivery_editBtn"
             android:layout_width="65dp"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/primary"
@@ -83,6 +85,7 @@
             app:cornerRadius="30dp" />
     </LinearLayout>
     <LinearLayout
+        android:id="@+id/ordermethod_takeaway"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="15dp"
@@ -124,6 +127,7 @@
         </LinearLayout>
 
         <Button
+            android:id="@+id/takeaway_editBtn"
             android:layout_width="65dp"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/primary"

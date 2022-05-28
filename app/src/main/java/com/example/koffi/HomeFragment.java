@@ -22,11 +22,15 @@ import com.facebook.GraphResponse;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import org.json.JSONException;
@@ -86,43 +90,57 @@ public class HomeFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_home, container, false);
     }
     String userName;
+    FirebaseFirestore db;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-//        FirebaseAuth auth = FirebaseAuth.getInstance();
-//        FirebaseUser user = auth.getCurrentUser();
-        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(getContext());
-        userName = null;
-        AccessToken accessToken = AccessToken.getCurrentAccessToken();
-        if (accessToken != null) {
-            GraphRequest request = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
-                @Override
-                public void onCompleted(@Nullable JSONObject jsonObject, @Nullable GraphResponse graphResponse) {
-                    try {
-                        Log.d("Demo: ", jsonObject.toString());
-                        userName = jsonObject.getString("name");
-                        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Chào, " + userName + " \uD83D\uDC4B");
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-            Bundle bundle = new Bundle();
-            bundle.putString("fields", "id, name");
-            request.setParameters(bundle);
-            request.executeAsync();
-        }
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        FirebaseUser user = auth.getCurrentUser();
+        db = FirebaseFirestore.getInstance();
+//        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(getContext());
+//        userName = null;
+//        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+//        if (accessToken != null) {
+//            GraphRequest request = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
+//                @Override
+//                public void onCompleted(@Nullable JSONObject jsonObject, @Nullable GraphResponse graphResponse) {
+//                    try {
+//                        Log.d("Demo: ", jsonObject.toString());
+//                        userName = jsonObject.getString("name");
+//                        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Chào, " + userName + " \uD83D\uDC4B");
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            });
+//            Bundle bundle = new Bundle();
+//            bundle.putString("fields", "id, name");
+//            request.setParameters(bundle);
+//            request.executeAsync();
+//        }
 
         //Custom toolbar
         Toolbar toolbar = view.findViewById(R.id.toolbar);
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Chào bạn mới \uD83D\uDC4B");
         ((AppCompatActivity)getActivity()).getSupportActionBar().setLogo(R.drawable.sun);
-        if (account != null) {
-            userName = account.getDisplayName();
-            ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Chào, " + userName + " \uD83D\uDC4B");
+
+        if (user != null) {
+            db.collection("users").document(user.getUid()).get()
+                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            if (documentSnapshot.getString("Ten") != null)
+                            ((AppCompatActivity)getActivity()).getSupportActionBar()
+                                    .setTitle("Chào " + documentSnapshot.getString("Ten") + " \uD83D\uDC4B");
+                        }
+                    });
         }
+//        if (account != null) {
+//            userName = account.getDisplayName();
+//            ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Chào, " + userName + " \uD83D\uDC4B");
+//        }
         //Handle loginBtn
         Button loginBtn = view.findViewById(R.id.loginBtn);
         loginBtn.setOnClickListener(new View.OnClickListener() {
@@ -134,7 +152,7 @@ public class HomeFragment extends Fragment {
 
         //Create cart for user if not exists
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            db = FirebaseFirestore.getInstance();
             Query query = db.collection("order")
                     .whereEqualTo("userID", FirebaseAuth.getInstance().getCurrentUser().getUid())
                     .whereEqualTo("status", 0);

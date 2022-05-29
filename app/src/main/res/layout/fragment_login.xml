@@ -31,9 +31,10 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/close" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="397dp"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="554dp"
+        android:gravity="center"
         android:background="@drawable/shape_white_rounded_medium"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -44,14 +45,9 @@
 
         <LinearLayout
             android:layout_width="320dp"
-            android:layout_height="0dp"
+            android:layout_height="match_parent"
             android:orientation="vertical"
-            android:paddingTop="15dp"
-            android:paddingBottom="15dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:paddingVertical="15dp">
 
             <TextView
                 android:id="@+id/textView4"
@@ -198,5 +194,5 @@
 
         </LinearLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

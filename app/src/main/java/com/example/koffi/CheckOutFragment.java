@@ -2,6 +2,7 @@ package com.example.koffi;
 
 import static android.content.ContentValues.TAG;
 
+import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.database.DataSetObserver;
 import android.os.Bundle;
@@ -21,10 +22,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -79,6 +85,7 @@ public class CheckOutFragment extends Fragment {
     TextView tvTotal2;
     TextView tvNumber;
     CartItemAdapter cartAdapter;
+    Item item;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -194,7 +201,6 @@ public class CheckOutFragment extends Fragment {
                                             }
                                         }
                                     });
-
                         }
                     }
                 }
@@ -230,8 +236,128 @@ public class CheckOutFragment extends Fragment {
                         (LinearLayout)view.findViewById(R.id.menu_bottomsheet));
                 bottomSheetDialog.setContentView(bottomSheetView);
 
-                //Show dialog
-                bottomSheetDialog.show();
+                TextView tvName = bottomSheetDialog.findViewById(R.id.tvName);
+                tvName.setText(cart.get(i).item);
+
+                RadioButton sizeM = bottomSheetDialog.findViewById(R.id.sizeM_radio);
+                RadioButton sizeL = bottomSheetDialog.findViewById(R.id.sizeL_radio);
+
+                if (cart.get(i).size.equals("Upsize")) {
+                    sizeL.setChecked(true);
+                } else sizeM.setChecked(true);
+
+                sizeM.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                        if (b) {
+                            sizeL.setChecked(false);
+//                            isL = false;
+                        }
+//                        if (isL) {
+//                            sizePrice = 6000;
+//                        }
+//                        else {
+//                            sizePrice = 0;
+//                        }
+//                        checkListViewCheckBox(toppingListView, toppingArray, bottomSheetView, number);
+//                        totalBtn.setEnabled(true);
+                    }
+                });
+                sizeL.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                        if (b) {
+                            sizeM.setChecked(false);
+//                            isL = true;
+                        }
+//                        if (isL) {
+//                            sizePrice = 6000;
+//                        }
+//                        else {
+//                            sizePrice = 0;
+//                        }
+//                        checkListViewCheckBox(toppingListView, toppingArray, bottomSheetView, number);
+//                        totalBtn.setEnabled(true);
+                    }
+                });
+
+                TextView tvNumber = bottomSheetDialog.findViewById(R.id.tvNumber);
+                tvNumber.setText(cart.get(i).quantity + "");
+                Button totalBtn = bottomSheetDialog.findViewById(R.id.itemTotalPrice);
+                totalBtn.setText("Thay đổi: " + cart.get(i).price + "đ");
+                EditText edtNote = bottomSheetDialog.findViewById(R.id.edtNote);
+                edtNote.setText(cart.get(i).note);
+
+                //Topping listview
+                ListView toppingListView = bottomSheetDialog.findViewById(R.id.topping_listview);
+
+                ArrayList<Topping> toppingArray = new ArrayList<Topping>();
+
+                ToppingAdapter toppingAdapter = new ToppingAdapter(getContext(), toppingArray);
+                toppingListView.setAdapter(toppingAdapter);
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                db.collection("toppings").get()
+                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                                    Topping topping = new Topping(documentSnapshot.getId(), documentSnapshot.getString("name"),
+                                            documentSnapshot.getLong("price"));
+                                    toppingArray.add(topping);
+                                }
+                                toppingAdapter.notifyDataSetChanged();
+                                setListViewHeight(toppingListView);
+                                bottomSheetDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                                    @Override
+                                    public void onShow(DialogInterface dialogInterface) {
+                                        for (int n = 0; n < toppingArray.size(); n++) {
+                                            for (Topping cartTopping : cart.get(i).toppings) {
+                                                if (cartTopping.id.equals(toppingArray.get(n).id)) {
+                                                    CheckBox checkBox = toppingListView.getChildAt(n).findViewById(R.id.checkBox);
+                                                    checkBox.setChecked(true);
+                                                    System.out.println(cartTopping.name);
+                                                }
+                                            }
+                                        }
+                                    }
+                                });
+
+                                //Show dialog
+                                bottomSheetDialog.show();
+                            }
+                        });
+
+                //Get cart item
+                db.collection("menu").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                db.collection("menu")
+                                        .document(document.getId())
+                                        .collection("items")
+                                        .whereEqualTo("name", cart.get(i).item)
+                                        .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        for (QueryDocumentSnapshot snapshot : task.getResult()) {
+                                            System.out.println("Found item");
+                                            item = snapshot.toObject(Item.class);
+                                            TextView tvPrice = bottomSheetDialog.findViewById(R.id.tvPrice);
+                                            tvPrice.setText(item.price + "đ");
+                                            TextView tvDes = bottomSheetDialog.findViewById(R.id.tvDescription);
+                                            tvDes.setText(item.description);
+                                            ImageView imageView = bottomSheetView.findViewById(R.id.itemdetail_image);
+                                            int drawableId = view.getResources().getIdentifier(item.image, "drawable", getContext().getPackageName());
+                                            imageView.setImageResource(drawableId);
+                                        }
+                                    }
+                                });
+                                if (item != null) break;
+                            }
+                        }
+                    }
+                });
             }
         });
 

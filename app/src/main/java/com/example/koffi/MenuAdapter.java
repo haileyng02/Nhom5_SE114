@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageButton;
@@ -138,7 +139,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> im
                     imageView.setImageResource(drawableId);
 
                     TextView tvPrice = bottomSheetView.findViewById(R.id.tvPrice);
-                    tvPrice.setText(item.price.toString());
+                    tvPrice.setText(item.price + "đ");
 
                     TextView tvDes = bottomSheetView.findViewById(R.id.tvDescription);
                     tvDes.setText(item.description);
@@ -151,6 +152,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> im
                         }
                     });
 
+                    edtNote = bottomSheetDialog.findViewById(R.id.edtNote);
                     TextView tvNumber = bottomSheetDialog.findViewById(R.id.tvNumber);
                     tvNumber.setText("1");
                     Button totalBtn = bottomSheetView.findViewById(R.id.itemTotalPrice);
@@ -289,6 +291,8 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> im
     long sizePrice = 0;
     int number;
     String size;
+    String note;
+    EditText edtNote;
 
     private void checkListViewCheckBox(ListView toppingListView, ArrayList<Topping> toppingArray, View bottomSheetView, long number) {
         long sum = 0;
@@ -304,6 +308,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> im
     }
 
     private void addItemToCart(FirebaseFirestore db, String itemName, ArrayList<Topping> toppingArray) {
+        note = edtNote.getText().toString().trim();
         Query query = db.collection("order")
                 .whereEqualTo("userID", FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .whereEqualTo("status", 0);
@@ -320,14 +325,14 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> im
                                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                         if (task.isSuccessful()) {
                                             if (task.getResult().size() == 0) {
-                                                CartItem cartItem = new CartItem(doc.getId(), itemName, number, total, size, toppingArray);
+                                                CartItem cartItem = new CartItem(doc.getId(), itemName, number, total, size, toppingArray, note);
                                                 db.collection("cartItems").add(cartItem);
                                             }
                                             else {
                                                 for (QueryDocumentSnapshot snapshot : task.getResult()) {
                                                     CartItem result = snapshot.toObject(CartItem.class);
                                                     //Convert toppings to string
-                                                    String arrayFromDb = result.note;
+                                                    String arrayFromDb = result.size;
                                                     String current = size;
                                                     for (Topping topping : toppingArray) {
                                                         current += topping.id;
@@ -346,7 +351,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> im
                                                                 .update("quantity", newQuatity, "price", newPrice);
                                                         break;
                                                     } else {
-                                                        CartItem cartItem = new CartItem(doc.getId(), itemName, number, total, size, toppingArray);
+                                                        CartItem cartItem = new CartItem(doc.getId(), itemName, number, total, size, toppingArray, note);
                                                         db.collection("cartItems").add(cartItem);
                                                         break;
                                                     }

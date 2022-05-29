@@ -1,5 +1,7 @@
 package com.example.koffi;
 
+import static com.example.koffi.FunctionClass.setListViewHeight;
+
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -389,20 +391,5 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> im
     @Override
     public int getItemCount() {
         return menuArray.size();
-    }
-
-    public void setListViewHeight(ListView listview) {
-        ListAdapter listadp = listview.getAdapter();
-        if (listadp != null) {
-            int totalHeight = 0;
-            for (int i = 0; i < listadp.getCount(); i++) {
-                View listItem = listadp.getView(i, null, listview);
-                listItem.measure(0, 0);
-                totalHeight += listItem.getMeasuredHeight();
-            }
-            ViewGroup.LayoutParams params = listview.getLayoutParams();
-            params.height = totalHeight + (listview.getDividerHeight() * (listadp.getCount() - 1));
-            listview.setLayoutParams(params);
-        }
     }
 }

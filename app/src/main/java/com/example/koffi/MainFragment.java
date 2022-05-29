@@ -46,20 +46,6 @@ public class MainFragment extends Fragment {
         //Bottom Navigation View setting
         replaceFragment(new HomeFragment());
 
-        //Back action handler
-        if (getArguments()!=null)
-            switch (getArguments().getString("back")){
-                case "menu":
-                    replaceFragment(new MenuFragment());
-                    break;
-                case "store":
-                    replaceFragment(new StoreFragment());
-                    break;
-                case "other":
-                    replaceFragment(new OtherFragment());
-                    break;
-            }
-
         BottomNavigationView bottomNavigationView = view.findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setOnItemSelectedListener(item -> {
             switch (item.getItemId()) {
@@ -80,6 +66,20 @@ public class MainFragment extends Fragment {
             }
             return true;
         });
+
+        //Back action handler
+        if (getArguments()!=null)
+            switch (getArguments().getString("back")){
+                case "menu":
+                    bottomNavigationView.setSelectedItemId(R.id.delivery);
+                    break;
+                case "store":
+                    bottomNavigationView.setSelectedItemId(R.id.store);
+                    break;
+                case "other":
+                    bottomNavigationView.setSelectedItemId(R.id.other);
+                    break;
+            }
     }
     private void replaceFragment(Fragment fragment) {
         FragmentManager fragmentManager = getParentFragmentManager();

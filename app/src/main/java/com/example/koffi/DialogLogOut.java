@@ -2,12 +2,15 @@ package com.example.koffi;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+
+import com.google.firebase.auth.FirebaseAuth;
 
 public class DialogLogOut extends Dialog {
     public Context context;
@@ -36,7 +39,8 @@ public class DialogLogOut extends Dialog {
         logoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                FirebaseAuth.getInstance().signOut();
+                dismiss();
             }
         });
     }

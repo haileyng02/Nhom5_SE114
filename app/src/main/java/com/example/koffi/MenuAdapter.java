@@ -139,7 +139,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> im
                     imageView.setImageResource(drawableId);
 
                     TextView tvPrice = bottomSheetView.findViewById(R.id.tvPrice);
-                    tvPrice.setText(item.price.toString());
+                    tvPrice.setText(item.price.toString()+"đ");
 
                     TextView tvDes = bottomSheetView.findViewById(R.id.tvDescription);
                     tvDes.setText(item.description);
@@ -159,7 +159,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> im
                     number = Integer.parseInt(tvNumber.getText().toString());
                     tvNumber.setText(Long.toString(number));
                     unit = item.price;
-                    totalBtn.setText(Long.toString(unit));
+                    totalBtn.setText(Long.toString(unit)+"đ");
 
                     ImageButton plusBtn = bottomSheetDialog.findViewById(R.id.plusButton);
                     plusBtn.setOnClickListener(new View.OnClickListener() {
@@ -296,7 +296,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> im
             }
         }
         Button totalBtn = bottomSheetView.findViewById(R.id.itemTotalPrice);
-        totalBtn.setText(Long.toString((unit + sum + sizePrice) * number));
+        totalBtn.setText(Long.toString((unit + sum + sizePrice) * number)+"đ");
     }
 
     private void addItemToCart(FirebaseFirestore db, String itemName, ArrayList<Topping> toppingArray) {

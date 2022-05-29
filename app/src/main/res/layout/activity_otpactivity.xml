@@ -30,23 +30,27 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/textViewMobile"
         android:layout_width="330dp"
-        android:textAlignment="center"
         android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
         android:fontFamily="sans-serif"
         android:text="Một mã xác thực gồm 6 số đã được gửi đến số điện thoại"
+        android:textAlignment="center"
         android:textSize="18sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textView" />
+
     <TextView
         android:id="@+id/textView2"
         android:layout_width="330dp"
         android:layout_height="wrap_content"
-        android:textAlignment="center"
+        android:layout_marginTop="5dp"
         android:text="Mã xác thực chỉ có hiệu lực trong vòng 1 phút"
+        android:textAlignment="center"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textViewMobile" />

@@ -1,5 +1,7 @@
 package com.example.koffi;
 
+import static com.example.koffi.FunctionClass.setListViewHeight;
+
 import android.content.res.Resources;
 import android.database.DataSetObserver;
 import android.os.Bundle;
@@ -22,6 +24,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -39,14 +42,14 @@ import java.util.ArrayList;
 public class CheckOutFragment extends Fragment {
 
     Button changeOrderMethodBtn;
+    int method;
+    TextView bottomMethodText;
 
     public CheckOutFragment() {
         // Required empty public constructor
     }
     public static CheckOutFragment newInstance(String param1, String param2) {
         CheckOutFragment fragment = new CheckOutFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
         return fragment;
     }
 
@@ -87,13 +90,19 @@ public class CheckOutFragment extends Fragment {
             }
         });
 
+        //Init
+        bottomMethodText = view.findViewById(R.id.checkout_bottom_methodText);
+
         //Handle order method
         if (getArguments()!=null) {
-            int method = getArguments().getInt("method");
-            if (method==0)
+            method = getArguments().getInt("method");
+            if (method==0) {
                 deliveryMethod();
+            }
             else if (method==1)
+            {
                 takeAwayMethod();
+            }
         }
 
         cart = new ArrayList<CartItem>();
@@ -136,7 +145,7 @@ public class CheckOutFragment extends Fragment {
 //        cart.add(new CartItem("1", "Trân châu", 1, Long.parseLong("30000"), "Vừa", toppings));
 
         ListView cartList = view.findViewById(R.id.cartList);
-        CartItemAdapter cartAdapter = new CartItemAdapter(getContext(),cart);
+        CartItemAdapter cartAdapter = new CartItemAdapter(getContext(),cart,true);
         cartAdapter.registerDataSetObserver(new DataSetObserver() {
             @Override
             public void onChanged() {
@@ -231,20 +240,17 @@ public class CheckOutFragment extends Fragment {
                 });
             }
         });
-    }
-    public void setListViewHeight(ListView listview) {
-        ListAdapter listAdapter = listview.getAdapter();
-        if (listAdapter != null) {
-            int totalHeight = 0;
-            for (int i = 0; i < listAdapter.getCount(); i++) {
-                View listItem = listAdapter.getView(i, null, listview);
-                listItem.measure(0, 0);
-                totalHeight += listItem.getMeasuredHeight();
+
+        //Navigate to OrderFragment
+        Button orderBtn = view.findViewById(R.id.orderBtn);
+        orderBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bundle bundle = new Bundle();
+                bundle.putInt("method",method);
+                Navigation.findNavController(getView()).navigate(R.id.action_checkOutFragment_to_orderFragment,bundle);
             }
-            ViewGroup.LayoutParams params = listview.getLayoutParams();
-            params.height = totalHeight + (listview.getDividerHeight() * (listAdapter.getCount() - 1));
-            listview.setLayoutParams(params);
-        }
+        });
     }
     public void setBottomSheetHeight(View bottomSheetView) {
         ViewGroup.LayoutParams lp =bottomSheetView.getLayoutParams();
@@ -257,6 +263,8 @@ public class CheckOutFragment extends Fragment {
 
         delivery.setVisibility(View.VISIBLE);
         takeaway.setVisibility(View.GONE);
+
+        bottomMethodText.setText("Giao tận nơi • ");
 
         //Change orderMethod
         changeOrderMethodBtn = getView().findViewById(R.id.checkout_delivery_changeBtn);
@@ -282,6 +290,8 @@ public class CheckOutFragment extends Fragment {
 
         delivery.setVisibility(View.GONE);
         takeaway.setVisibility(View.VISIBLE);
+
+        bottomMethodText.setText("Tự đến lấy • ");
 
         //Change orderMethod
         changeOrderMethodBtn = getView().findViewById(R.id.checkout_takeaway_changeBtn);
@@ -322,6 +332,7 @@ public class CheckOutFragment extends Fragment {
         delivery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                method=0;
                 deliveryMethod();
                 bottomSheetDialog.dismiss();
             }
@@ -332,6 +343,7 @@ public class CheckOutFragment extends Fragment {
         takeaway.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                method=1;
                 takeAwayMethod();
                 bottomSheetDialog.dismiss();
             }

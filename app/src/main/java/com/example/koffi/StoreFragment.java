@@ -1,5 +1,7 @@
 package com.example.koffi;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -8,14 +10,25 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.util.ArrayList;
 
@@ -24,6 +37,7 @@ public class StoreFragment extends Fragment {
     ListView listView;
     ArrayList<Store> storeArray;
     StoreAdapter adapter;
+    EditText editText;
 
     public StoreFragment() {
         // Required empty public constructor
@@ -51,15 +65,44 @@ public class StoreFragment extends Fragment {
 
         listView = view.findViewById(R.id.storesListView);
         storeArray = new ArrayList<Store>();
-
-        //Dữ liệu mẫu
-        Store store1 = new Store("store-1","Tầng 50 Bitexco Tower, 2 Hải Triều, Phường Bến Nghé, Quận 1","store_1","0344242643");
-        Store store2 = new Store("store-2","10/16 Đoàn Thị Điểm, phường 1, quận Phú Nhuận","store_2","0932708316");
-        storeArray.add(store1);
-        storeArray.add(store2);
-
         adapter = new StoreAdapter(getContext(),storeArray);
         listView.setAdapter(adapter);
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("stores").get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                            Store store = new Store(documentSnapshot.getId(), documentSnapshot.getString("address"),
+                                    documentSnapshot.getString("image"), documentSnapshot.getString("PhoneNumber"));
+                            storeArray.add(store);
+                        }
+                        for (Store store : storeArray) {
+                            System.out.print("result " + store.address);
+                        }
+                        adapter.notifyDataSetChanged();
+                    }
+                });
+
+        //Search store
+        editText = view.findViewById(R.id.addressEdit);
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                filter(editable.toString());
+            }
+        });
 
         //Store Detail Bottom Sheet
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -70,10 +113,56 @@ public class StoreFragment extends Fragment {
                         (LinearLayout)view.findViewById(R.id.store_bottomsheet));
                 bottomSheetDialog.setContentView(bottomSheetView);
                 //Assign data
+                Store store = (Store) listView.getItemAtPosition(i);
 
+                String address = store.address;
+                String shortenedAddress = address.substring(0,address.indexOf(","));
+
+                TextView shortAddressText = bottomSheetView.findViewById(R.id.storedetail_shortaddress);
+                shortAddressText.setText(shortenedAddress);
+
+                TextView addressText = bottomSheetView.findViewById(R.id.storedetail_fulladdress);
+                addressText.setText(address);
+
+                TextView phoneText = bottomSheetView.findViewById(R.id.storedetail_contact);
+                phoneText.setText("Liên hệ: "+store.phoneNumber);
+
+                RoundedImageView storeImage = bottomSheetView.findViewById(R.id.bottomsheet_image);
+                int drawableId = view.getResources().getIdentifier(store.image, "drawable", getContext().getPackageName());
+                storeImage.setImageResource(drawableId);
+
+                //Hide bottomsheet
+                ImageButton closeBtn = bottomSheetView.findViewById(R.id.store_closeBtn);
+                closeBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        bottomSheetDialog.dismiss();
+                    }
+                });
                 //Show dialog
                 bottomSheetDialog.show();
+                //Contact
+
+                phoneText.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(Intent.ACTION_DIAL);
+                        intent.setData(Uri.parse("Liên hệ: "+store.phoneNumber));
+                        startActivity(intent);
+                    }
+                });
             }
         });
+    }
+
+    private void filter (String text) {
+        ArrayList<Store> filteredList = new ArrayList<>();
+
+        for (Store store : storeArray) {
+            if (store.address.toLowerCase().contains(text.toLowerCase())) {
+                filteredList.add(store);
+            }
+        }
+        adapter.filteredList(filteredList);
     }
 }

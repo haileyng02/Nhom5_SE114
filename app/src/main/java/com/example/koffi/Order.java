@@ -13,13 +13,11 @@ public class Order {
     public long subtotal;
     public long ship;
     public long total;
+    public String deliveryNote;
+    public int method; //0: delivery, 1: takeaway
 
-    public Order(String userID, int status) {
-        this.userID = userID;
-        this.status = status;
-    }
-
-    public Order(String userID, String name, String storeID, Date date, int status, String address, String phoneNumber, long subtotal, long ship, long total) {
+    public Order(String userID, String name, String storeID, Date date, int status, String address,
+                 String phoneNumber, long subtotal, long ship, long total, String deliveryNote, int method) {
         this.userID = userID;
         this.name = name;
         this.storeID = storeID;
@@ -30,5 +28,14 @@ public class Order {
         this.subtotal = subtotal;
         this.ship = ship;
         this.total = total;
+        this.deliveryNote = deliveryNote;
+        this.method = method;
     }
+
+    public Order(String userID, int status) {
+        this.userID = userID;
+        this.status = status;
+    }
+
+
 }

@@ -32,8 +32,10 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -115,10 +117,14 @@ public class CheckOutFragment extends Fragment {
         //Handle order method
         if (getArguments()!=null) {
             int method = getArguments().getInt("method");
-            if (method==0)
+            if (method==0) {
+                ship = 20000;
                 deliveryMethod();
-            else if (method==1)
+            }
+            else if (method==1) {
+                ship = 0;
                 takeAwayMethod();
+            }
         }
 
         cart = new ArrayList<CartItem>();
@@ -128,7 +134,7 @@ public class CheckOutFragment extends Fragment {
         for (CartItem item : cart) {
             subtotal += item.price;
         }
-        total = subtotal;
+        total = subtotal + ship;
         tvSubtotal = view.findViewById(R.id.cart_subtotal);
         tvSubtotal.setText(subtotal + "");
         tvTotal = view.findViewById(R.id.cart_total);
@@ -242,44 +248,23 @@ public class CheckOutFragment extends Fragment {
                 RadioButton sizeM = bottomSheetDialog.findViewById(R.id.sizeM_radio);
                 RadioButton sizeL = bottomSheetDialog.findViewById(R.id.sizeL_radio);
 
+                ImageButton closeView = bottomSheetDialog.findViewById(R.id.itemdetail_closeBtn);
+                closeView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        bottomSheetDialog.dismiss();
+                    }
+                });
+
                 if (cart.get(i).size.equals("Upsize")) {
                     sizeL.setChecked(true);
-                } else sizeM.setChecked(true);
-
-                sizeM.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                        if (b) {
-                            sizeL.setChecked(false);
-//                            isL = false;
-                        }
-//                        if (isL) {
-//                            sizePrice = 6000;
-//                        }
-//                        else {
-//                            sizePrice = 0;
-//                        }
-//                        checkListViewCheckBox(toppingListView, toppingArray, bottomSheetView, number);
-//                        totalBtn.setEnabled(true);
-                    }
-                });
-                sizeL.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                        if (b) {
-                            sizeM.setChecked(false);
-//                            isL = true;
-                        }
-//                        if (isL) {
-//                            sizePrice = 6000;
-//                        }
-//                        else {
-//                            sizePrice = 0;
-//                        }
-//                        checkListViewCheckBox(toppingListView, toppingArray, bottomSheetView, number);
-//                        totalBtn.setEnabled(true);
-                    }
-                });
+                    isL = true;
+                    sizePrice = 6000;
+                } else {
+                    sizeM.setChecked(true);
+                    isL = false;
+                    sizePrice = 0;
+                }
 
                 TextView tvNumber = bottomSheetDialog.findViewById(R.id.tvNumber);
                 tvNumber.setText(cart.get(i).quantity + "");
@@ -287,6 +272,7 @@ public class CheckOutFragment extends Fragment {
                 totalBtn.setText("Thay đổi: " + cart.get(i).price + "đ");
                 EditText edtNote = bottomSheetDialog.findViewById(R.id.edtNote);
                 edtNote.setText(cart.get(i).note);
+                numberUnit = cart.get(i).quantity;
 
                 //Topping listview
                 ListView toppingListView = bottomSheetDialog.findViewById(R.id.topping_listview);
@@ -321,7 +307,166 @@ public class CheckOutFragment extends Fragment {
                                         }
                                     }
                                 });
+                                toppingListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                    @Override
+                                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                                        CheckBox checkBox = toppingListView.getChildAt(i).findViewById(R.id.checkBox);
+                                        checkBox.setChecked(!checkBox.isChecked());
+                                        checkListViewCheckBox(toppingListView, toppingArray, bottomSheetDialog, numberUnit);
+                                    }
+                                });
 
+                                ImageButton plusBtn = bottomSheetDialog.findViewById(R.id.plusButton);
+                                plusBtn.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        numberUnit = Integer.parseInt(tvNumber.getText().toString()) + 1;
+                                        tvNumber.setText(Long.toString(numberUnit));
+                                        checkListViewCheckBox(toppingListView, toppingArray, bottomSheetDialog, numberUnit);
+                                    }
+                                });
+
+                                ImageButton minusBtn = bottomSheetDialog.findViewById(R.id.minusButton);
+                                minusBtn.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        if (Long.parseLong(tvNumber.getText().toString()) - 1 >= 0)
+                                            numberUnit = Integer.parseInt(tvNumber.getText().toString()) - 1;
+                                        if (numberUnit > 0) {
+                                            tvNumber.setText(Long.toString(numberUnit));
+                                            checkListViewCheckBox(toppingListView, toppingArray, bottomSheetDialog, numberUnit);
+                                        } else if (numberUnit == 0) {
+                                            tvNumber.setText(Long.toString(numberUnit));
+                                            totalBtn.setText("Xóa khỏi giỏ hàng");
+                                        }
+                                    }
+                                });
+
+                                sizeM.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                                    @Override
+                                    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                                        if (b) {
+                                            sizeL.setChecked(false);
+                                            isL = false;
+                                        }
+                                        if (isL) {
+                                            sizePrice = 6000;
+                                        }
+                                        else {
+                                            sizePrice = 0;
+                                        }
+                                        checkListViewCheckBox(toppingListView, toppingArray, bottomSheetDialog, numberUnit);
+                                    }
+                                });
+                                sizeL.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                                    @Override
+                                    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                                        if (b) {
+                                            sizeM.setChecked(false);
+                                            isL = true;
+                                        }
+                                        if (isL) {
+                                            sizePrice = 6000;
+                                        }
+                                        else {
+                                            sizePrice = 0;
+                                        }
+                                        checkListViewCheckBox(toppingListView, toppingArray, bottomSheetDialog, numberUnit);
+                                    }
+                                });
+
+                                totalBtn.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        Query query = db.collection("cartItems")
+                                                .whereEqualTo("cartID", cart.get(i).cartID)
+                                                .whereEqualTo("item", cart.get(i).item)
+                                                .whereEqualTo("size", cart.get(i).size)
+                                                .whereEqualTo("toppings", cart.get(i).toppings);
+                                        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                if (task.isSuccessful()) {
+                                                    for (QueryDocumentSnapshot snapshot : task.getResult()) {
+                                                        docID = snapshot.getId();
+                                                        if (numberUnit != 0) {
+                                                            long sum = 0;
+                                                            for (int n = 0; n < 8; n++) {
+                                                                CheckBox itemCheckBox = toppingListView.getChildAt(n).findViewById(R.id.checkBox);
+                                                                if (itemCheckBox.isChecked()) {
+                                                                    sum += toppingArray.get(n).price;
+                                                                }
+                                                            }
+                                                            note = edtNote.getText().toString().trim();
+                                                            size = sizeL.isChecked() ? "Upsize" : "Vừa";
+                                                            ArrayList<Topping> toppingToCart = new ArrayList<>();
+                                                            for (int i = 0; i < 8; i++) {
+                                                                CheckBox checkBox = toppingListView.getChildAt(i).findViewById(R.id.checkBox);
+                                                                if (checkBox.isChecked()) {
+                                                                    toppingToCart.add(toppingArray.get(i));
+                                                                }
+                                                            }
+                                                            totalUnit = (unit + sum + sizePrice) * numberUnit;
+                                                            Query find = db.collection("cartItems")
+                                                                    .whereEqualTo("cartID", cart.get(i).cartID)
+                                                                    .whereEqualTo("item", cart.get(i).item)
+                                                                    .whereEqualTo("size", size)
+                                                                    .whereEqualTo("toppings", toppingToCart);
+                                                            find.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                                @Override
+                                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                                    if (task.isSuccessful()) {
+                                                                        CartItem itemInCart = new CartItem();
+                                                                        for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                                                                            exist = documentSnapshot.getId();
+                                                                            itemInCart = documentSnapshot.toObject(CartItem.class);
+                                                                        }
+                                                                        if (exist.equals(docID)) {
+                                                                            db.collection("cartItems").document(docID)
+                                                                                    .update("note", note, "size", size,
+                                                                                            "quantity", numberUnit, "price", totalUnit,
+                                                                                            "toppings", toppingToCart).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                                @Override
+                                                                                public void onSuccess(Void unused) {
+                                                                                    Toast.makeText(getContext(), "Đã cập nhật sản phẩm trong giỏ hàng", Toast.LENGTH_SHORT).show();
+                                                                                    bottomSheetDialog.dismiss();
+                                                                                }
+                                                                            });
+                                                                        } else {
+                                                                            System.out.println("Doc exist: " + exist);
+                                                                            db.collection("cartItems").document(exist)
+                                                                                    .update("note", note,
+                                                                                            "quantity", numberUnit + itemInCart.quantity,
+                                                                                            "price", totalUnit + itemInCart.price)
+                                                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                                @Override
+                                                                                public void onSuccess(Void unused) {
+                                                                                    db.collection("cartItems").document(docID).delete();
+                                                                                    Toast.makeText(getContext(), "Đã cập nhật sản phẩm trong giỏ hàng", Toast.LENGTH_SHORT).show();
+                                                                                    bottomSheetDialog.dismiss();
+                                                                                }
+                                                                            });
+                                                                        }
+                                                                    }
+                                                                }
+                                                            });
+                                                        }
+                                                        else {
+                                                            db.collection("cartItems").document(docID)
+                                                                    .delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                @Override
+                                                                public void onSuccess(Void unused) {
+                                                                    Toast.makeText(getContext(), "Đã xóa khỏi giỏ hàng", Toast.LENGTH_SHORT).show();
+                                                                    bottomSheetDialog.dismiss();
+                                                                }
+                                                            });
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        });
+                                    }
+                                });
                                 //Show dialog
                                 bottomSheetDialog.show();
                             }
@@ -350,6 +495,7 @@ public class CheckOutFragment extends Fragment {
                                             ImageView imageView = bottomSheetView.findViewById(R.id.itemdetail_image);
                                             int drawableId = view.getResources().getIdentifier(item.image, "drawable", getContext().getPackageName());
                                             imageView.setImageResource(drawableId);
+                                            unit = item.price;
                                         }
                                     }
                                 });
@@ -422,7 +568,7 @@ public class CheckOutFragment extends Fragment {
                                                                         cartAdapter.notifyDataSetChanged();
                                                                         tvNumber.setText("0 sản phẩm");
                                                                         tvSubtotal.setText("0đ");
-                                                                        tvTotal.setText("0đ");
+                                                                        tvTotal.setText("20000đ");
                                                                         tvTotal2.setText("0đ");
                                                                     }
                                                                 });
@@ -436,6 +582,32 @@ public class CheckOutFragment extends Fragment {
                 });
             }
         });
+    }
+
+    long totalUnit;
+    boolean isL = false;
+    long unit;
+    long sizePrice = 0;
+    int numberUnit;
+    String size;
+    String note;
+    EditText edtNote;
+    int ship = 0;
+    String docID;
+    String exist = "";
+    int orderMethod;
+
+    private void checkListViewCheckBox(ListView toppingListView, ArrayList<Topping> toppingArray, BottomSheetDialog bottomSheetView, long number) {
+        long sum = 0;
+        for (int n = 0; n < 8; n++) {
+            CheckBox itemCheckBox = toppingListView.getChildAt(n).findViewById(R.id.checkBox);
+            if (itemCheckBox.isChecked()) {
+                sum += toppingArray.get(n).price;
+            }
+        }
+        Button totalBtn = bottomSheetView.findViewById(R.id.itemTotalPrice);
+        totalBtn.setText("Thay đổi: " + (unit + sum + sizePrice) * number);
+        System.out.println("Unit: " + unit + "\tSum: " + sum + "\tSize price: " + sizePrice + "\tNumber: " + number);
     }
 
     private void reloadCart() {
@@ -460,7 +632,7 @@ public class CheckOutFragment extends Fragment {
                                         tvNumber.setText("0 sản phẩm");
                                         tvSubtotal.setText("0đ");
                                         tvTotal.setText("0đ");
-                                        tvTotal2.setText("0đ");
+                                        tvTotal2.setText("20000đ");
                                     }
                                     for (QueryDocumentSnapshot snapshot : task.getResult()) {
                                         CartItem cartItem = snapshot.toObject(CartItem.class);
@@ -468,7 +640,7 @@ public class CheckOutFragment extends Fragment {
                                         subtotal += cartItem.price;
                                         number += cartItem.quantity;
                                     }
-                                    total = subtotal;
+                                    total = subtotal + ship;
                                     tvNumber.setText(number + " sản phẩm");
                                     tvSubtotal.setText(subtotal + "đ");
                                     tvTotal.setText(total + "đ");
@@ -505,9 +677,11 @@ public class CheckOutFragment extends Fragment {
     public void deliveryMethod(){
         LinearLayout delivery = getView().findViewById(R.id.checkout_delivery);
         LinearLayout takeaway = getView().findViewById(R.id.checkout_takeaway);
+        LinearLayout ship = getView().findViewById(R.id.checkout_ship);
 
         delivery.setVisibility(View.VISIBLE);
         takeaway.setVisibility(View.GONE);
+        ship.setVisibility(View.VISIBLE);
 
         //Change orderMethod
         changeOrderMethodBtn = getView().findViewById(R.id.checkout_delivery_changeBtn);
@@ -530,9 +704,11 @@ public class CheckOutFragment extends Fragment {
     public void takeAwayMethod() {
         LinearLayout delivery = getView().findViewById(R.id.checkout_delivery);
         LinearLayout takeaway = getView().findViewById(R.id.checkout_takeaway);
+        LinearLayout ship = getView().findViewById(R.id.checkout_ship);
 
         delivery.setVisibility(View.GONE);
         takeaway.setVisibility(View.VISIBLE);
+        ship.setVisibility(View.GONE);
 
         //Change orderMethod
         changeOrderMethodBtn = getView().findViewById(R.id.checkout_takeaway_changeBtn);
@@ -573,6 +749,10 @@ public class CheckOutFragment extends Fragment {
         delivery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                ship = 20000;
+                total = subtotal + ship;
+                tvTotal.setText(total + "đ");
+                tvTotal2.setText(total + "đ");
                 deliveryMethod();
                 bottomSheetDialog.dismiss();
             }
@@ -583,6 +763,10 @@ public class CheckOutFragment extends Fragment {
         takeaway.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                ship = 0;
+                total = subtotal + ship;
+                tvTotal.setText(total + "đ");
+                tvTotal2.setText(total + "đ");
                 takeAwayMethod();
                 bottomSheetDialog.dismiss();
             }

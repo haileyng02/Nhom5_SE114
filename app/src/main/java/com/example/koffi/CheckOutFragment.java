@@ -12,7 +12,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentResultListener;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Observer;
 import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
@@ -80,6 +82,14 @@ public class CheckOutFragment extends Fragment {
             }
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(),callback);
+
+        //Pop back stack
+        getParentFragmentManager().setFragmentResultListener("storeResult", getViewLifecycleOwner(), new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+                System.out.println("store address: "+result.getString("address"));
+            }
+        });
 
         //Toolbar
         Toolbar toolbar = (Toolbar) view.findViewById(R.id.checkout_toolbar);
@@ -309,6 +319,7 @@ public class CheckOutFragment extends Fragment {
             public void onClick(View view) {
                 Bundle bundle = new Bundle();
                 bundle.putString("back","store");
+                bundle.putString("from","checkout");
                 Navigation.findNavController(getView()).navigate(R.id.action_global_mainFragment,bundle);
             }
         });

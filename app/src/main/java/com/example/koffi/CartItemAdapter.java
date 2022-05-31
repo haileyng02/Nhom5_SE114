@@ -68,7 +68,7 @@ public class CartItemAdapter extends BaseAdapter {
                     Query query = db.collection("cartItems")
                             .whereEqualTo("cartID", itemArray.get(i).cartID)
                             .whereEqualTo("item", itemArray.get(i).item)
-                            .whereEqualTo("note", itemArray.get(i).note)
+                            .whereEqualTo("size", itemArray.get(i).size)
                             .whereEqualTo("toppings", itemArray.get(i).toppings);
                     query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override
@@ -83,7 +83,7 @@ public class CartItemAdapter extends BaseAdapter {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if (task.isSuccessful()) {
-                                            itemArray.remove(i);
+//                                        itemArray.remove(i);
                                             notifyDataSetChanged();
                                             Toast.makeText(context.getApplicationContext(), "Xóa khỏi giỏ hàng", Toast.LENGTH_SHORT).show();
                                         }
@@ -96,6 +96,7 @@ public class CartItemAdapter extends BaseAdapter {
             });
         }
 
+
         TextView quantityText = view.findViewById(R.id.cart_quantity);
         quantityText.setText(itemArray.get(i).quantity+"x");
 
@@ -106,8 +107,10 @@ public class CartItemAdapter extends BaseAdapter {
         for (Topping topping : itemArray.get(i).toppings) {
             toppingNote += ", " + topping.name;
         }
+        if (!itemArray.get(i).note.isEmpty())
+            toppingNote += ", " + itemArray.get(i).note;
         TextView noteText = view.findViewById(R.id.cart_note);
-        noteText.setText(itemArray.get(i).note + toppingNote);
+        noteText.setText(itemArray.get(i).size + toppingNote);
 
         TextView priceText = view.findViewById(R.id.cart_price);
         priceText.setText(itemArray.get(i).price+"đ");

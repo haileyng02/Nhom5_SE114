@@ -4,11 +4,14 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class Item implements Parcelable {
-    String id;
-    String name;
-    String image;
-    Long price;
-    String description;
+    public String id;
+    public String name;
+    public String image;
+    public Long price;
+    public String description;
+
+    public Item() {
+    }
 
     public Item(String id, String name, String image, Long price, String description) {
         this.id = id;

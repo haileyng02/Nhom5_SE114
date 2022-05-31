@@ -75,9 +75,9 @@ public class OrderFragment extends Fragment {
         //Sample data
         ArrayList<Topping> toppings = new ArrayList<Topping>();
         toppings.add(new Topping("123","Trân châu hoàng kim",6000L));
-        cart.add(new CartItem("123","Cà phê",2,new Long(35000),"Upsize",toppings));
-        cart.add(new CartItem("123","Cà phê",2,new Long(35000),"Upsize",toppings));
-        cart.add(new CartItem("123","Cà phê",2,new Long(35000),"Upsize",toppings));
+        cart.add(new CartItem("123","Cà phê",2,new Long(35000),"Upsize",toppings,"ít đường"));
+        cart.add(new CartItem("123","Cà phê",2,new Long(35000),"Upsize",toppings,"ít đường"));
+        cart.add(new CartItem("123","Cà phê",2,new Long(35000),"Upsize",toppings,"ít đường"));
 
         ListView cartList = view.findViewById(R.id.order_cartList);
         CartItemAdapter cartAdapter = new CartItemAdapter(getContext(),cart,false);

@@ -223,6 +223,7 @@
                     android:text="Những tùy chọn khác" />
 
                 <EditText
+                    android:id="@+id/edtNote"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:background="@drawable/phone_input"

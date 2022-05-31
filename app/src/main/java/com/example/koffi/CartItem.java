@@ -6,24 +6,29 @@ import android.os.Parcelable;
 import java.util.ArrayList;
 
 public class CartItem implements Parcelable {
+
+
     public String cartID;
     public String item;
     public int quantity;
     public Long price;
-    public String note;
+    public String size;
     public ArrayList<Topping> toppings;
+    public String note;
 
-    public CartItem() {
-    }
-
-    public CartItem(String cartID, String item, int quantity, Long price, String note, ArrayList<Topping> toppings) {
+    public CartItem(String cartID, String item, int quantity, Long price, String size, ArrayList<Topping> toppings, String note) {
         this.cartID = cartID;
         this.item = item;
         this.quantity = quantity;
         this.price = price;
-        this.note = note;
+        this.size = size;
         this.toppings = toppings;
+        this.note = note;
     }
+    public CartItem() {
+    }
+
+
 
     protected CartItem(Parcel in) {
         cartID = in.readString();
@@ -34,8 +39,9 @@ public class CartItem implements Parcelable {
         } else {
             price = in.readLong();
         }
-        note = in.readString();
+        size = in.readString();
         toppings = in.createTypedArrayList(Topping.CREATOR);
+        note = in.readString();
     }
 
     public static final Creator<CartItem> CREATOR = new Creator<CartItem>() {
@@ -66,7 +72,8 @@ public class CartItem implements Parcelable {
             parcel.writeByte((byte) 1);
             parcel.writeLong(price);
         }
-        parcel.writeString(note);
+        parcel.writeString(size);
         parcel.writeTypedList(toppings);
+        parcel.writeString(note);
     }
 }

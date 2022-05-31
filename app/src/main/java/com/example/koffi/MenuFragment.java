@@ -168,11 +168,6 @@ public class MenuFragment extends Fragment {
                         (LinearLayout)view.findViewById(R.id.menu_bottomsheet));
                 bottomSheetDialog.setContentView(bottomSheetView);
 
-                ListView toppingListView = bottomSheetView.findViewById(R.id.topping_listview);
-                for (int i = 0; i < 8; i++) {
-                    CheckBox checkBox = toppingListView.getChildAt(i).findViewById(R.id.checkBox);
-                    checkBox.setChecked(false);
-                }
 
                 //Handle Grid View
                 gridView = bottomSheetView.findViewById(R.id.category_gridview_bottomsheet);
@@ -210,6 +205,7 @@ public class MenuFragment extends Fragment {
                 Bundle bundle = new Bundle();
                 bundle.putInt("method",orderMethod);
                 bundle.putParcelableArrayList("cartItems", cartItems);
+                bundle.putLong("numberOfItems", number);
                 Navigation.findNavController(view).navigate(R.id.action_mainFragment_to_checkOutFragment,bundle);
             }
         });

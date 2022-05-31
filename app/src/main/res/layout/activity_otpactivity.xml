@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".OTPActivity">
+    tools:context=".activity.OTPActivity">
     <ImageButton
         android:id="@+id/otp_closeBtn"
         android:layout_width="30dp"

@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/staffLoginFragment"
-        android:name="com.example.koffi.StaffLoginFragment"
+        android:name="com.example.koffi.fragment.login.StaffLoginFragment"
         android:label="fragment_staff_login"
         tools:layout="@layout/fragment_staff_login" >
         <action
@@ -19,7 +19,7 @@
     </fragment>
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.example.koffi.LoginFragment"
+        android:name="com.example.koffi.fragment.login.LoginFragment"
         android:label="LoginFragment" >
         <action
             android:id="@+id/action_loginFragment_to_staffLoginFragment"
@@ -27,7 +27,7 @@
     </fragment>
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.example.koffi.HomeFragment"
+        android:name="com.example.koffi.fragment.home.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" />
 </navigation>

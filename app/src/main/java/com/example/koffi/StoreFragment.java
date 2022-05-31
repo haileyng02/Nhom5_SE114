@@ -141,8 +141,22 @@ public class StoreFragment extends Fragment {
                 });
                 //Show dialog
                 bottomSheetDialog.show();
-                //Contact
 
+                //ShareAddress
+                LinearLayout shareAddress = bottomSheetView.findViewById(R.id.store_shareaddress);
+                shareAddress.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(Intent.ACTION_SEND);
+                        intent.setType("text/plain");
+                        intent.putExtra(Intent.EXTRA_SUBJECT, "Hẹn bạn tại Koffi, ");
+                        intent.putExtra(Intent.EXTRA_TEXT,
+                                "https://www.google.com/maps/place/Bitexco+Tower,+h%E1%BA%BBm+s%E1%BB%91+2+H%C3%A0m+Nghi,+B%E1%BA%BFn+Ngh%C3%A9,+Qu%E1%BA%ADn+1,+Th%C3%A0nh+ph%E1%BB%91+H%E1%BB%93+Ch%C3%AD+Minh,+Vi%E1%BB%87t+Nam/@10.7709693,106.7040252,16.48z/data=!4m5!3m4!1s0x31752f43fd97af5f:0x88ba5dd71b15433c!8m2!3d10.7719937!4d106.7057951");
+                        startActivity(Intent.createChooser(intent, "Chia sẻ với thiết bị"));
+                    }
+                });
+
+                //Contact
                 phoneText.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {

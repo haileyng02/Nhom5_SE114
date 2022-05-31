@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -40,6 +41,7 @@ public class DialogLogOut extends Dialog {
             @Override
             public void onClick(View view) {
                 FirebaseAuth.getInstance().signOut();
+                Toast.makeText(getContext(), "Đăng xuất thành công!", Toast.LENGTH_LONG).show();
                 dismiss();
             }
         });

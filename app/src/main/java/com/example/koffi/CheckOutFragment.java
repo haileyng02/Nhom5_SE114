@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentResultListener;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.Navigation;
 
@@ -22,6 +23,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -66,7 +68,16 @@ public class CheckOutFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        TextView txtTendc= getView().findViewById(R.id.tendc_checkout);
+        TextView txtdc=getView().findViewById(R.id.dc_checkout);
+        getParentFragmentManager().setFragmentResultListener("addressResult", getViewLifecycleOwner(),
+                new FragmentResultListener() {
+                    @Override
+                    public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+                        txtTendc.setText(result.getString("tendc"));
+                        txtdc.setText(result.getString("dc"));
+                    }
+                });
         //Back pressed
         OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
             @Override
@@ -326,6 +337,7 @@ public class CheckOutFragment extends Fragment {
                 bottomSheetDialog.dismiss();
             }
         });
+
 
         //Take away
         LinearLayout takeaway = bottomSheetView.findViewById(R.id.ordermethod_takeaway);

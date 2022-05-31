@@ -63,6 +63,7 @@
                     android:textSize="16sp"
                     android:textStyle="bold" />
                 <EditText
+                    android:id="@+id/address_edit"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:hint="Chọn địa chỉ"
@@ -77,6 +78,7 @@
                     android:textSize="16sp"
                     android:textStyle="bold" />
                 <EditText
+                    android:id="@+id/note_edit"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:hint="Cổng, số tầng,..."
@@ -85,6 +87,7 @@
             </LinearLayout>
 
             <Button
+                android:id="@+id/btnXong"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:layout_margin="15dp"

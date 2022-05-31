@@ -1,5 +1,6 @@
 package com.example.koffi;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -9,54 +10,36 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
-import androidx.appcompat.widget.Toolbar;
+import android.widget.Toast;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link AddAddressFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import androidx.appcompat.widget.Toolbar;
+import androidx.navigation.Navigation;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+
+
 public class AddAddressFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     public AddAddressFragment() {
         // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment AddAddressFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static AddAddressFragment newInstance(String param1, String param2) {
-        AddAddressFragment fragment = new AddAddressFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -70,15 +53,11 @@ public class AddAddressFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        //Set address name
-        String type="";
-        if (getArguments()!=null) {
-            type = getArguments().getString("type");
-        }
+        //Define
         EditText nameEdit = view.findViewById(R.id.address_nameEdit);
-        if (type!="" && !type.equals("Normal"))
-            nameEdit.setText(type);
-
+        EditText addressEdit= view.findViewById(R.id.address_edit);
+        EditText noteEdit=view.findViewById(R.id.note_edit);
+        Button btnXong=view.findViewById(R.id.btnXong);
         //Toolbar
         Toolbar toolbar = (Toolbar) view.findViewById(R.id.addaddress_toolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -87,5 +66,120 @@ public class AddAddressFragment extends Fragment {
                 getActivity().onBackPressed();
             }
         });
+        //Set address name
+        String type="";
+        if (getArguments()!=null) {
+            type = getArguments().getString("type");
+        }
+        if (type!="" && !type.equals("Normal"))
+            nameEdit.setText(type);
+        //Show address
+        if(type.equals("Nhà"))
+            db.collection("users").document(user.getUid()).get()
+                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                DocumentSnapshot document = task.getResult();
+                                if (document != null) {
+                                    if (document.exists()) {
+
+                                        addressEdit.setText((CharSequence) document.get("Nhà.Địa chỉ"));
+                                        noteEdit.setText((((CharSequence) document.get("Nhà.Ghi chú"))));
+
+                                    }
+                                }
+                            }
+                        }
+
+                    });
+        else
+        if(type.equals("Công ty"))
+            db.collection("users").document(user.getUid()).get()
+                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                DocumentSnapshot document = task.getResult();
+                                if (document != null) {
+                                    if (document.exists()) {
+
+                                        addressEdit.setText((CharSequence) document.get("Công ty.Địa chỉ"));
+                                        noteEdit.setText((((CharSequence) document.get("Công ty.Ghi chú"))));
+
+                                    }
+                                }
+                            }
+                        }
+
+                    });
+
+
+        //buttonXongClick
+        btnXong.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(nameEdit.getText().toString().equals("Nhà"))
+                {
+                    if(addressEdit.getText().toString().equals(""))
+                    {
+                        Toast.makeText(getContext(), "Bạn chưa nhập địa chỉ!", Toast.LENGTH_LONG).show();
+                    }
+                    else
+                    {
+                        db.collection("users").document(user.getUid()).update(
+                                "Nhà.Địa chỉ", addressEdit.getText().toString(),
+                                "Nhà.Ghi chú",noteEdit.getText().toString()
+                        );
+                        Navigation.findNavController(getView()).navigate(R.id.action_addAddressFragment_to_addressFragment2);
+                    }
+
+                }
+                else if(nameEdit.getText().toString().equals("Công ty"))
+                    {
+                        if(addressEdit.getText().toString().equals(""))
+                        {
+                            Toast.makeText(getContext(), "Bạn chưa nhập địa chỉ!", Toast.LENGTH_LONG).show();
+                        }
+                        else {
+                            db.collection("users").document(user.getUid()).update(
+                                    "Công ty.Địa chỉ", addressEdit.getText().toString(),
+                                    "Công ty.Ghi chú",noteEdit.getText().toString()
+                            );
+                            Navigation.findNavController(getView()).navigate(R.id.action_addAddressFragment_to_addressFragment2);
+                        }
+                    }
+                    else
+                    {
+                        Address address;
+                            if(addressEdit.getText().toString().equals(""))
+                            {
+                                Toast.makeText(getContext(), "Bạn chưa nhập địa chỉ!", Toast.LENGTH_LONG).show();
+                            }
+                            else
+                            {
+                                if(nameEdit.getText().toString().equals("")) {
+                                    String a = addressEdit.getText().toString();
+                                    String[] name = a.split(",", 2);
+                                    address = new Address(name[0].toString(), addressEdit.getText().toString());
+                                }
+                                else {
+                                    address = new Address(nameEdit.getText().toString(), addressEdit.getText().toString());
+                                }
+                                db.collection("users").document(user.getUid()).collection("SaveAddress")
+                                        .add(address).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                    @Override
+                                    public void onSuccess(DocumentReference documentReference) {
+                                        db.collection("users").document(user.getUid()).collection("SaveAddress")
+                                                .document(documentReference.getId()).update("Ghi chú",noteEdit.getText().toString());
+                                        }
+                                });
+                            Navigation.findNavController(getView()).navigate(R.id.action_addAddressFragment_to_addressFragment2);
+
+                    }
+                }
+            }
+        });
+
     }
 }

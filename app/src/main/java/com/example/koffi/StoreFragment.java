@@ -142,7 +142,7 @@ public class StoreFragment extends Fragment {
                 //Show dialog
                 bottomSheetDialog.show();
 
-                //ShareAddress
+                //Share Address
                 LinearLayout shareAddress = bottomSheetView.findViewById(R.id.store_shareaddress);
                 shareAddress.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -156,12 +156,13 @@ public class StoreFragment extends Fragment {
                     }
                 });
 
-                //Contact
-                phoneText.setOnClickListener(new View.OnClickListener() {
+                //Store Contact
+                LinearLayout storeContact = bottomSheetView.findViewById(R.id.store_contact);
+                storeContact.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         Intent intent = new Intent(Intent.ACTION_DIAL);
-                        intent.setData(Uri.parse("Liên hệ: "+store.phoneNumber));
+                        intent.setData(Uri.parse("tel:"+store.phoneNumber));
                         startActivity(intent);
                     }
                 });

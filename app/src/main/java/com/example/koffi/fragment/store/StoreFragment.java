@@ -160,6 +160,7 @@ public class StoreFragment extends Fragment {
                         SharedPreferences.Editor editor = sharedPref.edit();
                         editor.putString("store",store.id);
                         editor.putString("storeAddress",store.address);
+                        editor.putInt("orderMethod",1);
                         editor.apply();
 
                         if (from.equals("checkout")) {

@@ -76,7 +76,9 @@ public class MenuFragment extends Fragment {
     private TextView methodText;
     private TextView addressText;
 
-    String address=null;
+    SharedPreferences sharedPref;
+    String address;
+    String storeAddress;
 
 
     public MenuFragment() {
@@ -110,26 +112,25 @@ public class MenuFragment extends Fragment {
         methodText = view.findViewById(R.id.menu_methodText);
         addressText = view.findViewById(R.id.menu_addressText);
 
-        //Get store frag result
-        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-        address = sharedPref.getString("storeAddress",null);
-
-        //Get arguments
-        if (address==null && getArguments()!=null) {
-            address=getArguments().getString("address");
-        }
-
         //Get order method
+        sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
         orderMethod = sharedPref.getInt("orderMethod",0);
+
+        //Get address
+        address = sharedPref.getString("dc","Chọn địa chỉ");
+        storeAddress = sharedPref.getString("storeAddress","Chọn cửa hàng");
+
+        //Set address
+        if (orderMethod==0) {
+            addressText.setText(address);
+        }
+        else if (orderMethod==1) {
+            addressText.setText(storeAddress);
+        }
 
         //Set order method
         setOrderMethod(orderMethod);
 
-        //Address
-        if (address != null)
-            addressText.setText(address);
-        else
-            addressText.setText("Chọn địa chỉ");
 
         //Toolbar
         Toolbar toolbar = view.findViewById(R.id.menu_toolbar);
@@ -213,8 +214,8 @@ public class MenuFragment extends Fragment {
             }
         });
 
-        LinearLayout orderMethod = view.findViewById(R.id.menu_ordermethod);
-        orderMethod.setOnClickListener(new View.OnClickListener() {
+        LinearLayout addressInfo = view.findViewById(R.id.menu_ordermethod);
+        addressInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //Bottom sheet dialog
@@ -224,12 +225,30 @@ public class MenuFragment extends Fragment {
                 bottomSheetDialog.setContentView(bottomSheetView);
 
                 //Handle bottom sheet
+                TextView addressTxt = bottomSheetView.findViewById(R.id.delivery_address);
+                TextView storeAddressTxt = bottomSheetView.findViewById(R.id.checkout_address);
+                addressTxt.setText(address);
+                storeAddressTxt.setText(storeAddress);
+
                 //Delivery
                 LinearLayout delivery = bottomSheetView.findViewById(R.id.ordermethod_delivery);
                 delivery.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         changeOrderMethod(bottomSheetDialog,0);
+                    }
+                });
+
+                //Delivery edit
+                Button editAddressBtn = bottomSheetView.findViewById(R.id.delivery_editBtn);
+                editAddressBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        bottomSheetDialog.dismiss();
+
+                        Bundle bundle = new Bundle();
+                        bundle.putString("from","Other");
+                        Navigation.findNavController(getView()).navigate(R.id.action_mainFragment_to_addressFragment2,bundle);
                     }
                 });
 

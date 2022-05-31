@@ -111,6 +111,22 @@ public class MenuFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        //Get arguments
+        if (getArguments()!=null) {
+            address=getArguments().getString("address");
+        }
+
+        //Change order method
+        methodImage = view.findViewById(R.id.menu_methodImage);
+        methodText = view.findViewById(R.id.menu_methodText);
+        addressText = view.findViewById(R.id.menu_addressText);
+
+        //Address
+        if (address != null)
+            addressText.setText(address);
+        else
+            addressText.setText("Chọn địa chỉ");
+
         //Toolbar
         Toolbar toolbar = view.findViewById(R.id.menu_toolbar);
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
@@ -197,11 +213,6 @@ public class MenuFragment extends Fragment {
                 Navigation.findNavController(view).navigate(R.id.action_mainFragment_to_checkOutFragment,bundle);
             }
         });
-
-        //Change order method
-        methodImage = view.findViewById(R.id.menu_methodImage);
-        methodText = view.findViewById(R.id.menu_methodText);
-        addressText = view.findViewById(R.id.menu_addressText);
 
         LinearLayout orderMethod = view.findViewById(R.id.menu_ordermethod);
         orderMethod.setOnClickListener(new View.OnClickListener() {
@@ -453,10 +464,6 @@ public class MenuFragment extends Fragment {
             int drawableId = getView().getResources().getIdentifier(methodIcon, "drawable", getContext().getPackageName());
             methodImage.setImageResource(drawableId);
             methodText.setText(text);
-            if (address != null)
-                addressText.setText(address);
-            else
-                addressText.setText("Chọn địa chỉ");
         }
     }
     public void getMenuArray() {

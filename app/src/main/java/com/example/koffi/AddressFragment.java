@@ -19,6 +19,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
+
+import java.util.ArrayList;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -45,13 +48,23 @@ public class AddressFragment extends Fragment {
     ArrayList<Address> addressList ;
 
     public AddressFragment() {
-
+        // Required empty public constructor
     }
+
+    // TODO: Rename and change types and number of parameters
+    public static AddressFragment newInstance(String param1, String param2) {
+        AddressFragment fragment = new AddressFragment();
+        Bundle args = new Bundle();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -71,18 +84,20 @@ public class AddressFragment extends Fragment {
         TextView addressCompany = view.findViewById(R.id.ViewDCCTy);
         if (getArguments() != null)
             from = getArguments().getString("from");
+
         //backPress
         if (from.equals("Other")) {
             OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
                 @Override
                 public void handleOnBackPressed() {
                     Bundle bundle = new Bundle();
-                    bundle.putString("back", "other");
-                    Navigation.findNavController(view).navigate(R.id.action_global_mainFragment, bundle);
+                    bundle.putString("back","other");
+                    Navigation.findNavController(view).navigate(R.id.action_global_mainFragment,bundle);
                 }
             };
-            requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
+            requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(),callback);
         }
+
         //Toolbar
         Toolbar toolbar = (Toolbar) view.findViewById(R.id.address_toolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -172,8 +187,8 @@ public class AddressFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Bundle bundle = new Bundle();
-                bundle.putString("type", "Normal");
-                Navigation.findNavController(getView()).navigate(R.id.action_addressFragment2_to_addAddressFragment, bundle);
+                bundle.putString("type","Normal");
+                Navigation.findNavController(getView()).navigate(R.id.action_addressFragment2_to_addAddressFragment,bundle);
             }
         });
 

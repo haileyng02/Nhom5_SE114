@@ -44,7 +44,7 @@ public class FacebookAuthActivity extends LoginActivity {
 
         callbackManager = CallbackManager.Factory.create();
         mAuth = FirebaseAuth.getInstance();
-        LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("email", "public_profile"));
+        LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile"));
         LoginManager.getInstance().registerCallback(callbackManager,
                 new FacebookCallback<LoginResult>() {
                     @Override
@@ -60,7 +60,7 @@ public class FacebookAuthActivity extends LoginActivity {
 
                     @Override
                     public void onError(FacebookException error) {
-
+                        Toast.makeText(getApplicationContext(), "Đăng nhập thất bại do tài khoản đã được sử dụng cho phương thức đăng nhập khác", Toast.LENGTH_SHORT).show();
                     }
 
                 });
@@ -99,7 +99,6 @@ public class FacebookAuthActivity extends LoginActivity {
     }
 
     private void updateUI(FirebaseUser user) {
-
         Intent intent = new Intent(FacebookAuthActivity.this, MainActivity.class);
         startActivity(intent);
     }

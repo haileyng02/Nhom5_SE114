@@ -203,7 +203,7 @@
                     android:background="@color/white"
                     android:orientation="vertical"
                     android:padding="15dp"
-                    android:visibility="gone">
+                    android:visibility="visible">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -228,8 +228,8 @@
                             android:padding="0dp"
                             android:text="Thay đổi"
                             android:textAllCaps="false"
-                            android:textSize="12sp"
                             android:textColor="@color/primary"
+                            android:textSize="12sp"
                             android:textStyle="bold"
                             app:cornerRadius="50dp" />
                     </LinearLayout>
@@ -249,12 +249,14 @@
                             android:paddingRight="50dp">
 
                             <TextView
+                                android:id="@+id/checkout_takeaway_addressName"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Tầng 50 Bitexco Tower"
                                 android:textColor="@color/black" />
 
                             <TextView
+                                android:id="@+id/checkout_takeaway_address"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Tầng 50 Bitexco Tower, 2 Hải Triều, Phường Bến Nghé, Quận 1" />
@@ -368,9 +370,28 @@
                             android:text="Thành tiền"
                             android:textColor="@color/black"/>
                         <TextView
+                            android:id="@+id/cart_subtotal"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="100.000đ"
+                            android:textColor="@color/black"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/checkout_ship"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="15dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Phí vận chuyển"
+                            android:textColor="@color/black"/>
+                        <TextView
+                            android:id="@+id/cart_ship"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="20.000đ"
                             android:textColor="@color/black"/>
                     </LinearLayout>
                     <LinearLayout
@@ -411,6 +432,7 @@
                             android:textStyle="bold" />
 
                         <TextView
+                            android:id="@+id/cart_total"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="100.000đ"
@@ -508,6 +530,7 @@
                     android:gravity="center_vertical">
 
                     <TextView
+                        android:id="@+id/checkout_bottom_methodText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Giao tận nơi • "
@@ -515,6 +538,7 @@
                         android:textSize="16sp" />
 
                     <TextView
+                        android:id="@+id/numberOfItems"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="1 sản phẩm"
@@ -523,6 +547,7 @@
                 </LinearLayout>
 
                 <TextView
+                    android:id="@+id/cart_total2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="100.000đ"
@@ -532,7 +557,7 @@
             </LinearLayout>
 
             <Button
-                android:id="@+id/checkoutBtn"
+                android:id="@+id/orderBtn"
                 android:layout_width="120dp"
                 android:layout_height="50dp"
                 android:layout_marginRight="15dp"

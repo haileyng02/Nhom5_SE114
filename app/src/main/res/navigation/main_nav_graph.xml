@@ -42,6 +42,9 @@
         <action
             android:id="@+id/action_checkOutFragment_to_addressFragment22"
             app:destination="@id/addressFragment2" />
+        <action
+            android:id="@+id/action_checkOutFragment_to_orderFragment"
+            app:destination="@id/orderFragment" />
     </fragment>
     <fragment
         android:id="@+id/addressFragment2"
@@ -69,4 +72,9 @@
         android:name="com.example.koffi.ContactFragment"
         android:label="fragment_contact"
         tools:layout="@layout/fragment_contact" />
+    <fragment
+        android:id="@+id/orderFragment"
+        android:name="com.example.koffi.OrderFragment"
+        android:label="fragment_order"
+        tools:layout="@layout/fragment_order" />
 </navigation>

@@ -69,7 +69,7 @@ public class ToppingAdapter extends BaseAdapter {
         CheckBox checkBox = view.findViewById(R.id.checkBox);
         checkBox.setText(toppingArray.get(i).name);
         TextView price = view.findViewById(R.id.toppingPrice);
-        price.setText(Long.toString(toppingArray.get(i).price));
+        price.setText(toppingArray.get(i).price + "đ");
 
 
         return view;

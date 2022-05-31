@@ -1,6 +1,8 @@
 package com.example.koffi;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -29,6 +31,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -153,21 +156,18 @@ public class StoreFragment extends Fragment {
                 takeawayBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        FragmentManager fragmentManager = getParentFragmentManager();
-                        Bundle bundle = new Bundle();
-                        bundle.putString("address",store.address);
+                        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        editor.putString("store",store.id);
+                        editor.putString("storeAddress",store.address);
+                        editor.apply();
 
                         if (from.equals("checkout")) {
-                            fragmentManager.setFragmentResult("storeResult",bundle);
                             Navigation.findNavController(getView()).popBackStack();
                         }
                         else {
-                            MenuFragment fragment = new MenuFragment();
-                            fragment.setArguments(bundle);
-                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                            fragmentTransaction.replace(R.id.frameLayout, fragment);
-                            fragmentTransaction.addToBackStack(null);
-                            fragmentTransaction.commit();
+                            BottomNavigationView bottomNavigationView = getView().getRootView().findViewById(R.id.bottomNavigationView);
+                            bottomNavigationView.setSelectedItemId(R.id.delivery);
                         }
 
                         bottomSheetDialog.dismiss();

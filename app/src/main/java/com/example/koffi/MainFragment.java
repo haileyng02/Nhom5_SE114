@@ -87,7 +87,7 @@ public class MainFragment extends Fragment {
         }
 
     }
-    private void replaceFragment(Fragment fragment) {
+    public void replaceFragment(Fragment fragment) {
         FragmentManager fragmentManager = getParentFragmentManager();
         if (from!=null) {
             Bundle bundle =new Bundle();

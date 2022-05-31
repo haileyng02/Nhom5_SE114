@@ -3,7 +3,9 @@ package com.example.koffi;
 import static android.content.ContentValues.TAG;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
@@ -16,6 +18,7 @@ import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentResultListener;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -47,6 +50,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomappbar.BottomAppBar;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -77,7 +81,7 @@ public class MenuFragment extends Fragment {
     private LinearLayout rootLinear;
     private BottomAppBar bottomAppBar;
 
-    private int orderMethod=0;
+    private int orderMethod;
     private ImageView methodImage;
     private TextView methodText;
     private TextView addressText;
@@ -111,15 +115,25 @@ public class MenuFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        //Get arguments
-        if (getArguments()!=null) {
-            address=getArguments().getString("address");
-        }
-
-        //Change order method
+        //Init
         methodImage = view.findViewById(R.id.menu_methodImage);
         methodText = view.findViewById(R.id.menu_methodText);
         addressText = view.findViewById(R.id.menu_addressText);
+
+        //Get store frag result
+        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        address = sharedPref.getString("storeAddress",null);
+
+        //Get arguments
+        if (address==null && getArguments()!=null) {
+            address=getArguments().getString("address");
+        }
+
+        //Get order method
+        orderMethod = sharedPref.getInt("orderMethod",0);
+
+        //Set order method
+        setOrderMethod(orderMethod);
 
         //Address
         if (address != null)
@@ -203,7 +217,6 @@ public class MenuFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Bundle bundle = new Bundle();
-                bundle.putInt("method",orderMethod);
                 bundle.putParcelableArrayList("cartItems", cartItems);
                 bundle.putLong("numberOfItems", number);
                 Navigation.findNavController(view).navigate(R.id.action_mainFragment_to_checkOutFragment,bundle);
@@ -226,8 +239,7 @@ public class MenuFragment extends Fragment {
                 delivery.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        setOrderMethod(0);
-                        bottomSheetDialog.dismiss();
+                        changeOrderMethod(bottomSheetDialog,0);
                     }
                 });
 
@@ -236,8 +248,7 @@ public class MenuFragment extends Fragment {
                 takeaway.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        setOrderMethod(1);
-                        bottomSheetDialog.dismiss();
+                        changeOrderMethod(bottomSheetDialog,1);
                     }
                 });
 
@@ -461,6 +472,16 @@ public class MenuFragment extends Fragment {
             methodImage.setImageResource(drawableId);
             methodText.setText(text);
         }
+    }
+    public void changeOrderMethod(BottomSheetDialog bottomSheetDialog, int method) {
+        setOrderMethod(method);
+
+        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putInt("orderMethod",method);
+        editor.apply();
+
+        bottomSheetDialog.dismiss();
     }
     public void getMenuArray() {
         db.collection("menu")

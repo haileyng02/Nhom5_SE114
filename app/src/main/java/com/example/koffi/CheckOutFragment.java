@@ -4,7 +4,9 @@ import static com.example.koffi.FunctionClass.setListViewHeight;
 
 import static android.content.ContentValues.TAG;
 
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.database.DataSetObserver;
 import android.os.Bundle;
@@ -61,6 +63,11 @@ public class CheckOutFragment extends Fragment {
     int method;
     TextView bottomMethodText;
 
+    String address;
+
+    String storeID;
+    String storeAddress;
+
     public CheckOutFragment() {
         // Required empty public constructor
     }
@@ -109,13 +116,10 @@ public class CheckOutFragment extends Fragment {
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(),callback);
 
-        //Pop back stack
-        getParentFragmentManager().setFragmentResultListener("storeResult", getViewLifecycleOwner(), new FragmentResultListener() {
-            @Override
-            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
-                System.out.println("store address: "+result.getString("address"));
-            }
-        });
+        //Get store
+        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        storeID = sharedPref.getString("store" ,null);
+        storeAddress = sharedPref.getString("storeAddress",null);
 
         //Toolbar
         Toolbar toolbar = (Toolbar) view.findViewById(R.id.checkout_toolbar);
@@ -130,17 +134,16 @@ public class CheckOutFragment extends Fragment {
         bottomMethodText = view.findViewById(R.id.checkout_bottom_methodText);
 
         //Handle order method
-        if (getArguments()!=null) {
-            int method = getArguments().getInt("method");
-            if (method==0) {
-                ship = 20000;
-                deliveryMethod();
-            }
-            else if (method==1) {
-                ship = 0;
-                takeAwayMethod();
-            }
+        method = sharedPref.getInt("orderMethod",0);
+        if (method==0) {
+            ship = 20000;
+            deliveryMethod();
         }
+        else if (method==1) {
+            ship = 0;
+            takeAwayMethod();
+        }
+
 
         cart = new ArrayList<CartItem>();
         cart = getArguments().getParcelableArrayList("cartItems");
@@ -718,10 +721,19 @@ public class CheckOutFragment extends Fragment {
         LinearLayout delivery = getView().findViewById(R.id.checkout_delivery);
         LinearLayout takeaway = getView().findViewById(R.id.checkout_takeaway);
         LinearLayout ship = getView().findViewById(R.id.checkout_ship);
+        TextView addressNameTxt = getView().findViewById(R.id.checkout_takeaway_addressName);
+        TextView addressTxt = getView().findViewById(R.id.checkout_takeaway_address);
 
         delivery.setVisibility(View.GONE);
         takeaway.setVisibility(View.VISIBLE);
         ship.setVisibility(View.GONE);
+
+        //Address
+        if (storeAddress!=null) {
+            String addressName = storeAddress.substring(0,storeAddress.indexOf(","));
+            addressNameTxt.setText(addressName);
+            addressTxt.setText(storeAddress);
+        }
 
         bottomMethodText.setText("Tự đến lấy • ");
 
@@ -770,6 +782,10 @@ public class CheckOutFragment extends Fragment {
                 tvTotal.setText(total + "đ");
                 tvTotal2.setText(total + "đ");
                 method=0;
+                SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putInt("orderMethod",method);
+                editor.apply();
                 deliveryMethod();
                 bottomSheetDialog.dismiss();
             }
@@ -785,6 +801,10 @@ public class CheckOutFragment extends Fragment {
                 tvTotal.setText(total + "đ");
                 tvTotal2.setText(total + "đ");
                 method=1;
+                SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putInt("orderMethod",method);
+                editor.apply();
                 takeAwayMethod();
                 bottomSheetDialog.dismiss();
             }

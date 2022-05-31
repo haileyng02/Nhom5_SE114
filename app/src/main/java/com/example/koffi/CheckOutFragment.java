@@ -238,7 +238,7 @@ public class CheckOutFragment extends Fragment {
 //        cart.add(new CartItem("1", "Trân châu", 1, Long.parseLong("30000"), "Vừa", toppings));
 
         ListView cartList = view.findViewById(R.id.cartList);
-        CartItemAdapter cartAdapter = new CartItemAdapter(getContext(),cart,true);
+        cartAdapter = new CartItemAdapter(getContext(),cart,true);
         cartAdapter.registerDataSetObserver(new DataSetObserver() {
             @Override
             public void onChanged() {

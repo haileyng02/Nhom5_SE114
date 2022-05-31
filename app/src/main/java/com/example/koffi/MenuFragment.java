@@ -3,6 +3,7 @@ package com.example.koffi;
 import static android.content.ContentValues.TAG;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
@@ -43,6 +44,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -60,6 +62,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Locale;
 
 public class MenuFragment extends Fragment {
@@ -107,6 +110,22 @@ public class MenuFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        //Get arguments
+        if (getArguments()!=null) {
+            address=getArguments().getString("address");
+        }
+
+        //Change order method
+        methodImage = view.findViewById(R.id.menu_methodImage);
+        methodText = view.findViewById(R.id.menu_methodText);
+        addressText = view.findViewById(R.id.menu_addressText);
+
+        //Address
+        if (address != null)
+            addressText.setText(address);
+        else
+            addressText.setText("Chọn địa chỉ");
 
         //Toolbar
         Toolbar toolbar = view.findViewById(R.id.menu_toolbar);
@@ -190,11 +209,6 @@ public class MenuFragment extends Fragment {
                 Navigation.findNavController(view).navigate(R.id.action_mainFragment_to_checkOutFragment,bundle);
             }
         });
-
-        //Change order method
-        methodImage = view.findViewById(R.id.menu_methodImage);
-        methodText = view.findViewById(R.id.menu_methodText);
-        addressText = view.findViewById(R.id.menu_addressText);
 
         LinearLayout orderMethod = view.findViewById(R.id.menu_ordermethod);
         orderMethod.setOnClickListener(new View.OnClickListener() {
@@ -347,11 +361,11 @@ public class MenuFragment extends Fragment {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                displayMenu(1);
+                getMenuArray();
             }
         }).start();
     }
-    public void displayMenu(int i) {
+    /*public void displayMenu(int i) {
             DocumentReference categoryDocument = db.collection("menu").document("category-"+i);
             categoryDocument.get()
                     .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -398,7 +412,7 @@ public class MenuFragment extends Fragment {
                         }
                     });
     }
-
+*/
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
@@ -446,48 +460,40 @@ public class MenuFragment extends Fragment {
             int drawableId = getView().getResources().getIdentifier(methodIcon, "drawable", getContext().getPackageName());
             methodImage.setImageResource(drawableId);
             methodText.setText(text);
-            if (address != null)
-                addressText.setText(address);
-            else
-                addressText.setText("Chọn địa chỉ");
         }
     }
-//    public void getMenuArray() {
-//        db.collection("menu")
-//                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//            @Override
-//            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                if (task.isSuccessful()) {
-//                    for (QueryDocumentSnapshot categoryDocument : task.getResult()) {
-//                        ArrayList<Item> itemsArray = new ArrayList<Item>();
-//                        db.collection("menu")
-//                                .document(categoryDocument.getId())
-//                                .collection("items")
-//                                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//                            @Override
-//                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                                if (task.isSuccessful()) {
-//                                    for (QueryDocumentSnapshot itemDocument : task.getResult()) {
-//                                        Item menuItem = new Item(itemDocument.getId(),itemDocument.getString("name"),
-//                                                itemDocument.getString("image"),itemDocument.getLong("price"),itemDocument.getString("description"));
-//                                        itemsArray.add(menuItem);
-//
-//                                    }
-//                                    Category category = new Category(categoryDocument.getId(),
-//                                            categoryDocument.getString("name"),categoryDocument.getString("image"),itemsArray);
-//                                    menuArray.add(category);
-//                                    categoryAdapter.notifyDataSetChanged();
-//                                    menuAdapter.notifyDataSetChanged();
-//                                }
-//                                else {
-//                                    System.out.println("Error getting documents."+ task.getException());
-//                                }
-//                            }
-//                        });
-//                    }
-//                }
-//            }
-//        });
-//
-//    }
+    public void getMenuArray() {
+        db.collection("menu")
+                .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                for (QueryDocumentSnapshot categoryDocument : queryDocumentSnapshots) {
+                    ArrayList<Item> itemsArray = new ArrayList<Item>();
+                    db.collection("menu")
+                            .document(categoryDocument.getId())
+                            .collection("items")
+                            .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                        @Override
+                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                            for (QueryDocumentSnapshot itemDocument : queryDocumentSnapshots) {
+                                Item menuItem = new Item(itemDocument.getId(),itemDocument.getString("name"),
+                                        itemDocument.getString("image"),itemDocument.getLong("price"),itemDocument.getString("description"));
+                                itemsArray.add(menuItem);
+
+                            }
+                            Category category = new Category(categoryDocument.getId(),
+                                    categoryDocument.getString("name"),categoryDocument.getString("image"),itemsArray);
+                            menuArray.add(category);
+                            if (menuArray.size()==8) {
+                                menuArray.sort(Comparator.comparing(a -> a.id));
+                                categoryAdapter.notifyDataSetChanged();
+                                menuAdapter.notifyDataSetChanged();
+                                pd.dismiss();
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    }
 }

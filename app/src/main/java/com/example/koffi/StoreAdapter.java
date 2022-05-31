@@ -24,6 +24,10 @@ public class StoreAdapter extends BaseAdapter {
     public int getCount() {
         return storeArray.size();
     }
+    public void filteredList (ArrayList<Store> filteredList){
+        storeArray = filteredList;
+        notifyDataSetChanged();
+    }
 
     @Override
     public Object getItem(int i) {

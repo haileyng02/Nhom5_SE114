@@ -1,5 +1,7 @@
 package com.example.koffi;
 
+import static com.example.koffi.FunctionClass.setListViewHeight;
+
 import static android.content.ContentValues.TAG;
 
 import android.content.DialogInterface;
@@ -13,7 +15,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentResultListener;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Observer;
 import androidx.navigation.Navigation;
 
 import android.util.Log;
@@ -54,14 +58,14 @@ import java.util.ArrayList;
 public class CheckOutFragment extends Fragment {
 
     Button changeOrderMethodBtn;
+    int method;
+    TextView bottomMethodText;
 
     public CheckOutFragment() {
         // Required empty public constructor
     }
     public static CheckOutFragment newInstance(String param1, String param2) {
         CheckOutFragment fragment = new CheckOutFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
         return fragment;
     }
 
@@ -105,6 +109,14 @@ public class CheckOutFragment extends Fragment {
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(),callback);
 
+        //Pop back stack
+        getParentFragmentManager().setFragmentResultListener("storeResult", getViewLifecycleOwner(), new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+                System.out.println("store address: "+result.getString("address"));
+            }
+        });
+
         //Toolbar
         Toolbar toolbar = (Toolbar) view.findViewById(R.id.checkout_toolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -113,6 +125,9 @@ public class CheckOutFragment extends Fragment {
                 getActivity().onBackPressed();
             }
         });
+
+        //Init
+        bottomMethodText = view.findViewById(R.id.checkout_bottom_methodText);
 
         //Handle order method
         if (getArguments()!=null) {
@@ -223,7 +238,7 @@ public class CheckOutFragment extends Fragment {
 //        cart.add(new CartItem("1", "Trân châu", 1, Long.parseLong("30000"), "Vừa", toppings));
 
         ListView cartList = view.findViewById(R.id.cartList);
-        cartAdapter = new CartItemAdapter(getContext(),cart);
+        CartItemAdapter cartAdapter = new CartItemAdapter(getContext(),cart,true);
         cartAdapter.registerDataSetObserver(new DataSetObserver() {
             @Override
             public void onChanged() {
@@ -582,6 +597,16 @@ public class CheckOutFragment extends Fragment {
                 });
             }
         });
+        //Navigate to OrderFragment
+        Button orderBtn = view.findViewById(R.id.orderBtn);
+        orderBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bundle bundle = new Bundle();
+                bundle.putInt("method", method);
+                Navigation.findNavController(getView()).navigate(R.id.action_checkOutFragment_to_orderFragment, bundle);
+            }
+        });
     }
 
     long totalUnit;
@@ -655,20 +680,6 @@ public class CheckOutFragment extends Fragment {
         });
     }
 
-    public void setListViewHeight(ListView listview) {
-        ListAdapter listAdapter = listview.getAdapter();
-        if (listAdapter != null) {
-            int totalHeight = 0;
-            for (int i = 0; i < listAdapter.getCount(); i++) {
-                View listItem = listAdapter.getView(i, null, listview);
-                listItem.measure(0, 0);
-                totalHeight += listItem.getMeasuredHeight();
-            }
-            ViewGroup.LayoutParams params = listview.getLayoutParams();
-            params.height = totalHeight + (listview.getDividerHeight() * (listAdapter.getCount() - 1));
-            listview.setLayoutParams(params);
-        }
-    }
     public void setBottomSheetHeight(View bottomSheetView) {
         ViewGroup.LayoutParams lp =bottomSheetView.getLayoutParams();
         lp.height= Resources.getSystem().getDisplayMetrics().heightPixels;
@@ -682,6 +693,8 @@ public class CheckOutFragment extends Fragment {
         delivery.setVisibility(View.VISIBLE);
         takeaway.setVisibility(View.GONE);
         ship.setVisibility(View.VISIBLE);
+
+        bottomMethodText.setText("Giao tận nơi • ");
 
         //Change orderMethod
         changeOrderMethodBtn = getView().findViewById(R.id.checkout_delivery_changeBtn);
@@ -710,6 +723,8 @@ public class CheckOutFragment extends Fragment {
         takeaway.setVisibility(View.VISIBLE);
         ship.setVisibility(View.GONE);
 
+        bottomMethodText.setText("Tự đến lấy • ");
+
         //Change orderMethod
         changeOrderMethodBtn = getView().findViewById(R.id.checkout_takeaway_changeBtn);
         changeOrderMethodBtn.setOnClickListener(new View.OnClickListener() {
@@ -726,6 +741,7 @@ public class CheckOutFragment extends Fragment {
             public void onClick(View view) {
                 Bundle bundle = new Bundle();
                 bundle.putString("back","store");
+                bundle.putString("from","checkout");
                 Navigation.findNavController(getView()).navigate(R.id.action_global_mainFragment,bundle);
             }
         });
@@ -753,6 +769,7 @@ public class CheckOutFragment extends Fragment {
                 total = subtotal + ship;
                 tvTotal.setText(total + "đ");
                 tvTotal2.setText(total + "đ");
+                method=0;
                 deliveryMethod();
                 bottomSheetDialog.dismiss();
             }
@@ -767,6 +784,7 @@ public class CheckOutFragment extends Fragment {
                 total = subtotal + ship;
                 tvTotal.setText(total + "đ");
                 tvTotal2.setText(total + "đ");
+                method=1;
                 takeAwayMethod();
                 bottomSheetDialog.dismiss();
             }

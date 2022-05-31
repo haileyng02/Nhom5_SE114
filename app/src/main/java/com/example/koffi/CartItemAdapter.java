@@ -26,10 +26,12 @@ public class CartItemAdapter extends BaseAdapter {
 
     private Context context;
     private ArrayList<CartItem> itemArray;
+    private boolean isEditable;
 
-    public CartItemAdapter(Context context, ArrayList itemArray) {
+    public CartItemAdapter(Context context, ArrayList itemArray,boolean isEditable) {
         this.context = context;
         this.itemArray = itemArray;
+        this.isEditable = isEditable;
     }
 
     @Override
@@ -57,39 +59,42 @@ public class CartItemAdapter extends BaseAdapter {
 
         db = FirebaseFirestore.getInstance();
         LinearLayout deleteBtn =  view.findViewById(R.id.cart_deleteBtn);
-        deleteBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Query query = db.collection("cartItems")
-                        .whereEqualTo("cartID", itemArray.get(i).cartID)
-                        .whereEqualTo("item", itemArray.get(i).item)
-                        .whereEqualTo("size", itemArray.get(i).size)
-                        .whereEqualTo("toppings", itemArray.get(i).toppings);
-                query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
-                                docID = documentSnapshot.getId();
-                            }
-                            System.out.println("Doc: " + docID);
-                            db.collection("cartItems").document(docID)
-                                    .delete().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful()) {
-//                                        itemArray.remove(i);
-                                        notifyDataSetChanged();
-                                        Toast.makeText(context.getApplicationContext(), "Xóa khỏi giỏ hàng", Toast.LENGTH_SHORT).show();
-                                    }
+        if (!isEditable)
+            deleteBtn.setVisibility(View.GONE);
+        else {
+            deleteBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Query query = db.collection("cartItems")
+                            .whereEqualTo("cartID", itemArray.get(i).cartID)
+                            .whereEqualTo("item", itemArray.get(i).item)
+                            .whereEqualTo("size", itemArray.get(i).size)
+                            .whereEqualTo("toppings", itemArray.get(i).toppings);
+                    query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                                    docID = documentSnapshot.getId();
                                 }
-                            });
+                                System.out.println("Doc: " + docID);
+                                db.collection("cartItems").document(docID)
+                                        .delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+//                                        itemArray.remove(i);
+                                            notifyDataSetChanged();
+                                            Toast.makeText(context.getApplicationContext(), "Xóa khỏi giỏ hàng", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
+                            }
                         }
-                    }
-                });
-            }
-        });
-
+                    });
+                }
+            });
+        }
 
 
         TextView quantityText = view.findViewById(R.id.cart_quantity);

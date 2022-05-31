@@ -14,7 +14,11 @@ import android.view.ViewGroup;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.util.Locale;
+
 public class MainFragment extends Fragment {
+
+    String from;
 
     public MainFragment() {
         // Required empty public constructor
@@ -22,8 +26,6 @@ public class MainFragment extends Fragment {
 
     public static MainFragment newInstance(String param1, String param2) {
         MainFragment fragment = new MainFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
         return fragment;
     }
 
@@ -43,24 +45,8 @@ public class MainFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        //Bottom Navigation View setting
-        replaceFragment(new HomeFragment());
-
-        //Back action handler
-        if (getArguments()!=null)
-            switch (getArguments().getString("back")){
-                case "menu":
-                    replaceFragment(new MenuFragment());
-                    break;
-                case "store":
-                    replaceFragment(new StoreFragment());
-                    break;
-                case "other":
-                    replaceFragment(new OtherFragment());
-                    break;
-            }
-
         BottomNavigationView bottomNavigationView = view.findViewById(R.id.bottomNavigationView);
+
         bottomNavigationView.setOnItemSelectedListener(item -> {
             switch (item.getItemId()) {
                 case R.id.home:
@@ -80,9 +66,34 @@ public class MainFragment extends Fragment {
             }
             return true;
         });
+
+        //Get argument
+        if (getArguments()!=null) {
+            from = getArguments().getString("from");
+            switch (getArguments().getString("back")) {
+                case "menu":
+                    bottomNavigationView.setSelectedItemId(R.id.delivery);
+                    break;
+                case "store":
+                    bottomNavigationView.setSelectedItemId(R.id.store);
+                    break;
+                case "other":
+                    bottomNavigationView.setSelectedItemId(R.id.other);
+                    break;
+            }
+        }
+        else {
+            replaceFragment(new HomeFragment());
+        }
+
     }
     private void replaceFragment(Fragment fragment) {
         FragmentManager fragmentManager = getParentFragmentManager();
+        if (from!=null) {
+            Bundle bundle =new Bundle();
+            bundle.putString("from",from);
+            fragment.setArguments(bundle);
+        }
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frameLayout,fragment);
         fragmentTransaction.addToBackStack(null);

@@ -248,7 +248,8 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> im
                                     @Override
                                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                         if (task.isSuccessful()) {
-                                            total = Long.parseLong(totalBtn.getText().toString());
+                                            String totalTxt = totalBtn.getText().toString();
+                                            total = Long.parseLong(totalTxt.substring(0, totalTxt.length() - 1));
                                             size = sizeL.isChecked() ? "Upsize" : "Vừa";
                                             for (int i = 0; i < 8; i++) {
                                                 CheckBox checkBox = toppingListView.getChildAt(i).findViewById(R.id.checkBox);

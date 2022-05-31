@@ -9,6 +9,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -16,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -38,6 +43,7 @@ public class StoreFragment extends Fragment {
     ArrayList<Store> storeArray;
     StoreAdapter adapter;
     EditText editText;
+    String from="";
 
     public StoreFragment() {
         // Required empty public constructor
@@ -59,6 +65,11 @@ public class StoreFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        //Get argument
+        if (getArguments()!=null) {
+            from = getArguments().getString("from");
+        }
+
         //Custom toolbar
         Toolbar toolbar = view.findViewById(R.id.store_toolbar);
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
@@ -77,9 +88,6 @@ public class StoreFragment extends Fragment {
                             Store store = new Store(documentSnapshot.getId(), documentSnapshot.getString("address"),
                                     documentSnapshot.getString("image"), documentSnapshot.getString("PhoneNumber"));
                             storeArray.add(store);
-                        }
-                        for (Store store : storeArray) {
-                            System.out.print("result " + store.address);
                         }
                         adapter.notifyDataSetChanged();
                     }
@@ -139,6 +147,33 @@ public class StoreFragment extends Fragment {
                         bottomSheetDialog.dismiss();
                     }
                 });
+
+                //Handle bottom sheet
+                Button takeawayBtn = bottomSheetView.findViewById(R.id.store_takeawayBtn);
+                takeawayBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        FragmentManager fragmentManager = getParentFragmentManager();
+                        Bundle bundle = new Bundle();
+                        bundle.putString("address",store.address);
+
+                        if (from.equals("checkout")) {
+                            fragmentManager.setFragmentResult("storeResult",bundle);
+                            Navigation.findNavController(getView()).popBackStack();
+                        }
+                        else {
+                            MenuFragment fragment = new MenuFragment();
+                            fragment.setArguments(bundle);
+                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                            fragmentTransaction.replace(R.id.frameLayout, fragment);
+                            fragmentTransaction.addToBackStack(null);
+                            fragmentTransaction.commit();
+                        }
+
+                        bottomSheetDialog.dismiss();
+                    }
+                });
+
                 //Show dialog
                 bottomSheetDialog.show();
 

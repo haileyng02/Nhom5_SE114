@@ -32,6 +32,7 @@ public class AddAddressFragment extends Fragment {
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    String from;
     public AddAddressFragment() {
         // Required empty public constructor
     }
@@ -69,6 +70,7 @@ public class AddAddressFragment extends Fragment {
         String type="";
         if (getArguments()!=null) {
             type = getArguments().getString("type");
+            from = getArguments().getString("from");
         }
         if (type!="" && !type.equals("Normal"))
             nameEdit.setText(type);
@@ -173,7 +175,9 @@ public class AddAddressFragment extends Fragment {
                                                 .document(documentReference.getId()).update("Ghi chú",noteEdit.getText().toString());
                                         }
                                 });
-                            Navigation.findNavController(getView()).navigate(R.id.action_addAddressFragment_to_addressFragment2);
+                                Bundle bundle = new Bundle();
+                                bundle.putString("from",from);
+                            Navigation.findNavController(getView()).navigate(R.id.action_addAddressFragment_to_addressFragment2,bundle);
 
                     }
                 }

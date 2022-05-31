@@ -1,6 +1,8 @@
 package com.example.koffi.fragment.other;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
@@ -29,6 +31,7 @@ import com.example.koffi.activity.LoginActivity;
 import com.example.koffi.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -43,6 +46,8 @@ public class AddressFragment extends Fragment {
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     AddressAdapter adapter;
     ArrayList<Address> addressList ;
+    SharedPreferences sharedPref;
+    SharedPreferences.Editor editor;
 
     public AddressFragment() {
         // Required empty public constructor
@@ -79,12 +84,15 @@ public class AddressFragment extends Fragment {
         LinearLayout addHome = view.findViewById(R.id.address_addhome);
         TextView addressHome = view.findViewById(R.id.ViewDCNha);
         TextView addressCompany = view.findViewById(R.id.ViewDCCTy);
+        sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        editor = sharedPref.edit();
+
         if (getArguments() != null)
             from = getArguments().getString("from");
 
         //backPress
         if (from.equals("Other")) {
-            OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
+            /*OnBackPressedCallback callback = new OnBackPressedCallback(true *//* enabled by default *//*) {
                 @Override
                 public void handleOnBackPressed() {
                     Bundle bundle = new Bundle();
@@ -92,7 +100,7 @@ public class AddressFragment extends Fragment {
                     Navigation.findNavController(view).navigate(R.id.action_global_mainFragment,bundle);
                 }
             };
-            requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(),callback);
+            requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(),callback);*/
         }
 
         //Toolbar
@@ -106,86 +114,82 @@ public class AddressFragment extends Fragment {
 
 
         //Navigate to add address
-        if (from.equals("Other"))
-        {
-            addHome.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
+        addHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(addressHome.getText().toString().equals("Thêm địa chỉ nhà"))
+                {
                     Bundle bundle = new Bundle();
                     bundle.putString("type", "Nhà");
                     Navigation.findNavController(getView()).navigate(R.id.action_addressFragment2_to_addAddressFragment, bundle);
                 }
-            });
+                else {
+                    editor.putString("tendc","Nhà");
+                    editor.putString("dc",addressHome.getText().toString());
+                    editor.apply();
 
-
-            addCompany.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                        Bundle bundle = new Bundle();
-                        bundle.putString("type", "Công ty");
-                        Navigation.findNavController(getView()).navigate(R.id.action_addressFragment2_to_addAddressFragment, bundle);
-                    }
-
-            });
-
-
-        }
-        else
-        {
-
-            addHome.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if(addressHome.getText().toString().equals("Thêm địa chỉ nhà"))
-                    {
-                        Bundle bundle = new Bundle();
-                        Navigation.findNavController(getView()).navigate(R.id.action_addressFragment2_to_addAddressFragment);
-                    }
-                    else {
-                        FragmentManager fragmentManager = getParentFragmentManager();
-                        Bundle bundle = new Bundle();
-                        bundle.putString("tendc", "Nhà");
-                        bundle.putString("dc", addressHome.getText().toString());
-                        fragmentManager.setFragmentResult("addressResult", bundle);
-                        Navigation.findNavController(getView()).popBackStack();
-                    }
-                }
-
-            });
-            addCompany.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    FragmentManager fragmentManager=getParentFragmentManager();
-                    Bundle bundle=new Bundle();
-                    bundle.putString("tendc","Công ty");
-                    bundle.putString("dc",addressCompany.getText().toString());
-                    fragmentManager.setFragmentResult("addressResult",bundle);
                     Navigation.findNavController(getView()).popBackStack();
                 }
-            });
+            }
 
-
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    listView.invalidateViews();
-                    FragmentManager fragmentManager=getParentFragmentManager();
-                    Bundle bundle=new Bundle();
-                    Address a=(Address) listView.getItemAtPosition(i);
-                    bundle.putString("tendc",a.getName());
-                    bundle.putString("dc",a.getAddress());
-                    fragmentManager.setFragmentResult("addressResult",bundle);
-                    Navigation.findNavController(getView()).popBackStack();
-                    //
+        });
+        addCompany.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(addressCompany.getText().toString().equals("Thêm địa chỉ công ty"))
+                {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("type", "Công ty");
+                    Navigation.findNavController(getView()).navigate(R.id.action_addressFragment2_to_addAddressFragment, bundle);
                 }
-            });
-        }
+                else {
+                    editor.putString("tendc", "Công ty");
+                    editor.putString("dc", addressCompany.getText().toString());
+                    editor.apply();
+
+                    Navigation.findNavController(getView()).popBackStack();
+                }
+            }
+        });
         addAddress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Bundle bundle = new Bundle();
                 bundle.putString("type","Normal");
+                if (from.equals("checkout"))
+                    bundle.putString("from","checkoutNew");
                 Navigation.findNavController(getView()).navigate(R.id.action_addressFragment2_to_addAddressFragment,bundle);
+            }
+        });
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                listView.invalidateViews();
+                Address a=(Address) listView.getItemAtPosition(i);
+
+                editor.putString("tendc",a.getName());
+                editor.putString("dc",a.getAddress());
+                editor.putInt("orderMethod",0);
+                editor.apply();
+
+                if (from.equals("checkout")) {
+                    Navigation.findNavController(getView()).popBackStack();
+                }
+                else if (from.equals("checkoutNew")) {
+                    Navigation.findNavController(getView()).popBackStack();
+                    Navigation.findNavController(getView()).popBackStack();
+                    Navigation.findNavController(getView()).popBackStack();
+                }
+                /*else if (from.equals("Other")) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("type", "Normal");
+                    Navigation.findNavController(getView()).navigate(R.id.action_addressFragment2_to_addAddressFragment, bundle);
+                }*/
+                else {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("back","menu");
+                    Navigation.findNavController(getView()).navigate(R.id.action_global_mainFragment,bundle);
+                }
             }
         });
 

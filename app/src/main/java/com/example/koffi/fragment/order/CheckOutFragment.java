@@ -14,7 +14,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentResultListener;
 import androidx.navigation.Navigation;
 
 import android.util.Log;
@@ -58,9 +57,12 @@ import java.util.ArrayList;
 
 public class CheckOutFragment extends Fragment {
 
+    TextView orderMethodTxt;
     Button changeOrderMethodBtn;
     int method;
     TextView bottomMethodText;
+
+    SharedPreferences sharedPref;
 
     String address;
 
@@ -104,16 +106,7 @@ public class CheckOutFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         db = FirebaseFirestore.getInstance();
-        TextView txtTendc= getView().findViewById(R.id.tendc_checkout);
-        TextView txtdc=getView().findViewById(R.id.dc_checkout);
-        getParentFragmentManager().setFragmentResultListener("addressResult", getViewLifecycleOwner(),
-                new FragmentResultListener() {
-                    @Override
-                    public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
-                        txtTendc.setText(result.getString("tendc"));
-                        txtdc.setText(result.getString("dc"));
-                    }
-                });
+
         //Back pressed
         OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
             @Override
@@ -126,7 +119,7 @@ public class CheckOutFragment extends Fragment {
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(),callback);
 
         //Get store
-        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
         storeID = sharedPref.getString("store" ,null);
         storeAddress = sharedPref.getString("storeAddress",null);
 
@@ -141,6 +134,8 @@ public class CheckOutFragment extends Fragment {
 
         //Init
         bottomMethodText = view.findViewById(R.id.checkout_bottom_methodText);
+        changeOrderMethodBtn = view.findViewById(R.id.checkout_changeBtn);
+        orderMethodTxt = view.findViewById(R.id.checkout_ordermethod);
 
         //Handle order method
         method = sharedPref.getInt("orderMethod",0);
@@ -153,6 +148,13 @@ public class CheckOutFragment extends Fragment {
             takeAwayMethod();
         }
 
+        //Change orderMethod
+        changeOrderMethodBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                changeOrderOnClick();
+            }
+        });
 
         cart = new ArrayList<CartItem>();
         cart = getArguments().getParcelableArrayList("cartItems");
@@ -712,36 +714,39 @@ public class CheckOutFragment extends Fragment {
     }
     public void deliveryMethod(){
         LinearLayout delivery = getView().findViewById(R.id.checkout_delivery);
-        LinearLayout takeaway = getView().findViewById(R.id.checkout_takeaway);
+        LinearLayout takeaway = getView().findViewById(R.id.takeaway_store);
         LinearLayout ship = getView().findViewById(R.id.checkout_ship);
 
         delivery.setVisibility(View.VISIBLE);
         takeaway.setVisibility(View.GONE);
         ship.setVisibility(View.VISIBLE);
 
+        orderMethodTxt.setText("Giao tận nơi");
         bottomMethodText.setText("Giao tận nơi • ");
 
-        //Change orderMethod
-        changeOrderMethodBtn = getView().findViewById(R.id.checkout_delivery_changeBtn);
-        changeOrderMethodBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                changeOrderOnClick();
-            }
-        });
+        //Address
+        TextView txtTendc= getView().findViewById(R.id.tendc_checkout);
+        TextView txtdc=getView().findViewById(R.id.dc_checkout);
+
+        address = sharedPref.getString("dc",null);
+        String addressName = sharedPref.getString("tendc",null);
+        txtTendc.setText(addressName);
+        txtdc.setText(address);
 
         //Navigate to Address Fragment
         LinearLayout chooseAddress = getView().findViewById(R.id.checkout_chooseAddress);
         chooseAddress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Navigation.findNavController(getView()).navigate(R.id.action_checkOutFragment_to_addressFragment22);
+                Bundle bundle = new Bundle();
+                bundle.putString("from","checkout");
+                Navigation.findNavController(getView()).navigate(R.id.action_checkOutFragment_to_addressFragment22,bundle);
             }
         });
     }
     public void takeAwayMethod() {
         LinearLayout delivery = getView().findViewById(R.id.checkout_delivery);
-        LinearLayout takeaway = getView().findViewById(R.id.checkout_takeaway);
+        LinearLayout takeaway = getView().findViewById(R.id.takeaway_store);
         LinearLayout ship = getView().findViewById(R.id.checkout_ship);
         TextView addressNameTxt = getView().findViewById(R.id.checkout_takeaway_addressName);
         TextView addressTxt = getView().findViewById(R.id.checkout_takeaway_address);
@@ -757,16 +762,8 @@ public class CheckOutFragment extends Fragment {
             addressTxt.setText(storeAddress);
         }
 
+        orderMethodTxt.setText("Tự đến lấy");
         bottomMethodText.setText("Tự đến lấy • ");
-
-        //Change orderMethod
-        changeOrderMethodBtn = getView().findViewById(R.id.checkout_takeaway_changeBtn);
-        changeOrderMethodBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                changeOrderOnClick();
-            }
-        });
 
         //Choose store
         LinearLayout chooseAddress = getView().findViewById(R.id.takeaway_store);

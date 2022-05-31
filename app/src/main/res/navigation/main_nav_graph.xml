@@ -54,12 +54,19 @@
         <action
             android:id="@+id/action_addressFragment2_to_addAddressFragment"
             app:destination="@id/addAddressFragment" />
+        <action
+            android:id="@+id/action_addressFragment2_to_checkOutFragment"
+            app:destination="@id/checkOutFragment" />
     </fragment>
     <fragment
         android:id="@+id/addAddressFragment"
         android:name="com.example.koffi.AddAddressFragment"
         android:label="fragment_add_address"
-        tools:layout="@layout/fragment_add_address" />
+        tools:layout="@layout/fragment_add_address" >
+        <action
+            android:id="@+id/action_addAddressFragment_to_addressFragment2"
+            app:destination="@id/addressFragment2" />
+    </fragment>
     <fragment
         android:id="@+id/contactFragment"
         android:name="com.example.koffi.ContactFragment"

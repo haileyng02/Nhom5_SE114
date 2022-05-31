@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -71,7 +72,13 @@ public class OtherFragment extends Fragment {
         LinearLayout address = view.findViewById(R.id.other_address);
         address.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View view) {FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                if(user==null)
+                {
+                    startActivity(new Intent(getContext(), LoginActivity.class));
+                    Toast.makeText(getContext(), "Bạn chưa đăng nhâp. Mời bạn đăng nhập!", Toast.LENGTH_LONG).show();
+                }
+
                 Bundle bundle = new Bundle();
                 bundle.putString("from","Other");
                 Navigation.findNavController(getView()).navigate(R.id.action_mainFragment_to_addressFragment2,bundle);

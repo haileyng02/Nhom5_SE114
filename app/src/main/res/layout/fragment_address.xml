@@ -48,6 +48,7 @@
                     android:orientation="vertical">
 
                     <TextView
+                        android:id="@+id/ViewDCNha"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="15dp"
@@ -81,6 +82,7 @@
                     android:orientation="vertical">
 
                     <TextView
+                        android:id="@+id/ViewDCCTy"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="15dp"
@@ -131,6 +133,7 @@
                 </LinearLayout>
             </LinearLayout>
             <ListView
+                android:id="@+id/listviewAddress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
         </LinearLayout>

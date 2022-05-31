@@ -1,11 +1,23 @@
 package com.example.koffi;
 
 public class Address {
-    String name;
-    String address;
+    public String name;
+    public String address;
+    public Address()
+    {
 
-    public void Address(String name, String address) {
+    }
+
+    public Address(String name, String address) {
         this.name= name;
         this.address = address;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getAddress() {
+        return address;
     }
 }

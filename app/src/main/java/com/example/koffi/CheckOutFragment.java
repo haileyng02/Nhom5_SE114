@@ -36,6 +36,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -103,8 +104,16 @@ public class CheckOutFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        db = FirebaseFirestore.getInstance();
+        TextView txtTendc= getView().findViewById(R.id.tendc_checkout);
+        TextView txtdc=getView().findViewById(R.id.dc_checkout);
+        getParentFragmentManager().setFragmentResultListener("addressResult", getViewLifecycleOwner(),
+                new FragmentResultListener() {
+                    @Override
+                    public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+                        txtTendc.setText(result.getString("tendc"));
+                        txtdc.setText(result.getString("dc"));
+                    }
+                });
         //Back pressed
         OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
             @Override
@@ -682,7 +691,20 @@ public class CheckOutFragment extends Fragment {
             }
         });
     }
-
+    public void setListViewHeight(ListView listview) {
+        ListAdapter listAdapter = listview.getAdapter();
+        if (listAdapter != null) {
+            int totalHeight = 0;
+            for (int i = 0; i < listAdapter.getCount(); i++) {
+                View listItem = listAdapter.getView(i, null, listview);
+                listItem.measure(0, 0);
+                totalHeight += listItem.getMeasuredHeight();
+            }
+            ViewGroup.LayoutParams params = listview.getLayoutParams();
+            params.height = totalHeight + (listview.getDividerHeight() * (listAdapter.getCount() - 1));
+            listview.setLayoutParams(params);
+        }
+    }
     public void setBottomSheetHeight(View bottomSheetView) {
         ViewGroup.LayoutParams lp =bottomSheetView.getLayoutParams();
         lp.height= Resources.getSystem().getDisplayMetrics().heightPixels;

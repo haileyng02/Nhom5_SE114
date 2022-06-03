@@ -29,6 +29,7 @@ public class OrderFragment extends Fragment {
 
     int orderMethod;
     TextView readyStatusText;
+    String orderID;
 
     public OrderFragment() {
         // Required empty public constructor
@@ -61,6 +62,7 @@ public class OrderFragment extends Fragment {
         //Get arguments
         if (getArguments()!=null) {
             orderMethod = getArguments().getInt("method");
+            orderID = getArguments().getString("orderID");
         }
         //Init
         readyStatusText = view.findViewById(R.id.order_readyText);

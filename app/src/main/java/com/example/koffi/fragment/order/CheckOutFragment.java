@@ -38,6 +38,7 @@ import com.example.koffi.models.CartItem;
 import com.example.koffi.adapter.CartItemAdapter;
 import com.example.koffi.models.Item;
 import com.example.koffi.R;
+import com.example.koffi.models.Order;
 import com.example.koffi.models.Topping;
 import com.example.koffi.adapter.ToppingAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -46,6 +47,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -53,7 +55,9 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class CheckOutFragment extends Fragment {
 
@@ -100,6 +104,8 @@ public class CheckOutFragment extends Fragment {
     TextView tvNumber;
     CartItemAdapter cartAdapter;
     Item item;
+    String receiverName;
+    String receiverPhone;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -173,6 +179,28 @@ public class CheckOutFragment extends Fragment {
         tvNumber = view.findViewById(R.id.numberOfItems);
         number = getArguments().getLong("numberOfItems");
         tvNumber.setText(number + " sản phẩm");
+        edtNote = view.findViewById(R.id.checkout_deliveryNote);
+
+        //Autofill data
+        TextView tvName = view.findViewById(R.id.checkout_tvName);
+        TextView tvPhone = view.findViewById(R.id.checkout_tvPhone);
+        TextView tvDate = view.findViewById(R.id.checkout_tvDate);
+        SimpleDateFormat sdfDate = new SimpleDateFormat("dd/MM/yyyy");//dd/MM/yyyy
+        Date now = new Date();
+        String strDate = sdfDate.format(now);
+        tvDate.setText(strDate);
+        db.collection("users").document(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                receiverName = documentSnapshot.getString("Ten");
+                receiverPhone = documentSnapshot.getString("Sdt");
+                if (!receiverName.isEmpty())
+                    tvName.setText(receiverName);
+                if (!receiverPhone.isEmpty())
+                    tvPhone.setText(receiverPhone);
+            }
+        });
 
         //Receiver information
         LinearLayout receiver = view.findViewById(R.id.checkout_receiver);
@@ -195,7 +223,27 @@ public class CheckOutFragment extends Fragment {
                         bottomSheetDialog.dismiss();
                     }
                 });
-
+                EditText edtName = bottomSheetView.findViewById(R.id.receiver_name);
+                EditText edtPhone = bottomSheetView.findViewById(R.id.receiver_phone);
+                if (!receiverName.isEmpty())
+                    edtName.setText(receiverName);
+                if (!receiverPhone.isEmpty())
+                    edtPhone.setText(receiverPhone);
+                Button doneBtn = bottomSheetView.findViewById(R.id.receiver_doneBtn);
+                doneBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (edtName.getText().toString().isEmpty() || edtPhone.getText().toString().isEmpty()) {
+                            Toast.makeText(getContext(), "Vui lòng nhập đủ thông tin!", Toast.LENGTH_LONG).show();
+                        } else {
+                            receiverName = edtName.getText().toString().trim();
+                            tvName.setText(receiverName);
+                            receiverPhone = edtPhone.getText().toString().trim();
+                            tvPhone.setText(receiverPhone);
+                            bottomSheetDialog.dismiss();
+                        }
+                    }
+                });
                 //Show dialog
                 bottomSheetDialog.show();
             }
@@ -211,6 +259,7 @@ public class CheckOutFragment extends Fragment {
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                     if (task.isSuccessful()) {
                         for (QueryDocumentSnapshot doc : task.getResult()) {
+                            cartID = doc.getId();
                             db.collection("cartItems").whereEqualTo("cartID", doc.getId())
                                     .addSnapshotListener(new EventListener<QuerySnapshot>() {
                                         @Override
@@ -242,15 +291,6 @@ public class CheckOutFragment extends Fragment {
             });
         }
         //Cart list
-        //Sample data
-//        cart.add(new CartItem(new Item("123","Cà phê","hotcoffee_1",new Long(30000),""),2,new Long(35000),"Upsize"));
-//        cart.add(new CartItem(new Item("123","Trà sữa","milktea_1",new Long(40000),""),1,new Long(45000),"Trân châu hoàng kim, Ít ngọt"));
-//        cart.add(new CartItem(new Item("123","Nước ngọt","iceddrinks_1",new Long(50000),""),2,new Long(55000),"Upsize, Rau câu"));
-//        ArrayList<Topping> toppings = new ArrayList<Topping>();
-//        toppings.add(new Topping("1", "Trân châu", 6000));
-//        toppings.add(new Topping("2", "Rau câu", 8000));
-//        cart.add(new CartItem("1", "Trân châu", 1, Long.parseLong("30000"), "Vừa", toppings));
-
         ListView cartList = view.findViewById(R.id.cartList);
         cartAdapter = new CartItemAdapter(getContext(),cart,true);
         cartAdapter.registerDataSetObserver(new DataSetObserver() {
@@ -418,6 +458,7 @@ public class CheckOutFragment extends Fragment {
                                                 if (task.isSuccessful()) {
                                                     for (QueryDocumentSnapshot snapshot : task.getResult()) {
                                                         docID = snapshot.getId();
+                                                        System.out.println(docID);
                                                         if (numberUnit != 0) {
                                                             long sum = 0;
                                                             for (int n = 0; n < 8; n++) {
@@ -450,7 +491,7 @@ public class CheckOutFragment extends Fragment {
                                                                             exist = documentSnapshot.getId();
                                                                             itemInCart = documentSnapshot.toObject(CartItem.class);
                                                                         }
-                                                                        if (exist.equals(docID)) {
+                                                                        if (exist.equals(docID) || exist.isEmpty()) {
                                                                             db.collection("cartItems").document(docID)
                                                                                     .update("note", note, "size", size,
                                                                                             "quantity", numberUnit, "price", totalUnit,
@@ -548,23 +589,23 @@ public class CheckOutFragment extends Fragment {
         });
 
         //Payment Method
-        LinearLayout payment = view.findViewById(R.id.checkout_payment);
-        payment.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //Bottom sheet dialog
-                BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext(),R.style.BottomSheetDialogTheme);
-                View bottomSheetView = LayoutInflater.from(getContext()).inflate(R.layout.bottomsheet_paymentmethod,
-                        (LinearLayout)view.findViewById(R.id.paymentmethod_bottomsheet));
-                bottomSheetDialog.setContentView(bottomSheetView);
-                //Set bottom sheet height
-                setBottomSheetHeight(bottomSheetView);
-                //Handle bottom sheet
-
-                //Show dialog
-                bottomSheetDialog.show();
-            }
-        });
+//        LinearLayout payment = view.findViewById(R.id.checkout_payment);
+//        payment.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                //Bottom sheet dialog
+//                BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext(),R.style.BottomSheetDialogTheme);
+//                View bottomSheetView = LayoutInflater.from(getContext()).inflate(R.layout.bottomsheet_paymentmethod,
+//                        (LinearLayout)view.findViewById(R.id.paymentmethod_bottomsheet));
+//                bottomSheetDialog.setContentView(bottomSheetView);
+//                //Set bottom sheet height
+//                setBottomSheetHeight(bottomSheetView);
+//                //Handle bottom sheet
+//
+//                //Show dialog
+//                bottomSheetDialog.show();
+//            }
+//        });
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -616,9 +657,49 @@ public class CheckOutFragment extends Fragment {
         orderBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Bundle bundle = new Bundle();
-                bundle.putInt("method", method);
-                Navigation.findNavController(getView()).navigate(R.id.action_checkOutFragment_to_orderFragment, bundle);
+                if (cart.isEmpty()) {
+                    Toast.makeText(getContext(),"Giỏ hàng của bạn không có gì hết! Vui lòng chọn sản phẩm!", Toast.LENGTH_LONG).show();
+                }
+                else if (receiverName.isEmpty() || receiverPhone.isEmpty()) {
+                    Toast.makeText(getContext(),"Vui lòng nhập đầy đủ thông tin người nhận", Toast.LENGTH_LONG).show();
+                } else {
+                    if (method == 0 && address.isEmpty()) {
+                        Toast.makeText(getContext(),"Vui lòng chọn địa chỉ giao", Toast.LENGTH_LONG).show();
+                    } else if (method == 1 && storeAddress.isEmpty()) {
+                        Toast.makeText(getContext(),"Vui lòng chọn cửa hàng nhận", Toast.LENGTH_LONG).show();
+                    } else {
+                        Date date = new Date();
+                        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+                        if (method == 0) {
+                            String deliveryNote = edtNote.getText().toString().trim();
+                            db.collection("order").document(cartID)
+                                    .update("address", address,
+                                            "date", formatter.format(date),
+                                            "deliveryNote", deliveryNote, "method", 0,
+                                            "name", receiverName, "phoneNumber", receiverPhone,
+                                            "ship", ship, "status", 1,
+                                            "subtotal", subtotal, "total", total);
+                            Toast.makeText(getContext(), "Đặt hàng thành công!", Toast.LENGTH_LONG).show();
+                        } else if (method == 1) {
+                            db.collection("order").document(cartID)
+                                    .update("date", formatter.format(date),
+                                            "method", 1, "storeID", storeID,
+                                            "name", receiverName, "phoneNumber", receiverPhone,
+                                            "ship", ship, "status", 1,
+                                            "subtotal", subtotal, "total", total);
+                            Toast.makeText(getContext(), "Đặt hàng thành công!", Toast.LENGTH_LONG).show();
+                        }
+                        //Create new cart
+                        Order order = new Order(
+                                FirebaseAuth.getInstance().getCurrentUser().getUid(), 0
+                        );
+                        db.collection("order").add(order);
+                        Bundle bundle = new Bundle();
+                        bundle.putInt("method", method);
+                        bundle.putString("orderID", cartID);
+                        Navigation.findNavController(getView()).navigate(R.id.action_checkOutFragment_to_orderFragment, bundle);
+                    }
+                }
             }
         });
     }
@@ -634,7 +715,7 @@ public class CheckOutFragment extends Fragment {
     int ship = 0;
     String docID;
     String exist = "";
-    int orderMethod;
+    String cartID;
 
     private void checkListViewCheckBox(ListView toppingListView, ArrayList<Topping> toppingArray, BottomSheetDialog bottomSheetView, long number) {
         long sum = 0;

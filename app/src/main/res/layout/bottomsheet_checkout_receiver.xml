@@ -48,6 +48,7 @@
                 android:textSize="16sp"
                 android:textStyle="bold" />
             <EditText
+                android:id="@+id/receiver_name"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:hint="Nhập tên"
@@ -63,6 +64,7 @@
                 android:textSize="16sp"
                 android:textStyle="bold" />
             <EditText
+                android:id="@+id/receiver_phone"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:hint="Nhập số điện thoại"
@@ -72,6 +74,7 @@
         </LinearLayout>
 
         <Button
+            android:id="@+id/receiver_doneBtn"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_margin="15dp"

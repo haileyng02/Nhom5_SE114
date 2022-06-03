@@ -123,6 +123,7 @@
                         </LinearLayout>
 
                         <EditText
+                            android:id="@+id/checkout_deliveryNote"
                             android:layout_width="match_parent"
                             android:layout_height="50dp"
                             android:layout_marginVertical="15dp"
@@ -182,12 +183,14 @@
                             android:orientation="vertical">
 
                             <TextView
+                                android:id="@+id/checkout_tvName"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Thêm tên"
                                 android:textColor="@color/black" />
 
                             <TextView
+                                android:id="@+id/checkout_tvPhone"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
@@ -217,6 +220,7 @@
                             android:paddingLeft="15dp">
 
                             <TextView
+                                android:id="@+id/checkout_tvDate"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Hôm nay"
@@ -406,10 +410,11 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Bấm để chọn phương thức thanh toán"
-                            android:textColor="#2549B9" />
+                            android:text="Tiền mặt"
+                            android:textColor="@color/black" />
 
                         <ImageView
+                            android:visibility="gone"
                             android:layout_width="15dp"
                             android:layout_height="15dp"
                             android:src="@drawable/next" />

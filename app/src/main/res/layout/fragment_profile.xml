@@ -5,7 +5,7 @@
     android:id="@+id/profile_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ProfileFragment">
+    tools:context=".fragment.other.ProfileFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -175,7 +175,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:padding="15dp"
-                    android:text="Không xác định"
+                    android:text="Giới tính"
                     android:textColor="@color/black"
                     android:textColorHint="#909090"
                     android:textSize="18sp" />

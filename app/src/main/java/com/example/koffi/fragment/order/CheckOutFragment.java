@@ -697,6 +697,16 @@ public class CheckOutFragment extends Fragment {
                         Bundle bundle = new Bundle();
                         bundle.putInt("method", method);
                         bundle.putString("orderID", cartID);
+                        bundle.putParcelableArrayList("orderItems", cart);
+                        bundle.putLong("total", total);
+                        bundle.putLong("subtotal", subtotal);
+                        bundle.putLong("numberOfItems", number);
+                        bundle.putString("receiverName", receiverName);
+                        bundle.putString("receiverPhone", receiverPhone);
+                        if (method == 0) {
+                            bundle.putString("address", address);
+                        } else
+                            bundle.putString("address", storeAddress);
                         Navigation.findNavController(getView()).navigate(R.id.action_checkOutFragment_to_orderFragment, bundle);
                     }
                 }

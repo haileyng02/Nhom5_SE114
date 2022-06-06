@@ -4,7 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -29,14 +31,36 @@ import java.util.concurrent.TimeUnit;
 
 public class OTPActivity extends AppCompatActivity {
     EditText input1, input2, input3, input4, input5, input6;
+    TextView mTextField;
     ProgressBar progressBar;
     String verificationId;
+    TextView resend;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_otpactivity);
 
+        new CountDownTimer(60000, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+                mTextField.setText("(" + millisUntilFinished / 1000 + "s)");
+                resend.setVisibility(View.GONE);
+            }
+
+            public void onFinish() {
+                mTextField.setText("");
+                resend.setVisibility(View.VISIBLE);
+            }
+
+        }.start();
+        mTextField = findViewById(R.id.timer);
         TextView mobileText = findViewById(R.id.textViewMobile);
         String mobile = getIntent().getStringExtra("mobile");
         mobileText.setText("Một mã xác thực gồm 6 số đã được gửi đến số điện thoại "
@@ -58,10 +82,11 @@ public class OTPActivity extends AppCompatActivity {
         });
         progressBar = findViewById(R.id.progress_bar);
         verificationId = getIntent().getStringExtra("verificationId");
-        TextView resend = findViewById(R.id.textResend);
+        resend = findViewById(R.id.textResend);
         resend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                System.out.println("clicked");
                 PhoneAuthProvider.getInstance().verifyPhoneNumber("+84" + mobile,
                         60, TimeUnit.SECONDS, OTPActivity.this,
                         new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
@@ -79,6 +104,19 @@ public class OTPActivity extends AppCompatActivity {
                                 verificationId = s;
                                 Toast.makeText(OTPActivity.this, "Đã gửi mã xác nhận, vui lòng chờ trong giây lát", Toast.LENGTH_LONG).show();
                                 super.onCodeSent(s, forceResendingToken);
+                                new CountDownTimer(60000, 1000) {
+
+                                    public void onTick(long millisUntilFinished) {
+                                        mTextField.setText("(" + millisUntilFinished / 1000 + "s)");
+                                        resend.setVisibility(View.GONE);
+                                    }
+
+                                    public void onFinish() {
+                                        mTextField.setText("");
+                                        resend.setVisibility(View.VISIBLE);
+                                    }
+
+                                }.start();
                             }
                         });
 
@@ -226,6 +264,4 @@ public class OTPActivity extends AppCompatActivity {
         }
 
     }
-
-
 }

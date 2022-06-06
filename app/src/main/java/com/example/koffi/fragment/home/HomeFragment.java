@@ -88,14 +88,6 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if (getArguments()!=null) {
-            if (getArguments().getString("activity").equals("staff")) {
-                System.out.println("Có nha má");
-                Intent intent = new Intent(getActivity(), StaffActivity.class);
-                startActivity(intent);
-            }
-        }
-
         FirebaseAuth auth = FirebaseAuth.getInstance();
         FirebaseUser user = auth.getCurrentUser();
         db = FirebaseFirestore.getInstance();

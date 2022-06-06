@@ -3,6 +3,7 @@ package com.example.koffi.models;
 import java.util.Date;
 
 public class Order {
+    public String id;
     public String userID;
     public String name;
     public String storeID;

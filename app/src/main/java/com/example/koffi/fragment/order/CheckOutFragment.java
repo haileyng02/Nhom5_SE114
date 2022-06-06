@@ -819,8 +819,8 @@ public class CheckOutFragment extends Fragment {
         TextView txtTendc= getView().findViewById(R.id.tendc_checkout);
         TextView txtdc=getView().findViewById(R.id.dc_checkout);
 
-        address = sharedPref.getString("dc",null);
-        String addressName = sharedPref.getString("tendc",null);
+        address = sharedPref.getString("dc","Chọn địa chỉ");
+        String addressName = sharedPref.getString("tendc","Chọn địa chỉ");
         txtTendc.setText(addressName);
         txtdc.setText(address);
 

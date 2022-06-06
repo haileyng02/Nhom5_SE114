@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_staffLoginFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_staffLoginFragment_to_staffOrderFragment2"
+            app:destination="@id/staffOrderFragment2" />
     </fragment>
     <fragment
         android:id="@+id/loginFragment"
@@ -30,4 +33,9 @@
         android:name="com.example.koffi.fragment.home.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" />
+    <fragment
+        android:id="@+id/staffOrderFragment2"
+        android:name="com.example.koffi.fragment.staff.StaffOrderFragment"
+        android:label="fragment_staff_order"
+        tools:layout="@layout/fragment_staff_order" />
 </navigation>

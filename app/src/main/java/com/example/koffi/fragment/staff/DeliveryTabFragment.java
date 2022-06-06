@@ -1,5 +1,8 @@
 package com.example.koffi.fragment.staff;
 
+import static com.example.koffi.FunctionClass.setListViewHeight;
+
+import android.database.DataSetObserver;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -90,6 +93,14 @@ public class DeliveryTabFragment extends Fragment {
 
         ListView listView = view.findViewById(R.id.deliveryLv);
         OrderAdapter orderAdapter = new OrderAdapter(getContext(),orderArray);
+        orderAdapter.registerDataSetObserver(new DataSetObserver() {
+            @Override
+            public void onChanged() {
+                super.onChanged();
+                setListViewHeight(listView);
+            }
+        });
         listView.setAdapter(orderAdapter);
+
     }
 }

@@ -10,10 +10,12 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Patterns;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,6 +28,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
@@ -34,6 +37,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.concurrent.TimeUnit;
 
@@ -253,6 +258,82 @@ public class LoginActivity extends AppCompatActivity {
                 userLogin();
             }
         });
+        TextView forgetPass = findViewById(R.id.forgetPass);
+        forgetPass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(LoginActivity.this);
+                bottomSheetDialog.setContentView(R.layout.bottomsheet_forgotpassword);
+
+                EditText edtEmailForgot = bottomSheetDialog.findViewById(R.id.forgot_email);
+                ImageButton backBtn = bottomSheetDialog.findViewById(R.id.forgot_backBtn);
+                backBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        edtEmailForgot.setText("");
+                        bottomSheetDialog.dismiss();
+                    }
+                });
+                Button forgotBtn = bottomSheetDialog.findViewById(R.id.forgot_doneBtn);
+                forgotBtn.setEnabled(false);
+                edtEmailForgot.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                        String email = edtEmailForgot.getText().toString().trim();
+                        if (Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                            forgotBtn.setEnabled(true);
+                            forgotBtn.setBackgroundTintList(ContextCompat.getColorStateList(LoginActivity.this, R.color.purple_200));
+                        } else {
+                            forgotBtn.setEnabled(false);
+                            forgotBtn.setBackgroundTintList(ContextCompat.getColorStateList(LoginActivity.this, R.color.disable));
+                        }
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable editable) {
+
+                    }
+                });
+                forgotBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        String email = edtEmailForgot.getText().toString().trim();
+                        FirebaseFirestore db = FirebaseFirestore.getInstance();
+                        db.collection("staff")
+                                .whereEqualTo("email", email)
+                                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    if (task.getResult().size() == 0)
+                                        Toast.makeText(LoginActivity.this, "Email này không có quyền hạn!", Toast.LENGTH_SHORT).show();
+                                    else {
+                                        FirebaseAuth.getInstance().sendPasswordResetEmail(email)
+                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        if (task.isSuccessful()) {
+                                                            Toast.makeText(LoginActivity.this, "Vui lòng kiểm tra email để đặt lại mật khẩu", Toast.LENGTH_LONG).show();
+                                                            bottomSheetDialog.dismiss();
+                                                        } else {
+                                                            Toast.makeText(LoginActivity.this, "Email này chưa được đăng ký", Toast.LENGTH_LONG).show();
+                                                        }
+                                                    }
+                                                });
+                                    }
+                                }
+                            }
+                        });
+                    }
+                });
+                bottomSheetDialog.show();
+            }
+        });
         staffLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -268,7 +349,7 @@ public class LoginActivity extends AppCompatActivity {
                                     pb.setVisibility(View.INVISIBLE);
                                     staffLogin.setVisibility(View.VISIBLE);
                                     Toast.makeText(LoginActivity.this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
-                                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                                    startActivity(new Intent(LoginActivity.this, StaffActivity.class));
                                 }
                                 else {
                                     pb.setVisibility(View.INVISIBLE);

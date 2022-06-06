@@ -22,13 +22,28 @@ import com.example.koffi.models.CartItem;
 import com.example.koffi.adapter.CartItemAdapter;
 import com.example.koffi.R;
 import com.example.koffi.models.Topping;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class OrderFragment extends Fragment {
 
     int orderMethod;
     TextView readyStatusText;
+    String orderID;
+    FirebaseFirestore db;
+    ArrayList<CartItem> cart;
+    long total, subtotal, number;
+    String receiverName, receiverPhone, address;
+    TextView tvName, tvPhone, tvAddress, tvAddressMethod, tvTotal, tvSubtotal, tvNumber, tvOrderID;
+    TextView checkTime;
 
     public OrderFragment() {
         // Required empty public constructor
@@ -60,10 +75,38 @@ public class OrderFragment extends Fragment {
 
         //Get arguments
         if (getArguments()!=null) {
+            cart = new ArrayList<CartItem>();
+            cart = getArguments().getParcelableArrayList("orderItems");
             orderMethod = getArguments().getInt("method");
+            orderID = getArguments().getString("orderID");
+            total = getArguments().getLong("total");
+            subtotal = getArguments().getLong("subtotal");
+            number = getArguments().getLong("numberOfItems");
+            address = getArguments().getString("address");
+            receiverName = getArguments().getString("receiverName");
+            receiverPhone = getArguments().getString("receiverPhone");
         }
         //Init
         readyStatusText = view.findViewById(R.id.order_readyText);
+        tvName = view.findViewById(R.id.order_name);
+        tvName.setText(receiverName);
+        tvPhone = view.findViewById(R.id.order_phone);
+        tvPhone.setText(receiverPhone);
+        tvOrderID = view.findViewById(R.id.order_id);
+        tvOrderID.setText(orderID);
+        tvAddressMethod = view.findViewById(R.id.order_tvAddress);
+        if (orderMethod == 1) tvAddressMethod.setText("Cửa hàng");
+        tvAddress = view.findViewById(R.id.order_address);
+        tvAddress.setText(address);
+        tvNumber = view.findViewById(R.id.order_number);
+        tvNumber.setText("(" + number + " món)");
+        tvTotal = view.findViewById(R.id.order_total);
+        tvTotal.setText(total + "đ");
+        tvSubtotal = view.findViewById(R.id.order_subtotal);
+        tvSubtotal.setText(subtotal + "đ");
+        checkTime = view.findViewById(R.id.order_time);
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+        checkTime.setText(sdf.format(new Date()));
 
         //Handle order method
         if (orderMethod == 1)
@@ -75,18 +118,33 @@ public class OrderFragment extends Fragment {
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         //Cart list
-        ArrayList<CartItem> cart = new ArrayList<CartItem>();
+
+
         //Sample data
-        ArrayList<Topping> toppings = new ArrayList<Topping>();
-        toppings.add(new Topping("123","Trân châu hoàng kim",6000L));
-        cart.add(new CartItem("123","Cà phê",2,new Long(35000),"Upsize",toppings,"ít đường"));
-        cart.add(new CartItem("123","Cà phê",2,new Long(35000),"Upsize",toppings,"ít đường"));
-        cart.add(new CartItem("123","Cà phê",2,new Long(35000),"Upsize",toppings,"ít đường"));
+//        ArrayList<Topping> toppings = new ArrayList<Topping>();
+//        toppings.add(new Topping("123","Trân châu hoàng kim",6000L));
+//        cart.add(new CartItem("123","Cà phê",2,new Long(35000),"Upsize",toppings,"ít đường"));
+//        cart.add(new CartItem("123","Cà phê",2,new Long(35000),"Upsize",toppings,"ít đường"));
+//        cart.add(new CartItem("123","Cà phê",2,new Long(35000),"Upsize",toppings,"ít đường"));
 
         ListView cartList = view.findViewById(R.id.order_cartList);
         CartItemAdapter cartAdapter = new CartItemAdapter(getContext(),cart,false);
         cartList.setAdapter(cartAdapter);
         setListViewHeight(cartList);
+
+        db = FirebaseFirestore.getInstance();
+        db.collection("cartItems").whereEqualTo("cartID", orderID)
+                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot snapshot : task.getResult()) {
+                        cart.add(snapshot.toObject(CartItem.class));
+                    }
+                    cartAdapter.notifyDataSetChanged();
+                }
+            }
+        });
     }
 
     @Override

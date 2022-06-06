@@ -14,6 +14,8 @@ import com.example.koffi.R;
 import com.example.koffi.models.Address;
 import com.example.koffi.models.Order;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 public class OrderAdapter extends BaseAdapter {
@@ -47,6 +49,7 @@ public class OrderAdapter extends BaseAdapter {
 
         //Init
         TextView idTxt = view.findViewById(R.id.orderId);
+        TextView dateTxt = view.findViewById(R.id.orderDate);
         TextView nameTxt = view.findViewById(R.id.orderName);
         TextView priceTxt = view.findViewById(R.id.orderPrice);
         LinearLayout stateBtn = view.findViewById(R.id.order_stateBtn);
@@ -54,6 +57,8 @@ public class OrderAdapter extends BaseAdapter {
 
         //Handle
         idTxt.setText(orderArray.get(i).id);
+        DateFormat df = new SimpleDateFormat("dd/mm/yyyy");
+        dateTxt.setText(df.format(orderArray.get(i).date));
         nameTxt.setText(orderArray.get(i).name);
         priceTxt.setText(Long.toString(orderArray.get(i).total));
         switch (orderArray.get(i).status) {

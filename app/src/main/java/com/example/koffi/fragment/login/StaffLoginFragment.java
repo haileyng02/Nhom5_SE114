@@ -1,5 +1,6 @@
 package com.example.koffi.fragment.login;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -21,6 +22,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.koffi.R;
+import com.example.koffi.activity.StaffActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -115,7 +117,9 @@ public class StaffLoginFragment extends Fragment {
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
                                     Toast.makeText(getContext(), "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
-                                    Navigation.findNavController(view).navigate(R.id.action_staffLoginFragment_to_homeFragment);
+                                    Bundle bundle = new Bundle();
+                                    bundle.putString("activity","staff");
+                                    Navigation.findNavController(getView()).navigate(R.id.action_staffLoginFragment_to_homeFragment,bundle);
                                 }
                                 else {
                                     Toast.makeText(getContext(), "Đăng nhập thất bại!", Toast.LENGTH_SHORT).show();

@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.example.koffi.activity.LoginActivity;
+import com.example.koffi.activity.StaffActivity;
 import com.example.koffi.models.Order;
 import com.example.koffi.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -86,6 +87,15 @@ public class HomeFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        if (getArguments()!=null) {
+            if (getArguments().getString("activity").equals("staff")) {
+                System.out.println("Có nha má");
+                Intent intent = new Intent(getActivity(), StaffActivity.class);
+                startActivity(intent);
+            }
+        }
+
         FirebaseAuth auth = FirebaseAuth.getInstance();
         FirebaseUser user = auth.getCurrentUser();
         db = FirebaseFirestore.getInstance();

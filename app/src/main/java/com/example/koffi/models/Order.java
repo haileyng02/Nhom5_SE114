@@ -3,7 +3,6 @@ package com.example.koffi.models;
 import java.util.Date;
 
 public class Order {
-    public String id;
     public String userID;
     public String name;
     public String storeID;
@@ -17,7 +16,7 @@ public class Order {
     public String deliveryNote;
     public int method; //0: delivery, 1: takeaway
 
-    public Order(String id,String userID, String name, String storeID, Date date, int status, String address,
+    public Order(String userID, String name, String storeID, Date date, int status, String address,
                  String phoneNumber, long subtotal, long ship, long total, String deliveryNote, int method) {
         this.userID = userID;
         this.name = name;

@@ -8,15 +8,18 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.example.koffi.R;
 import com.example.koffi.adapter.OrderAdapter;
 import com.example.koffi.models.Order;
+import com.google.android.material.tabs.TabLayout;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -87,12 +90,14 @@ public class DeliveryTabFragment extends Fragment {
 
         //Sample data
         Date date = Calendar.getInstance().getTime();
-        orderArray.add(new Order("123","user123","store123", date,2,"123 Nhà","0123456789",new Long(35000),new Long(20000),new Long(55000),"ko co gi",0));
-        orderArray.add(new Order("123","user123","store123", date,3,"123 Nhà","0123456789",new Long(35000),new Long(20000),new Long(55000),"ko co gi",0));
-        orderArray.add(new Order("123","user123","store123", date,1,"123 Nhà","0123456789",new Long(35000),new Long(20000),new Long(55000),"ko co gi",0));
+        orderArray.add(new Order("user123","Cẩm Tiên","store123", date,2,"123 Nhà","0123456789",new Long(35000),new Long(20000),new Long(55000),"ko co gi",0));
+        orderArray.add(new Order("user123","Cẩm Tiên","store123", date,5,"123 Nhà","0123456789",new Long(35000),new Long(20000),new Long(55000),"ko co gi",0));
+        orderArray.add(new Order("user123","Cẩm Tiên","store123", date,1,"123 Nhà","0123456789",new Long(35000),new Long(20000),new Long(55000),"ko co gi",0));
 
         ListView listView = view.findViewById(R.id.deliveryLv);
         OrderAdapter orderAdapter = new OrderAdapter(getContext(),orderArray);
+        listView.setAdapter(orderAdapter);
+        setListViewHeight(listView);
         orderAdapter.registerDataSetObserver(new DataSetObserver() {
             @Override
             public void onChanged() {
@@ -100,7 +105,15 @@ public class DeliveryTabFragment extends Fragment {
                 setListViewHeight(listView);
             }
         });
-        listView.setAdapter(orderAdapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Navigation.findNavController(getView()).navigate(R.id.action_staffOrderFragment_to_orderDetailFragment);
+            }
+        });
 
+        //Badge
+        TabLayout tabLayout = getParentFragment().getView().findViewById(R.id.order_tabLayout);
+        tabLayout.getTabAt(0).getOrCreateBadge().setNumber(orderArray.size());
     }
 }

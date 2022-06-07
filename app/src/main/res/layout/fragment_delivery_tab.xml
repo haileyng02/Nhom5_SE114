@@ -19,10 +19,13 @@
             android:layout_height="wrap_content"
             android:padding="15dp"
             android:orientation="vertical">
+
             <ListView
                 android:id="@+id/deliveryLv"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:divider="@android:color/transparent"
+                android:dividerHeight="10dp" />
         </LinearLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

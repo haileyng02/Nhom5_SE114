@@ -75,6 +75,10 @@ public class OrderAdapter extends BaseAdapter {
                 stateBtn.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context,R.color.koffiBlue)));
                 stateTxt.setText("Đang giao");
                 break;
+            case 4:
+                stateBtn.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context,R.color.koffiGrey)));
+                stateTxt.setText("Đã hủy");
+                break;
             case 5:
                 stateBtn.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context,R.color.koffiGreen)));
                 stateTxt.setText("Hoàn thành");

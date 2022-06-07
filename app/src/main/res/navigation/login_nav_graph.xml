@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/staffLoginFragment"
-        android:name="com.example.koffi.StaffLoginFragment"
+        android:name="com.example.koffi.fragment.login.StaffLoginFragment"
         android:label="fragment_staff_login"
         tools:layout="@layout/fragment_staff_login" >
         <action
@@ -16,10 +16,13 @@
         <action
             android:id="@+id/action_staffLoginFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_staffLoginFragment_to_staffOrderFragment2"
+            app:destination="@id/staffOrderFragment2" />
     </fragment>
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.example.koffi.LoginFragment"
+        android:name="com.example.koffi.fragment.login.LoginFragment"
         android:label="LoginFragment" >
         <action
             android:id="@+id/action_loginFragment_to_staffLoginFragment"
@@ -27,7 +30,12 @@
     </fragment>
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.example.koffi.HomeFragment"
+        android:name="com.example.koffi.fragment.home.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" />
+    <fragment
+        android:id="@+id/staffOrderFragment2"
+        android:name="com.example.koffi.fragment.staff.StaffOrderFragment"
+        android:label="fragment_staff_order"
+        tools:layout="@layout/fragment_staff_order" />
 </navigation>

@@ -6,7 +6,7 @@
     app:startDestination="@id/mainFragment">
     <fragment
         android:id="@+id/mainFragment"
-        android:name="com.example.koffi.MainFragment"
+        android:name="com.example.koffi.fragment.MainFragment"
         android:label="fragment_main"
         tools:layout="@layout/fragment_main" >
         <action
@@ -27,16 +27,16 @@
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
-        android:name="com.example.koffi.ProfileFragment"
+        android:name="com.example.koffi.fragment.other.ProfileFragment"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" /><action android:id="@+id/action_global_mainFragment" app:destination="@id/mainFragment"/>
     <fragment
         android:id="@+id/termFragment"
-        android:name="com.example.koffi.TermFragment"
+        android:name="com.example.koffi.fragment.other.TermFragment"
         android:label="TermFragment" />
     <fragment
         android:id="@+id/checkOutFragment"
-        android:name="com.example.koffi.CheckOutFragment"
+        android:name="com.example.koffi.fragment.order.CheckOutFragment"
         android:label="fragment_check_out"
         tools:layout="@layout/fragment_check_out" >
         <action
@@ -48,7 +48,7 @@
     </fragment>
     <fragment
         android:id="@+id/addressFragment2"
-        android:name="com.example.koffi.AddressFragment"
+        android:name="com.example.koffi.fragment.other.AddressFragment"
         android:label="fragment_address"
         tools:layout="@layout/fragment_address" >
         <action
@@ -60,7 +60,7 @@
     </fragment>
     <fragment
         android:id="@+id/addAddressFragment"
-        android:name="com.example.koffi.AddAddressFragment"
+        android:name="com.example.koffi.fragment.other.AddAddressFragment"
         android:label="fragment_add_address"
         tools:layout="@layout/fragment_add_address" >
         <action
@@ -69,12 +69,12 @@
     </fragment>
     <fragment
         android:id="@+id/contactFragment"
-        android:name="com.example.koffi.ContactFragment"
+        android:name="com.example.koffi.fragment.other.ContactFragment"
         android:label="fragment_contact"
         tools:layout="@layout/fragment_contact" />
     <fragment
         android:id="@+id/orderFragment"
-        android:name="com.example.koffi.OrderFragment"
+        android:name="com.example.koffi.fragment.order.OrderFragment"
         android:label="fragment_order"
         tools:layout="@layout/fragment_order" />
 </navigation>

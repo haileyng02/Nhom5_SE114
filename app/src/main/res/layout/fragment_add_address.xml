@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="#F6F6F6"
     android:orientation="vertical"
-    tools:context=".AddAddressFragment">
+    tools:context=".fragment.other.AddAddressFragment">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/addaddress_toolbar"

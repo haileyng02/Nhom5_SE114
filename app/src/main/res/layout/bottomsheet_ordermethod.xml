@@ -66,13 +66,16 @@
                 android:text="Giao tận nơi"
                 android:textColor="@color/black"
                 android:textSize="16sp" />
+
             <TextView
+                android:id="@+id/delivery_address"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
 
+                android:singleLine="true"
                 android:text="Chọn địa chỉ"
-                android:textColor="@color/black"/>
+                android:textColor="@color/black" />
         </LinearLayout>
 
         <Button
@@ -117,13 +120,16 @@
                 android:text="Tự đến lấy"
                 android:textColor="@color/black"
                 android:textSize="16sp" />
+
             <TextView
+                android:id="@+id/checkout_address"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
 
+                android:singleLine="true"
                 android:text="Chọn cửa hàng"
-                android:textColor="@color/black"/>
+                android:textColor="@color/black" />
         </LinearLayout>
 
         <Button

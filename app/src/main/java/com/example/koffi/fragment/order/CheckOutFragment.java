@@ -200,10 +200,12 @@ public class CheckOutFragment extends Fragment {
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 receiverName = documentSnapshot.getString("Ten");
                 receiverPhone = documentSnapshot.getString("Sdt");
-                if (!receiverName.isEmpty())
+                if (receiverName != null)
+                    if (!receiverName.isEmpty())
                     tvName.setText(receiverName);
-                if (!receiverPhone.isEmpty())
-                    tvPhone.setText(receiverPhone);
+                if (receiverPhone != null)
+                    if (!receiverPhone.isEmpty() )
+                        tvPhone.setText(receiverPhone);
             }
         });
 

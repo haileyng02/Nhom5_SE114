@@ -92,26 +92,30 @@ public class ProfileFragment extends Fragment {
                         @Override
                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                             if (task.isSuccessful()) {
+                                System.out.println("found");
                                 DocumentSnapshot document = task.getResult();
                                 if (document != null) {
                                     if (document.exists()) {
                                         String a = document.get("Ten").toString();
                                         String[] name = a.split(" ", 2);
+                                        if (name.length > 1)
                                         Ho.setText(name[1]);
                                         Ten.setText(name[0]);
                                         Email.setText((CharSequence) document.get("Email"));
                                         Sdt.setText((((CharSequence) document.get("Sdt"))));
                                         NgaySinh.setText((CharSequence) document.get("NgaySinh"));
+                                        if (document.getString("GioiTinh") != null)
+                                        if (!document.getString("GioiTinh").isEmpty())
                                         GioiTinh.setText((CharSequence) document.get("GioiTinh"));
                                     }
                                 }
                             }
                         }
-
                     });
                 String a = user.getDisplayName();
                 if (!a.equals("")) {
                     String[] name = a.split(" ", 2);
+                    if (name.length > 1)
                     Ho.setText(name[1]);
                     Ten.setText(name[0]);
                 }

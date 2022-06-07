@@ -1,14 +1,28 @@
 package com.example.koffi.fragment.staff;
 
+import static com.example.koffi.FunctionClass.setListViewHeight;
+
+import android.database.DataSetObserver;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ListView;
 
 import com.example.koffi.R;
+import com.example.koffi.adapter.OrderAdapter;
+import com.example.koffi.models.Order;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -62,5 +76,28 @@ public class StatisticFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_statistic, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        ArrayList<Order> orderArray = new ArrayList<Order>();
+
+        //Sample data
+        Date date = Calendar.getInstance().getTime();
+        orderArray.add(new Order("user123","Cẩm Tiên","store123", date,5,"123 Nhà","0123456789",new Long(35000),new Long(20000),new Long(55000),"ko co gi",0));
+        orderArray.add(new Order("user123","Cẩm Tiên","store123", date,4,"123 Nhà","0123456789",new Long(35000),new Long(20000),new Long(55000),"ko co gi",0));
+        orderArray.add(new Order("user123","Cẩm Tiên","store123", date,5,"123 Nhà","0123456789",new Long(35000),new Long(20000),new Long(55000),"ko co gi",0));
+
+        ListView listView = view.findViewById(R.id.statisticLv);
+        OrderAdapter orderAdapter = new OrderAdapter(getContext(),orderArray);
+        listView.setAdapter(orderAdapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Navigation.findNavController(getView()).navigate(R.id.action_staffOrderFragment_to_orderDetailFragment);
+            }
+        });
     }
 }

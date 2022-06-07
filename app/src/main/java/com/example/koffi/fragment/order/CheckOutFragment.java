@@ -126,8 +126,8 @@ public class CheckOutFragment extends Fragment {
 
         //Get store
         sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-        storeID = sharedPref.getString("store" ,null);
-        storeAddress = sharedPref.getString("storeAddress",null);
+        storeID = sharedPref.getString("store" ,"Chọn cửa hàng");
+        storeAddress = sharedPref.getString("storeAddress","Chọn cửa hàng");
 
         //Toolbar
         Toolbar toolbar = (Toolbar) view.findViewById(R.id.checkout_toolbar);

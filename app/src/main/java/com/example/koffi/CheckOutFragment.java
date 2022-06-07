@@ -114,6 +114,7 @@ public class CheckOutFragment extends Fragment {
                         txtdc.setText(result.getString("dc"));
                     }
                 });
+        db=FirebaseFirestore.getInstance();
         //Back pressed
         OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
             @Override

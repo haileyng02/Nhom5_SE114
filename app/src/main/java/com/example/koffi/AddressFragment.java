@@ -158,12 +158,19 @@ public class AddressFragment extends Fragment {
             addCompany.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    FragmentManager fragmentManager=getParentFragmentManager();
-                    Bundle bundle=new Bundle();
-                    bundle.putString("tendc","Công ty");
-                    bundle.putString("dc",addressCompany.getText().toString());
-                    fragmentManager.setFragmentResult("addressResult",bundle);
-                    Navigation.findNavController(getView()).popBackStack();
+                    if(addressCompany.getText().toString().equals("Thêm địa chỉ công ty"))
+                    {
+                        Bundle bundle = new Bundle();
+                        Navigation.findNavController(getView()).navigate(R.id.action_addressFragment2_to_addAddressFragment);
+                    }
+                    else {
+                        FragmentManager fragmentManager = getParentFragmentManager();
+                        Bundle bundle = new Bundle();
+                        bundle.putString("tendc", "Công ty");
+                        bundle.putString("dc", addressCompany.getText().toString());
+                        fragmentManager.setFragmentResult("addressResult", bundle);
+                        Navigation.findNavController(getView()).popBackStack();
+                    }
                 }
             });
 

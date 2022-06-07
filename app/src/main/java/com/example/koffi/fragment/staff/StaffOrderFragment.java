@@ -7,12 +7,14 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.koffi.R;
 import com.example.koffi.adapter.ViewPagerAdapter;
+import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.tabs.TabLayout;
 
 public class StaffOrderFragment extends Fragment {
@@ -54,7 +56,7 @@ public class StaffOrderFragment extends Fragment {
         tabLayout.setupWithViewPager(viewPager);
     }
     private void setupViewPager() {
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getParentFragmentManager());
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
         adapter.addFragment(new DeliveryTabFragment(), "Giao hàng");
         adapter.addFragment(new TATabFragment(), "Tự đến lấy");
         viewPager.setAdapter(adapter);

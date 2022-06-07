@@ -1,6 +1,7 @@
 package com.example.koffi.adapter;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,26 +57,26 @@ public class OrderAdapter extends BaseAdapter {
         TextView stateTxt = view.findViewById(R.id.orderStateText);
 
         //Handle
-        idTxt.setText(orderArray.get(i).id);
+        //Còn id nữa
         DateFormat df = new SimpleDateFormat("dd/mm/yyyy");
         dateTxt.setText(df.format(orderArray.get(i).date));
         nameTxt.setText(orderArray.get(i).name);
-        priceTxt.setText(Long.toString(orderArray.get(i).total));
+        priceTxt.setText(Long.toString(orderArray.get(i).total)+"đ");
         switch (orderArray.get(i).status) {
             case 1:
-                stateBtn.setBackgroundColor(ContextCompat.getColor(context,R.color.primary));
+                stateBtn.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context,R.color.primary)));
                 stateTxt.setText("Xác nhận");
                 break;
             case 2:
-                stateBtn.setBackgroundColor(ContextCompat.getColor(context,R.color.koffiOrange));
+                stateBtn.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context,R.color.koffiOrange)));
                 stateTxt.setText("Chuẩn bị xong");
                 break;
             case 3:
-                stateBtn.setBackgroundColor(ContextCompat.getColor(context,R.color.koffiBlue));
+                stateBtn.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context,R.color.koffiBlue)));
                 stateTxt.setText("Đang giao");
                 break;
             case 5:
-                stateBtn.setBackgroundColor(ContextCompat.getColor(context,R.color.koffiGreen));
+                stateBtn.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context,R.color.koffiGreen)));
                 stateTxt.setText("Hoàn thành");
                 break;
         }

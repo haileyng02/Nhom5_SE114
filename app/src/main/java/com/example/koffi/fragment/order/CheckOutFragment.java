@@ -7,6 +7,9 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.database.DataSetObserver;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
@@ -55,9 +58,11 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class CheckOutFragment extends Fragment {
 
@@ -670,30 +675,6 @@ public class CheckOutFragment extends Fragment {
                     } else {
                         Date date = new Date();
                         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-                        if (method == 0) {
-                            String deliveryNote = edtNote.getText().toString().trim();
-                            db.collection("order").document(cartID)
-                                    .update("address", address,
-                                            "date", formatter.format(date),
-                                            "deliveryNote", deliveryNote, "method", 0,
-                                            "name", receiverName, "phoneNumber", receiverPhone,
-                                            "ship", ship, "status", 1,
-                                            "subtotal", subtotal, "total", total);
-                            Toast.makeText(getContext(), "Đặt hàng thành công!", Toast.LENGTH_LONG).show();
-                        } else if (method == 1) {
-                            db.collection("order").document(cartID)
-                                    .update("date", formatter.format(date),
-                                            "method", 1, "storeID", storeID,
-                                            "name", receiverName, "phoneNumber", receiverPhone,
-                                            "ship", ship, "status", 1,
-                                            "subtotal", subtotal, "total", total);
-                            Toast.makeText(getContext(), "Đặt hàng thành công!", Toast.LENGTH_LONG).show();
-                        }
-                        //Create new cart
-                        Order order = new Order(
-                                FirebaseAuth.getInstance().getCurrentUser().getUid(), 0
-                        );
-                        db.collection("order").add(order);
                         Bundle bundle = new Bundle();
                         bundle.putInt("method", method);
                         bundle.putString("orderID", cartID);
@@ -707,7 +688,75 @@ public class CheckOutFragment extends Fragment {
                             bundle.putString("address", address);
                         } else
                             bundle.putString("address", storeAddress);
+                        if (method == 0) {
+                            Geocoder geocoder = new Geocoder(getContext());
+                            try {
+                                List<Address> addressList;
+                                addressList = geocoder.getFromLocationName(address, 1);
+                                if (addressList != null) {
+                                    double lat = addressList.get(0).getLatitude();
+                                    double lng = addressList.get(0).getLongitude();
+                                    float[] result = new float[1];
+                                    float[] min = new float[1];
+                                    min[0] = Float.MAX_VALUE;
+                                    db.collection("stores").get()
+                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                    if (task.isSuccessful()) {
+                                                        for (QueryDocumentSnapshot snapshot : task.getResult()) {
+                                                            Location.distanceBetween(lat,lng,
+                                                                    snapshot.getDouble("latitude"), snapshot.getDouble("longitude"), result);
+                                                            float distance = result[0] / 1000;
+                                                            if (min[0] > distance) {
+                                                                min[0] = distance;
+                                                                storeID = snapshot.getId();
+                                                            }
+                                                        }
+                                                        if (min[0] > 15) {
+                                                            Toast.makeText(getContext(), "Địa chỉ của bạn nằm ngoài bán kính giao hàng (15km) nên đơn hàng không thể đặt", Toast.LENGTH_LONG).show();
+                                                        } else {
+                                    String deliveryNote = edtNote.getText().toString().trim();
+                                    db.collection("order").document(cartID)
+                                            .update("address", address,
+                                                    "date", formatter.format(date),
+                                                    "deliveryNote", deliveryNote, "method", 0,
+                                                    "name", receiverName, "phoneNumber", receiverPhone,
+                                                    "ship", ship, "status", 1, "storeID", storeID,
+                                                    "subtotal", subtotal, "total", total);
+                                    Toast.makeText(getContext(), "Đặt hàng thành công!", Toast.LENGTH_LONG).show();
+                                                            //Create new cart
+                                                            Order order = new Order(
+                                                                    FirebaseAuth.getInstance().getCurrentUser().getUid(), 0
+                                                            );
+                                                            db.collection("order").add(order);
+                                                            Navigation.findNavController(getView()).navigate(R.id.action_checkOutFragment_to_orderFragment, bundle);
+                                                        }
+                                                    }
+                                                }
+                                            });
+                                } else {
+                                    Toast.makeText(getContext(), "Không tìm thấy địa chỉ, vui lòng nhập địa chỉ khác", Toast.LENGTH_SHORT).show();
+                                }
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    else if (method == 1) {
+                        db.collection("order").document(cartID)
+                                .update("date", formatter.format(date),
+                                        "method", 1, "storeID", storeID,
+                                        "name", receiverName, "phoneNumber", receiverPhone,
+                                        "ship", ship, "status", 1,
+                                        "subtotal", subtotal, "total", total);
+                        Toast.makeText(getContext(), "Đặt hàng thành công!", Toast.LENGTH_LONG).show();
+                        //Create new cart
+                        Order order = new Order(
+                                FirebaseAuth.getInstance().getCurrentUser().getUid(), 0
+                        );
+                        db.collection("order").add(order);
                         Navigation.findNavController(getView()).navigate(R.id.action_checkOutFragment_to_orderFragment, bundle);
+                        }
                     }
                 }
             }

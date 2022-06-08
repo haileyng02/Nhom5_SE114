@@ -6,61 +6,35 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.example.koffi.R;
 import com.example.koffi.dialog.CancelOrderDialog;
 import com.example.koffi.dialog.DialogLogOut;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link OrderDetailFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class OrderDetailFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    TextView title;
 
     public OrderDetailFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment OrderDetailFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static OrderDetailFragment newInstance(String param1, String param2) {
         OrderDetailFragment fragment = new OrderDetailFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -85,6 +59,15 @@ public class OrderDetailFragment extends Fragment {
 
         //Init
         Button cancelBtn = view.findViewById(R.id.orderdetail_cancelBtn);
+        title = view.findViewById(R.id.order_title);
+
+        //Setting
+        FragmentManager fm = getParentFragmentManager();
+        int count = fm.getBackStackEntryCount();
+//        switch (Navigation.findNavController(getView()).getPreviousBackStackEntry().getDestination().getId()) {
+//            case R.id.orderHistoryFragment:
+//                System.out.println("ten ne");
+//        }
 
         //Cancel order
         cancelBtn.setOnClickListener(new View.OnClickListener() {
@@ -94,5 +77,8 @@ public class OrderDetailFragment extends Fragment {
                 cancelDialog.show();
             }
         });
+    }
+    private void ClientSideSetting() {
+        title.setText("Đơn hàng của bạn");
     }
 }

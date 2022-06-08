@@ -113,17 +113,6 @@ public class CheckOutFragment extends Fragment {
 
         db = FirebaseFirestore.getInstance();
 
-        //Back pressed
-        OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
-            @Override
-            public void handleOnBackPressed() {
-                Bundle bundle = new Bundle();
-                bundle.putString("back","menu");
-                Navigation.findNavController(view).navigate(R.id.action_global_mainFragment,bundle);
-            }
-        };
-        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(),callback);
-
         //Get store
         sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
         storeID = sharedPref.getString("store" ,"Chọn cửa hàng");
@@ -582,9 +571,7 @@ public class CheckOutFragment extends Fragment {
         addBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Bundle bundle = new Bundle();
-                bundle.putString("back","menu");
-                Navigation.findNavController(view).navigate(R.id.action_global_mainFragment,bundle);
+                Navigation.findNavController(view).navigate(R.id.menuFragment);
             }
         });
 
@@ -862,9 +849,8 @@ public class CheckOutFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Bundle bundle = new Bundle();
-                bundle.putString("back","store");
                 bundle.putString("from","checkout");
-                Navigation.findNavController(getView()).navigate(R.id.action_global_mainFragment,bundle);
+                Navigation.findNavController(getView()).navigate(R.id.action_checkOutFragment_to_storeFragment,bundle);
             }
         });
     }

@@ -47,9 +47,7 @@ public class TermFragment extends Fragment {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Bundle bundle = new Bundle();
-                bundle.putString("back","other");
-                Navigation.findNavController(view).navigate(R.id.action_global_mainFragment,bundle);
+                getActivity().onBackPressed();
             }
         });
         WebView webView= view.findViewById(R.id.webTerm);

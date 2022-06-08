@@ -171,8 +171,7 @@ public class StoreFragment extends Fragment {
                             Navigation.findNavController(getView()).popBackStack();
                         }
                         else {
-                            BottomNavigationView bottomNavigationView = getView().getRootView().findViewById(R.id.bottomNavigationView);
-                            bottomNavigationView.setSelectedItemId(R.id.delivery);
+                            Navigation.findNavController(getView()).navigate(R.id.menuFragment);
                         }
 
                         bottomSheetDialog.dismiss();

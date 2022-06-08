@@ -210,7 +210,7 @@ public class MenuFragment extends Fragment {
                 Bundle bundle = new Bundle();
                 bundle.putParcelableArrayList("cartItems", cartItems);
                 bundle.putLong("numberOfItems", number);
-                Navigation.findNavController(view).navigate(R.id.action_mainFragment_to_checkOutFragment,bundle);
+                Navigation.findNavController(view).navigate(R.id.action_menuFragment_to_checkOutFragment,bundle);
             }
         });
 
@@ -248,7 +248,7 @@ public class MenuFragment extends Fragment {
 
                         Bundle bundle = new Bundle();
                         bundle.putString("from","Other");
-                        Navigation.findNavController(getView()).navigate(R.id.action_mainFragment_to_addressFragment2,bundle);
+                        Navigation.findNavController(getView()).navigate(R.id.action_menuFragment_to_addressFragment2,bundle);
                     }
                 });
 
@@ -267,7 +267,7 @@ public class MenuFragment extends Fragment {
                     @Override
                     public void onClick(View view) {
                         bottomSheetDialog.dismiss();
-                        replaceStoreFragment();
+                        Navigation.findNavController(getView()).navigate(R.id.storeFragment);
                     }
                 });
 
@@ -454,14 +454,6 @@ public class MenuFragment extends Fragment {
                 return false;
             }
         });
-    }
-
-    public void replaceStoreFragment() {
-        FragmentManager fragmentManager = getParentFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.frameLayout,new StoreFragment());
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
     }
     public void setOrderMethod(int method) {
         if (method==0 || method==1) {

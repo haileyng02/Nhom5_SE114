@@ -186,9 +186,7 @@ public class AddressFragment extends Fragment {
                     Navigation.findNavController(getView()).navigate(R.id.action_addressFragment2_to_addAddressFragment, bundle);
                 }*/
                 else {
-                    Bundle bundle = new Bundle();
-                    bundle.putString("back","menu");
-                    Navigation.findNavController(getView()).navigate(R.id.action_global_mainFragment,bundle);
+                    Navigation.findNavController(getView()).navigate(R.id.menuFragment);
                 }
             }
         });

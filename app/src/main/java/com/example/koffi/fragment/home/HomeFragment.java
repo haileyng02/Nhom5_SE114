@@ -1,4 +1,5 @@
 package com.example.koffi.fragment.home;
+import static com.example.koffi.FunctionClass.setListViewHeight;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,16 +9,26 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.viewpager2.widget.CompositePageTransformer;
+import androidx.viewpager2.widget.MarginPageTransformer;
+import androidx.viewpager2.widget.ViewPager2;
 
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ListView;
 
 import com.example.koffi.activity.LoginActivity;
 import com.example.koffi.activity.StaffActivity;
+import com.example.koffi.adapter.MenuItemAdapter;
+import com.example.koffi.adapter.SliderAdapter;
+import com.example.koffi.models.Item;
 import com.example.koffi.models.Order;
 import com.example.koffi.R;
+import com.example.koffi.models.SliderItem;
+import com.example.koffi.models.Store;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -26,53 +37,30 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link HomeFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.ArrayList;
+
 public class HomeFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private ViewPager2 viewPager2;
+    private Handler sliderHandler;
+    ListView listView;
+    ArrayList<Item> itemArray;
+    MenuItemAdapter adapter;
 
     public HomeFragment() {
         // Required empty public constructor
     }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment HomeFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static HomeFragment newInstance(String param1, String param2) {
         HomeFragment fragment = new HomeFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -163,5 +151,76 @@ public class HomeFragment extends Fragment {
                 }
             });
         }
+
+        //Home frag main content
+        //Init
+        viewPager2 = view.findViewById(R.id.home_viewpager);
+        listView = view.findViewById(R.id.featuredList);
+        itemArray = new ArrayList<Item>();
+        adapter = new MenuItemAdapter(getContext(),itemArray);
+
+        //Banner Slider
+        ArrayList<SliderItem> sliderItems = new ArrayList<>();
+        sliderItems.add(new SliderItem(R.drawable.slide_6));
+        sliderItems.add(new SliderItem(R.drawable.slide_2));
+        sliderItems.add(new SliderItem(R.drawable.slide_3));
+        sliderItems.add(new SliderItem(R.drawable.slide_4));
+        sliderItems.add(new SliderItem(R.drawable.slide_5));
+        sliderItems.add(new SliderItem(R.drawable.slide_6));
+        sliderItems.add(new SliderItem(R.drawable.slide_7));
+        sliderItems.add(new SliderItem(R.drawable.slide_8));
+        viewPager2.setAdapter(new SliderAdapter(sliderItems, viewPager2));
+
+        CompositePageTransformer compositePageTransformer = new CompositePageTransformer();
+        compositePageTransformer.addTransformer(new MarginPageTransformer(40));
+        compositePageTransformer.addTransformer(new ViewPager2.PageTransformer() {
+            @Override
+            public void transformPage(@NonNull View page, float position) {
+                float r = 1 - Math.abs(position);
+                page.setScaleY(0.85f + r * 0.15f);
+            }
+        });
+        viewPager2.setPageTransformer(compositePageTransformer);
+
+        sliderHandler = new Handler();
+        viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                sliderHandler.removeCallbacks(slideRunnable);
+                sliderHandler.postDelayed(slideRunnable,3000);
+            }
+        });
+
+        // Featured list view
+        listView.setAdapter(adapter);
+        getFeaturedItems();
+    }
+
+    private Runnable slideRunnable = new Runnable() {
+        @Override
+        public void run() {
+            viewPager2.setCurrentItem(viewPager2.getCurrentItem()+1);
+        }
+    };
+
+    private void getFeaturedItems() {
+        db.collection("featured-menu").get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                            Item item = new Item(documentSnapshot.getId(),documentSnapshot.getString("name"),
+                                    documentSnapshot.getString("image"),documentSnapshot.getLong("price"),documentSnapshot.getString("description"));
+                            itemArray.add(item);
+
+                            if (itemArray.size()==3) {
+                                adapter.notifyDataSetChanged();
+                                setListViewHeight(listView);
+                                return;
+                            }
+                        }
+                    }
+                });
     }
 }

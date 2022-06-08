@@ -3,33 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/delivery_nav_graph"
-    app:startDestination="@id/mainFragment">
-    <fragment
-        android:id="@+id/mainFragment"
-        android:name="com.example.koffi.fragment.MainFragment"
-        android:label="fragment_main"
-        tools:layout="@layout/fragment_main" >
-        <action
-            android:id="@+id/action_mainFragment_to_profileFragment"
-            app:destination="@id/profileFragment" />
-        <action
-            android:id="@+id/action_mainFragment_to_termFragment"
-            app:destination="@id/termFragment" />
-        <action
-            android:id="@+id/action_mainFragment_to_checkOutFragment"
-            app:destination="@id/checkOutFragment" />
-        <action
-            android:id="@+id/action_mainFragment_to_addressFragment2"
-            app:destination="@id/addressFragment2" />
-        <action
-            android:id="@+id/action_mainFragment_to_contactFragment"
-            app:destination="@id/contactFragment" />
-    </fragment>
+    app:startDestination="@id/homeFragment2">
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.example.koffi.fragment.other.ProfileFragment"
         android:label="fragment_profile"
-        tools:layout="@layout/fragment_profile" /><action android:id="@+id/action_global_mainFragment" app:destination="@id/mainFragment"/>
+        tools:layout="@layout/fragment_profile" />
     <fragment
         android:id="@+id/termFragment"
         android:name="com.example.koffi.fragment.other.TermFragment"
@@ -45,6 +24,9 @@
         <action
             android:id="@+id/action_checkOutFragment_to_orderFragment"
             app:destination="@id/orderFragment" />
+        <action
+            android:id="@+id/action_checkOutFragment_to_storeFragment"
+            app:destination="@id/storeFragment" />
     </fragment>
     <fragment
         android:id="@+id/addressFragment2"
@@ -77,4 +59,65 @@
         android:name="com.example.koffi.fragment.order.OrderFragment"
         android:label="fragment_order"
         tools:layout="@layout/fragment_order" />
+    <fragment
+        android:id="@+id/menuFragment"
+        android:name="com.example.koffi.fragment.order.MenuFragment"
+        android:label="fragment_menu"
+        tools:layout="@layout/fragment_menu" >
+        <action
+            android:id="@+id/action_menuFragment_to_checkOutFragment"
+            app:destination="@id/checkOutFragment" />
+        <action
+            android:id="@+id/action_menuFragment_to_addressFragment2"
+            app:destination="@id/addressFragment2" />
+    </fragment>
+    <fragment
+        android:id="@+id/otherFragment"
+        android:name="com.example.koffi.fragment.other.OtherFragment"
+        android:label="fragment_other"
+        tools:layout="@layout/fragment_other" >
+        <action
+            android:id="@+id/action_otherFragment_to_termFragment"
+            app:destination="@id/termFragment" />
+        <action
+            android:id="@+id/action_otherFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_otherFragment_to_contactFragment"
+            app:destination="@id/contactFragment" />
+        <action
+            android:id="@+id/action_otherFragment_to_addressFragment2"
+            app:destination="@id/addressFragment2" />
+        <action
+            android:id="@+id/action_otherFragment_to_orderHistoryFragment"
+            app:destination="@id/orderHistoryFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/homeFragment2"
+        android:name="com.example.koffi.fragment.home.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" />
+    <action android:id="@+id/action_global_homeFragment" app:destination="@id/homeFragment2" />
+    <fragment
+        android:id="@+id/storeFragment"
+        android:name="com.example.koffi.fragment.store.StoreFragment"
+        android:label="fragment_store"
+        tools:layout="@layout/fragment_store" />
+    <fragment
+        android:id="@+id/orderHistoryFragment"
+        android:name="com.example.koffi.fragment.other.OrderHistoryFragment"
+        android:label="fragment_order_history"
+        tools:layout="@layout/fragment_order_history" >
+        <action
+            android:id="@+id/action_orderHistoryFragment_to_orderDetailFragment2"
+            app:destination="@id/orderDetailFragment2" />
+        <action
+            android:id="@+id/action_orderHistoryFragment_to_orderFragment"
+            app:destination="@id/orderFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/orderDetailFragment2"
+        android:name="com.example.koffi.fragment.staff.OrderDetailFragment"
+        android:label="fragment_order_detail"
+        tools:layout="@layout/fragment_order_detail" />
 </navigation>

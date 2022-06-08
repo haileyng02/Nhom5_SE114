@@ -138,7 +138,7 @@ public class ProfileFragment extends Fragment {
                     //Update in firestore
                     db.collection("users").document(user.getUid()).set(userr);
 
-                    Navigation.findNavController(view).navigate(R.id.action_global_mainFragment);
+                    Navigation.findNavController(view).navigate(R.id.otherFragment);
                 }
 
 
@@ -174,21 +174,9 @@ public class ProfileFragment extends Fragment {
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Bundle bundle = new Bundle();
-                bundle.putString("back","other");
-                Navigation.findNavController(view).navigate(R.id.action_global_mainFragment,bundle);
+                getActivity().onBackPressed();
             }
         });
-
-        OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
-            @Override
-            public void handleOnBackPressed() {
-                Bundle bundle = new Bundle();
-                bundle.putString("back","other");
-                Navigation.findNavController(view).navigate(R.id.action_global_mainFragment,bundle);
-            }
-        };
-        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(),callback);
 
             //Bottom sheet avatar
             ConstraintLayout avatar = view.findViewById(R.id.profile_avatar);

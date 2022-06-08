@@ -64,10 +64,10 @@ public class OrderDetailFragment extends Fragment {
         //Setting
         FragmentManager fm = getParentFragmentManager();
         int count = fm.getBackStackEntryCount();
-        switch (Navigation.findNavController(getView()).getPreviousBackStackEntry().getDestination().getId()) {
-            case R.id.orderHistoryFragment:
-                System.out.println("ten ne");
-        }
+//        switch (Navigation.findNavController(getView()).getPreviousBackStackEntry().getDestination().getId()) {
+//            case R.id.orderHistoryFragment:
+//                System.out.println("ten ne");
+//        }
 
         //Cancel order
         cancelBtn.setOnClickListener(new View.OnClickListener() {

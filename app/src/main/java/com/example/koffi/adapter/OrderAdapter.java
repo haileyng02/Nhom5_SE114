@@ -22,12 +22,10 @@ import java.util.ArrayList;
 public class OrderAdapter extends BaseAdapter {
     private Context context;
     private ArrayList<Order> orderArray;
-    private ArrayList<String> idArray;
 
-    public OrderAdapter(Context context, ArrayList orderArray, ArrayList<String> orderID) {
+    public OrderAdapter(Context context, ArrayList orderArray) {
         this.context = context;
         this.orderArray = orderArray;
-        this.idArray = orderID;
     }
 
     @Override
@@ -60,8 +58,8 @@ public class OrderAdapter extends BaseAdapter {
 
         //Handle
         //Còn id nữa
-        idTxt.setText(idArray.get(i));
-        DateFormat df = new SimpleDateFormat("dd/mm/yyyy");
+        idTxt.setText(orderArray.get(i).orderID);
+        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         dateTxt.setText(df.format(orderArray.get(i).date));
         nameTxt.setText(orderArray.get(i).name);
         priceTxt.setText(Long.toString(orderArray.get(i).total)+"đ");

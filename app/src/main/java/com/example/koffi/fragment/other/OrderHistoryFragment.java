@@ -22,7 +22,9 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.example.koffi.R;
+import com.example.koffi.adapter.CartItemAdapter;
 import com.example.koffi.adapter.OrderAdapter;
+import com.example.koffi.models.CartItem;
 import com.example.koffi.models.Order;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -37,6 +39,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 
 public class OrderHistoryFragment extends Fragment {
@@ -65,6 +69,8 @@ public class OrderHistoryFragment extends Fragment {
 
     FirebaseFirestore db;
     FirebaseUser user;
+    CartItemAdapter cartAdapter;
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -82,7 +88,6 @@ public class OrderHistoryFragment extends Fragment {
         });
 
         ArrayList<Order> orderArray = new ArrayList<Order>();
-        ArrayList<String> idArray = new ArrayList<String>();
 
         //Sample data
         Date date = Calendar.getInstance().getTime();
@@ -92,7 +97,7 @@ public class OrderHistoryFragment extends Fragment {
 //        orderArray.add(new Order("user123","Cẩm Tiên","store123", date,2,"123 Nhà","0123456789",new Long(35000),new Long(20000),new Long(55000),"ko co gi",0));
 
         ListView listView = view.findViewById(R.id.historyLv);
-        OrderAdapter orderAdapter = new OrderAdapter(getContext(),orderArray, idArray);
+        OrderAdapter orderAdapter = new OrderAdapter(getContext(),orderArray);
         listView.setAdapter(orderAdapter);
         setListViewHeight(listView);
         orderAdapter.registerDataSetObserver(new DataSetObserver() {
@@ -116,6 +121,8 @@ public class OrderHistoryFragment extends Fragment {
                             SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
                         try {
                             Date date1 = df.parse(sDate1);
+                            System.out.println(date1);
+                            String orderID = snapshot.getId();
                             String address = snapshot.getString("address");
                             String deliveryNote = snapshot.getString("deliveryNote");
                             int method = snapshot.get("method", Integer.class);
@@ -127,14 +134,17 @@ public class OrderHistoryFragment extends Fragment {
                             long subtotal = snapshot.getLong("subtotal");
                             long total = snapshot.getLong("total");
                             String userID = snapshot.getString("userID");
-                            Order order = new Order(userID, name, storeID, date1, status, address, phone,
+                            Order order = new Order(orderID, userID, name, storeID, date1, status, address, phone,
                                     subtotal, ship, total, deliveryNote, method);
                             orderArray.add(order);
-                            idArray.add(snapshot.getId());
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
                         }
+                    }
+                    if (orderArray.size() > 1) {
+                        orderArray.sort(Comparator.comparing(a -> a.date));
+                        Collections.sort(orderArray, Collections.reverseOrder());
                     }
                     orderAdapter.notifyDataSetChanged();
                 }
@@ -144,23 +154,45 @@ public class OrderHistoryFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                ArrayList<CartItem> cart = new ArrayList<>();
+                Bundle bundle = new Bundle();
                 Order order = (Order) listView.getItemAtPosition(i);
-                String id = (String) listView.getItemAtPosition(i);
+                cartAdapter = new CartItemAdapter(getContext(),cart,true);
 
-                if (order.status==4 || order.status==5)
-                    Navigation.findNavController(getView()).navigate(R.id.action_orderHistoryFragment_to_orderDetailFragment2);
-                else {
-                    Bundle bundle = new Bundle();
-                    bundle.putInt("method", order.method);
-                    bundle.putString("orderID", id);
-//                    bundle.putParcelableArrayList("orderItems", cart);
-                    bundle.putLong("total", order.total);
-                    bundle.putLong("subtotal", order.subtotal);
-//                    bundle.putLong("numberOfItems", );
-                    bundle.putString("receiverName", order.name);
-                    bundle.putString("receiverPhone", order.phoneNumber);
-                    Navigation.findNavController(getView()).navigate(R.id.action_orderHistoryFragment_to_orderFragment);
-                }
+                long num[] = new long[1];
+                num[0] = 0;
+                db.collection("cartItems").whereEqualTo("orderID", order.orderID)
+                        .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot snapshot : task.getResult()) {
+                                CartItem item = snapshot.toObject(CartItem.class);
+                                cart.add(item);
+                                num[0] += item.quantity;
+                            }
+                            cartAdapter.notifyDataSetChanged();
+                            if (order.status==4 || order.status==5)
+                                Navigation.findNavController(getView()).navigate(R.id.action_orderHistoryFragment_to_orderDetailFragment2);
+                            else {
+//                                bundle.putParcelableArrayList("orderItems", cart);
+//                                bundle.putLong("numberOfItems", num[0]);
+                                bundle.putInt("method", order.method);
+                                bundle.putString("orderID", order.orderID);
+                                bundle.putLong("total", order.total);
+                                bundle.putLong("subtotal", order.subtotal);
+                                bundle.putString("receiverName", order.name);
+                                bundle.putString("receiverPhone", order.phoneNumber);
+                                bundle.putString("address", order.address);
+                                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+                                bundle.putString("time", sdf.format(order.date));
+                                Navigation.findNavController(getView()).navigate(R.id.action_orderHistoryFragment_to_orderFragment, bundle);
+                            }
+                        }
+                    }
+                });
+
+
             }
         });
     }

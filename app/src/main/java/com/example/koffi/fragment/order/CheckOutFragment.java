@@ -678,6 +678,8 @@ public class CheckOutFragment extends Fragment {
                         bundle.putLong("numberOfItems", number);
                         bundle.putString("receiverName", receiverName);
                         bundle.putString("receiverPhone", receiverPhone);
+                        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+                        bundle.putString("time", sdf.format(new Date()));
                         if (method == 0) {
                             bundle.putString("address", address);
                         } else
@@ -712,7 +714,7 @@ public class CheckOutFragment extends Fragment {
                                                         } else {
                                     String deliveryNote = edtNote.getText().toString().trim();
                                     db.collection("order").document(cartID)
-                                            .update("address", address,
+                                            .update("address", address, "orderID", cartID,
                                                     "date", formatter.format(date),
                                                     "deliveryNote", deliveryNote, "method", 0,
                                                     "name", receiverName, "phoneNumber", receiverPhone,
@@ -738,7 +740,7 @@ public class CheckOutFragment extends Fragment {
                         }
                     else if (method == 1) {
                         db.collection("order").document(cartID)
-                                .update("date", formatter.format(date),
+                                .update("date", formatter.format(date), "orderID", cartID,
                                         "method", 1, "storeID", storeID,
                                         "name", receiverName, "phoneNumber", receiverPhone,
                                         "ship", ship, "status", 1,

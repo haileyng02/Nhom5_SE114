@@ -1,26 +1,35 @@
-package com.example.koffi.fragment.other;
+package com.example.koffi.fragment.staff;
 
+import static com.example.koffi.FunctionClass.setListViewHeight;
+
+import android.database.DataSetObserver;
 import android.os.Bundle;
 
-import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ListView;
 
 import com.example.koffi.R;
+import com.example.koffi.adapter.OrderAdapter;
+import com.example.koffi.models.Order;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link ContactFragment#newInstance} factory method to
+ * Use the {@link StatisticFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ContactFragment extends Fragment {
+public class StatisticFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -31,7 +40,7 @@ public class ContactFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public ContactFragment() {
+    public StatisticFragment() {
         // Required empty public constructor
     }
 
@@ -41,11 +50,11 @@ public class ContactFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment ContactFragment.
+     * @return A new instance of fragment StatisticFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ContactFragment newInstance(String param1, String param2) {
-        ContactFragment fragment = new ContactFragment();
+    public static StatisticFragment newInstance(String param1, String param2) {
+        StatisticFragment fragment = new StatisticFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -66,19 +75,28 @@ public class ContactFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_contact, container, false);
+        return inflater.inflate(R.layout.fragment_statistic, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        //Toolbar
-        Toolbar toolbar = (Toolbar) view.findViewById(R.id.contact_toolbar);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        ArrayList<Order> orderArray = new ArrayList<Order>();
+
+        //Sample data
+        Date date = Calendar.getInstance().getTime();
+        orderArray.add(new Order("user123","Cẩm Tiên","store123", date,5,"123 Nhà","0123456789",new Long(35000),new Long(20000),new Long(55000),"ko co gi",0));
+        orderArray.add(new Order("user123","Cẩm Tiên","store123", date,4,"123 Nhà","0123456789",new Long(35000),new Long(20000),new Long(55000),"ko co gi",0));
+        orderArray.add(new Order("user123","Cẩm Tiên","store123", date,5,"123 Nhà","0123456789",new Long(35000),new Long(20000),new Long(55000),"ko co gi",0));
+
+        ListView listView = view.findViewById(R.id.statisticLv);
+        OrderAdapter orderAdapter = new OrderAdapter(getContext(),orderArray);
+        listView.setAdapter(orderAdapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onClick(View view) {
-                getActivity().onBackPressed();
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Navigation.findNavController(getView()).navigate(R.id.action_staffOrderFragment_to_orderDetailFragment);
             }
         });
     }

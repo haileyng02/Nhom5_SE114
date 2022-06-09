@@ -9,4 +9,8 @@
     <color name="white">#FFFFFFFF</color>
     <color name="primary">#795C34</color>
     <color name="disable">#BBBBBB</color>
+    <color name="koffiGreen">#3CB043</color>
+    <color name="koffiOrange">#FA8128</color>
+    <color name="koffiBlue">#52B2BF</color>
+    <color name="koffiGrey">#BBBBBB</color>
 </resources>

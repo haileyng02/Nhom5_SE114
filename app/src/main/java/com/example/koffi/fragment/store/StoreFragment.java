@@ -1,6 +1,10 @@
 package com.example.koffi.fragment.store;
 
+
+import android.content.ActivityNotFoundException;
+
 import android.content.Context;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -167,8 +171,7 @@ public class StoreFragment extends Fragment {
                             Navigation.findNavController(getView()).popBackStack();
                         }
                         else {
-                            BottomNavigationView bottomNavigationView = getView().getRootView().findViewById(R.id.bottomNavigationView);
-                            bottomNavigationView.setSelectedItemId(R.id.delivery);
+                            Navigation.findNavController(getView()).navigate(R.id.menuFragment);
                         }
 
                         bottomSheetDialog.dismiss();
@@ -177,6 +180,32 @@ public class StoreFragment extends Fragment {
 
                 //Show dialog
                 bottomSheetDialog.show();
+
+                //Store Full Address
+                LinearLayout fullAddress = bottomSheetView.findViewById(R.id.store_fulladress);
+                fullAddress.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        try {
+                            // Create a Uri from an intent string. Use the result to create an Intent
+                            Uri gmmIntentUri = Uri.parse("https://www.google.co.in/maps/dir//" + store.address);
+
+                            // Create an Intent from gmmIntentUri. Set the action to ACTION_VIEW
+                            Intent intent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+
+                            // Make the Intent explicit by setting the Google Maps package
+                            intent.setPackage("com.google.android.apps.maps");
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+                        }   catch (ActivityNotFoundException e) {
+                            // When google map is not installed
+                            Uri uri = Uri.parse("https://play.google.com/store/apps/details?id=com.google.android.apps.maps");
+                            Intent ggPlayIntent = new Intent(Intent.ACTION_VIEW, uri);
+                            ggPlayIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(ggPlayIntent);
+                        }
+                    }
+                });
 
                 //Share Address
                 LinearLayout shareAddress = bottomSheetView.findViewById(R.id.store_shareaddress);
@@ -187,7 +216,7 @@ public class StoreFragment extends Fragment {
                         intent.setType("text/plain");
                         intent.putExtra(Intent.EXTRA_SUBJECT, "Hẹn bạn tại Koffi, ");
                         intent.putExtra(Intent.EXTRA_TEXT,
-                                "https://www.google.com/maps/place/Bitexco+Tower,+h%E1%BA%BBm+s%E1%BB%91+2+H%C3%A0m+Nghi,+B%E1%BA%BFn+Ngh%C3%A9,+Qu%E1%BA%ADn+1,+Th%C3%A0nh+ph%E1%BB%91+H%E1%BB%93+Ch%C3%AD+Minh,+Vi%E1%BB%87t+Nam/@10.7709693,106.7040252,16.48z/data=!4m5!3m4!1s0x31752f43fd97af5f:0x88ba5dd71b15433c!8m2!3d10.7719937!4d106.7057951");
+                                "https://www.google.co.in/maps/dir//" + store.address);
                         startActivity(Intent.createChooser(intent, "Chia sẻ với thiết bị"));
                     }
                 });

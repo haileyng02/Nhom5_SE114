@@ -118,21 +118,10 @@ public class CheckOutFragment extends Fragment {
 
         db = FirebaseFirestore.getInstance();
 
-        //Back pressed
-        OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
-            @Override
-            public void handleOnBackPressed() {
-                Bundle bundle = new Bundle();
-                bundle.putString("back","menu");
-                Navigation.findNavController(view).navigate(R.id.action_global_mainFragment,bundle);
-            }
-        };
-        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(),callback);
-
         //Get store
         sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-        storeID = sharedPref.getString("store" ,null);
-        storeAddress = sharedPref.getString("storeAddress",null);
+        storeID = sharedPref.getString("store" ,"Chọn cửa hàng");
+        storeAddress = sharedPref.getString("storeAddress","Chọn cửa hàng");
 
         //Toolbar
         Toolbar toolbar = (Toolbar) view.findViewById(R.id.checkout_toolbar);
@@ -589,9 +578,7 @@ public class CheckOutFragment extends Fragment {
         addBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Bundle bundle = new Bundle();
-                bundle.putString("back","menu");
-                Navigation.findNavController(view).navigate(R.id.action_global_mainFragment,bundle);
+                Navigation.findNavController(view).navigate(R.id.menuFragment);
             }
         });
 
@@ -870,8 +857,8 @@ public class CheckOutFragment extends Fragment {
         TextView txtTendc= getView().findViewById(R.id.tendc_checkout);
         TextView txtdc=getView().findViewById(R.id.dc_checkout);
 
-        address = sharedPref.getString("dc",null);
-        String addressName = sharedPref.getString("tendc",null);
+        address = sharedPref.getString("dc","Chọn địa chỉ");
+        String addressName = sharedPref.getString("tendc","Chọn địa chỉ");
         txtTendc.setText(addressName);
         txtdc.setText(address);
 
@@ -913,9 +900,8 @@ public class CheckOutFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Bundle bundle = new Bundle();
-                bundle.putString("back","store");
                 bundle.putString("from","checkout");
-                Navigation.findNavController(getView()).navigate(R.id.action_global_mainFragment,bundle);
+                Navigation.findNavController(getView()).navigate(R.id.action_checkOutFragment_to_storeFragment,bundle);
             }
         });
     }

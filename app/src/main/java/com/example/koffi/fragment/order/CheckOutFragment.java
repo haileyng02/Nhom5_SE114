@@ -221,9 +221,11 @@ public class CheckOutFragment extends Fragment {
                 });
                 EditText edtName = bottomSheetView.findViewById(R.id.receiver_name);
                 EditText edtPhone = bottomSheetView.findViewById(R.id.receiver_phone);
-                if (!receiverName.isEmpty())
+                if (receiverName != null)
+                    if (!receiverName.isEmpty())
                     edtName.setText(receiverName);
-                if (!receiverPhone.isEmpty())
+                if (receiverPhone != null)
+                    if (!receiverPhone.isEmpty())
                     edtPhone.setText(receiverPhone);
                 Button doneBtn = bottomSheetView.findViewById(R.id.receiver_doneBtn);
                 doneBtn.setOnClickListener(new View.OnClickListener() {
@@ -654,6 +656,9 @@ public class CheckOutFragment extends Fragment {
                 if (cart.isEmpty()) {
                     Toast.makeText(getContext(),"Giỏ hàng của bạn không có gì hết! Vui lòng chọn sản phẩm!", Toast.LENGTH_LONG).show();
                 }
+                else if (receiverName == null || receiverPhone == null) {
+                    Toast.makeText(getContext(),"Vui lòng nhập đầy đủ thông tin người nhận", Toast.LENGTH_LONG).show();
+                }
                 else if (receiverName.isEmpty() || receiverPhone.isEmpty()) {
                     Toast.makeText(getContext(),"Vui lòng nhập đầy đủ thông tin người nhận", Toast.LENGTH_LONG).show();
                 } else {
@@ -673,6 +678,8 @@ public class CheckOutFragment extends Fragment {
                         bundle.putLong("numberOfItems", number);
                         bundle.putString("receiverName", receiverName);
                         bundle.putString("receiverPhone", receiverPhone);
+                        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+                        bundle.putString("time", sdf.format(new Date()));
                         if (method == 0) {
                             bundle.putString("address", address);
                         } else
@@ -707,7 +714,7 @@ public class CheckOutFragment extends Fragment {
                                                         } else {
                                     String deliveryNote = edtNote.getText().toString().trim();
                                     db.collection("order").document(cartID)
-                                            .update("address", address,
+                                            .update("address", address, "orderID", cartID,
                                                     "date", formatter.format(date),
                                                     "deliveryNote", deliveryNote, "method", 0,
                                                     "name", receiverName, "phoneNumber", receiverPhone,
@@ -733,7 +740,7 @@ public class CheckOutFragment extends Fragment {
                         }
                     else if (method == 1) {
                         db.collection("order").document(cartID)
-                                .update("date", formatter.format(date),
+                                .update("date", formatter.format(date), "orderID", cartID,
                                         "method", 1, "storeID", storeID,
                                         "name", receiverName, "phoneNumber", receiverPhone,
                                         "ship", ship, "status", 1,

@@ -2,6 +2,7 @@ package com.example.koffi.fragment.order;
 
 import static com.example.koffi.FunctionClass.setListViewHeight;
 
+import android.database.DataSetObserver;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -23,12 +24,14 @@ import com.example.koffi.adapter.CartItemAdapter;
 import com.example.koffi.R;
 import com.example.koffi.models.Topping;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -41,7 +44,7 @@ public class OrderFragment extends Fragment {
     FirebaseFirestore db;
     ArrayList<CartItem> cart;
     long total, subtotal, number;
-    String receiverName, receiverPhone, address;
+    String receiverName, receiverPhone, address, time;
     TextView tvName, tvPhone, tvAddress, tvAddressMethod, tvTotal, tvSubtotal, tvNumber, tvOrderID;
     TextView checkTime;
 
@@ -76,7 +79,8 @@ public class OrderFragment extends Fragment {
         //Get arguments
         if (getArguments()!=null) {
             cart = new ArrayList<CartItem>();
-            cart = getArguments().getParcelableArrayList("orderItems");
+            if (getArguments().getParcelableArrayList("orderItems") != null)
+//            cart = getArguments().getParcelableArrayList("orderItems");
             orderMethod = getArguments().getInt("method");
             orderID = getArguments().getString("orderID");
             total = getArguments().getLong("total");
@@ -85,6 +89,7 @@ public class OrderFragment extends Fragment {
             address = getArguments().getString("address");
             receiverName = getArguments().getString("receiverName");
             receiverPhone = getArguments().getString("receiverPhone");
+            time = getArguments().getString("time");
         }
         //Init
         readyStatusText = view.findViewById(R.id.order_readyText);
@@ -105,8 +110,8 @@ public class OrderFragment extends Fragment {
         tvSubtotal = view.findViewById(R.id.order_subtotal);
         tvSubtotal.setText(subtotal + "đ");
         checkTime = view.findViewById(R.id.order_time);
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-        checkTime.setText(sdf.format(new Date()));
+        checkTime.setText(time);
+
 
         //Handle order method
         if (orderMethod == 1)
@@ -132,15 +137,28 @@ public class OrderFragment extends Fragment {
         cartList.setAdapter(cartAdapter);
         setListViewHeight(cartList);
 
+        cartAdapter.registerDataSetObserver(new DataSetObserver() {
+            @Override
+            public void onChanged() {
+                super.onChanged();
+                setListViewHeight(cartList);
+            }
+        });
+
         db = FirebaseFirestore.getInstance();
         db.collection("cartItems").whereEqualTo("cartID", orderID)
                 .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
+                    number = 0;
+                    System.out.println("this");
                     for (QueryDocumentSnapshot snapshot : task.getResult()) {
-                        cart.add(snapshot.toObject(CartItem.class));
+                        CartItem cartItem = snapshot.toObject(CartItem.class);
+                        cart.add(cartItem);
+                        number += cartItem.quantity;
                     }
+                    tvNumber.setText("(" + number + " món)");
                     cartAdapter.notifyDataSetChanged();
                 }
             }

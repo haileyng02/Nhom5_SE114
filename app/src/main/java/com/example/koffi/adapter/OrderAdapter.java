@@ -58,7 +58,8 @@ public class OrderAdapter extends BaseAdapter {
 
         //Handle
         //Còn id nữa
-        DateFormat df = new SimpleDateFormat("dd/mm/yyyy");
+        idTxt.setText(orderArray.get(i).orderID);
+        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         dateTxt.setText(df.format(orderArray.get(i).date));
         nameTxt.setText(orderArray.get(i).name);
         priceTxt.setText(Long.toString(orderArray.get(i).total)+"đ");

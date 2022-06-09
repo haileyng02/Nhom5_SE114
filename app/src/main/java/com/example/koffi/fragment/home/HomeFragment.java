@@ -27,9 +27,11 @@ import com.example.koffi.adapter.SliderAdapter;
 import com.example.koffi.models.Item;
 import com.example.koffi.models.Order;
 import com.example.koffi.R;
+import com.example.koffi.models.User;
 import com.example.koffi.models.SliderItem;
 import com.example.koffi.models.Store;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -112,16 +114,18 @@ public class HomeFragment extends Fragment {
                     .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                         @Override
                         public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            if (!documentSnapshot.exists()) {
+                                String email = user.getEmail();
+                                String phone = user.getPhoneNumber();
+                                String username = user.getDisplayName();
+                                db.collection("users").document(user.getUid()).set(new User(username, email, phone));
+                            }
                             if (documentSnapshot.getString("Ten") != null)
                             ((AppCompatActivity)getActivity()).getSupportActionBar()
                                     .setTitle("Chào " + documentSnapshot.getString("Ten") + " \uD83D\uDC4B");
                         }
-                    });
+            });
         }
-//        if (account != null) {
-//            userName = account.getDisplayName();
-//            ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Chào, " + userName + " \uD83D\uDC4B");
-//        }
         //Handle loginBtn
         Button loginBtn = view.findViewById(R.id.loginBtn);
         loginBtn.setOnClickListener(new View.OnClickListener() {

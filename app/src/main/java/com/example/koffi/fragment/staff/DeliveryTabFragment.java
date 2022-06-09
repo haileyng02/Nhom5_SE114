@@ -87,6 +87,7 @@ public class DeliveryTabFragment extends Fragment {
 
 
         ArrayList<Order> orderArray = new ArrayList<Order>();
+        ArrayList<String> idArray = new ArrayList<>();
 
         //Sample data
         Date date = Calendar.getInstance().getTime();
@@ -95,7 +96,7 @@ public class DeliveryTabFragment extends Fragment {
         orderArray.add(new Order("user123","Cẩm Tiên","store123", date,1,"123 Nhà","0123456789",new Long(35000),new Long(20000),new Long(55000),"ko co gi",0));
 
         ListView listView = view.findViewById(R.id.deliveryLv);
-        OrderAdapter orderAdapter = new OrderAdapter(getContext(),orderArray);
+        OrderAdapter orderAdapter = new OrderAdapter(getContext(),orderArray,idArray);
         listView.setAdapter(orderAdapter);
         setListViewHeight(listView);
         orderAdapter.registerDataSetObserver(new DataSetObserver() {

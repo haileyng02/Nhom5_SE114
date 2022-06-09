@@ -221,9 +221,11 @@ public class CheckOutFragment extends Fragment {
                 });
                 EditText edtName = bottomSheetView.findViewById(R.id.receiver_name);
                 EditText edtPhone = bottomSheetView.findViewById(R.id.receiver_phone);
-                if (!receiverName.isEmpty())
+                if (receiverName != null)
+                    if (!receiverName.isEmpty())
                     edtName.setText(receiverName);
-                if (!receiverPhone.isEmpty())
+                if (receiverPhone != null)
+                    if (!receiverPhone.isEmpty())
                     edtPhone.setText(receiverPhone);
                 Button doneBtn = bottomSheetView.findViewById(R.id.receiver_doneBtn);
                 doneBtn.setOnClickListener(new View.OnClickListener() {
@@ -653,6 +655,9 @@ public class CheckOutFragment extends Fragment {
             public void onClick(View view) {
                 if (cart.isEmpty()) {
                     Toast.makeText(getContext(),"Giỏ hàng của bạn không có gì hết! Vui lòng chọn sản phẩm!", Toast.LENGTH_LONG).show();
+                }
+                else if (receiverName == null || receiverPhone == null) {
+                    Toast.makeText(getContext(),"Vui lòng nhập đầy đủ thông tin người nhận", Toast.LENGTH_LONG).show();
                 }
                 else if (receiverName.isEmpty() || receiverPhone.isEmpty()) {
                     Toast.makeText(getContext(),"Vui lòng nhập đầy đủ thông tin người nhận", Toast.LENGTH_LONG).show();

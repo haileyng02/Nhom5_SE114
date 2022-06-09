@@ -83,6 +83,7 @@ public class StatisticFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         ArrayList<Order> orderArray = new ArrayList<Order>();
+        ArrayList<String> idArray = new ArrayList<>();
 
         //Sample data
         Date date = Calendar.getInstance().getTime();
@@ -91,7 +92,7 @@ public class StatisticFragment extends Fragment {
         orderArray.add(new Order("user123","Cẩm Tiên","store123", date,5,"123 Nhà","0123456789",new Long(35000),new Long(20000),new Long(55000),"ko co gi",0));
 
         ListView listView = view.findViewById(R.id.statisticLv);
-        OrderAdapter orderAdapter = new OrderAdapter(getContext(),orderArray);
+        OrderAdapter orderAdapter = new OrderAdapter(getContext(),orderArray,idArray);
         listView.setAdapter(orderAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

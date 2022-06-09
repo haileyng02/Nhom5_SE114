@@ -37,5 +37,6 @@ public class Order {
         this.status = status;
     }
 
-
+    public Order() {
+    }
 }

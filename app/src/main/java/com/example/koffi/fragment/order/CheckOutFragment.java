@@ -689,7 +689,7 @@ public class CheckOutFragment extends Fragment {
                             try {
                                 List<Address> addressList;
                                 addressList = geocoder.getFromLocationName(address, 1);
-                                if (addressList != null) {
+                                if (addressList != null && addressList.size() > 0) {
                                     double lat = addressList.get(0).getLatitude();
                                     double lng = addressList.get(0).getLongitude();
                                     float[] result = new float[1];

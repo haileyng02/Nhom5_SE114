@@ -189,13 +189,15 @@
                         android:textColor="@color/black"
                         android:textSize="18sp"
                         android:textStyle="bold" />
+
                     <ListView
                         android:id="@+id/order_cartList"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginVertical="15dp"
                         android:divider="@android:color/transparent"
-                        android:dividerHeight="10dp"
-                        android:layout_marginVertical="15dp"/>
+                        android:dividerHeight="10dp" />
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

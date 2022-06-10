@@ -828,14 +828,7 @@ public class CheckOutFragment extends Fragment {
         orderMethodTxt.setText("Giao tận nơi");
         bottomMethodText.setText("Giao tận nơi • ");
 
-        //Change orderMethod
-        changeOrderMethodBtn = getView().findViewById(R.id.checkout_delivery_changeBtn);
-        changeOrderMethodBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                changeOrderOnClick();
-            }
-        });
+
         //Address
         TextView txtTendc= getView().findViewById(R.id.tendc_checkout);
         TextView txtdc=getView().findViewById(R.id.dc_checkout);
@@ -878,14 +871,6 @@ public class CheckOutFragment extends Fragment {
         orderMethodTxt.setText("Tự đến lấy");
         bottomMethodText.setText("Tự đến lấy • ");
 
-        //Change orderMethod
-        changeOrderMethodBtn = getView().findViewById(R.id.checkout_takeaway_changeBtn);
-        changeOrderMethodBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                changeOrderOnClick();
-            }
-        });
 
         //Choose store
         LinearLayout chooseAddress = getView().findViewById(R.id.takeaway_store);

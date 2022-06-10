@@ -57,7 +57,8 @@ public class OrderAdapter extends BaseAdapter {
         TextView stateTxt = view.findViewById(R.id.orderStateText);
 
         //Handle
-        //Còn id nữa
+
+        idTxt.setText(orderArray.get(i).orderID);
         DateFormat df = new SimpleDateFormat("dd/mm/yyyy");
         dateTxt.setText(df.format(orderArray.get(i).date));
         nameTxt.setText(orderArray.get(i).name);

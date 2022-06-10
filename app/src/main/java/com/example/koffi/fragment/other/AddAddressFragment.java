@@ -132,7 +132,9 @@ public class AddAddressFragment extends Fragment {
                                 "Nhà.Địa chỉ", addressEdit.getText().toString(),
                                 "Nhà.Ghi chú",noteEdit.getText().toString()
                         );
-                        Navigation.findNavController(getView()).navigate(R.id.action_addAddressFragment_to_addressFragment2);
+                        Bundle bundle = new Bundle();
+                        bundle.putString("from",from);
+                        Navigation.findNavController(getView()).navigate(R.id.action_addAddressFragment_to_addressFragment2,bundle);
                     }
 
                 }
@@ -147,7 +149,9 @@ public class AddAddressFragment extends Fragment {
                                     "Công ty.Địa chỉ", addressEdit.getText().toString(),
                                     "Công ty.Ghi chú",noteEdit.getText().toString()
                             );
-                            Navigation.findNavController(getView()).navigate(R.id.action_addAddressFragment_to_addressFragment2);
+                            Bundle bundle = new Bundle();
+                            bundle.putString("from",from);
+                            Navigation.findNavController(getView()).navigate(R.id.action_addAddressFragment_to_addressFragment2,bundle);
                         }
                     }
                     else

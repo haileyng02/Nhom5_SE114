@@ -463,10 +463,12 @@ public class MenuFragment extends Fragment {
             if (orderMethod==0) {
                 methodIcon="icon_delivery";
                 text="Giao đến";
+                addressText.setText(address);
             }
             else {
                 methodIcon="icon_takeaway";
                 text="Đến lấy tại";
+                addressText.setText(storeAddress);
             }
 
             int drawableId = getView().getResources().getIdentifier(methodIcon, "drawable", getContext().getPackageName());

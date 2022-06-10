@@ -91,7 +91,7 @@ public class OrderDetailFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Date date = Calendar.getInstance().getTime();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yy HH:mm:ss");
         //Init
 
         Button cancelBtn = view.findViewById(R.id.orderdetail_cancelBtn);

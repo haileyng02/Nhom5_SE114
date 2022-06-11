@@ -2,6 +2,7 @@ package com.example.koffi.fragment.order;
 
 import static com.example.koffi.FunctionClass.setListViewHeight;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.res.ColorStateList;
@@ -67,7 +68,7 @@ public class OrderFragment extends Fragment {
     ImageView imageView;
     TextView state;
     Button cancelBtn;
-    String confirm, ready, completed;
+    String confirm, ready, completed, cancel;
 
     public OrderFragment() {
         // Required empty public constructor
@@ -300,6 +301,37 @@ public class OrderFragment extends Fragment {
                                         String dateStr = sdf.format(date1);
                                         completeTime.setText(dateStr);
                                         stateComplete();
+                                    } catch (ParseException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                                break;
+                            case 5:
+                                cancel = value.getString("cancelTime");
+                                if (cancel != null && !cancel.isEmpty()) {
+                                    try {
+                                        Date date1 = df.parse(cancel);
+                                        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+                                        String dateStr = sdf.format(date1);
+                                        AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+                                        alert.setTitle("THÔNG BÁO!");
+                                        alert.setMessage("Đơn hàng của bạn đã bị hủy!\nLý do: " + value.get("deliveryNote") +
+                                                "\nĐơn hàng bị hủy lúc: \n" + dateStr);
+                                        alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                                            }
+                                        });
+                                        alert.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                                            @Override
+                                            public void onDismiss(DialogInterface dialogInterface) {
+                                                Bundle bundle = new Bundle();
+                                                bundle.putString("documentID", orderID);
+                                                Navigation.findNavController(getView()).navigate(R.id.action_orderFragment_to_orderDetailFragment2, bundle);
+                                            }
+                                        });
+                                        alert.show();
                                     } catch (ParseException e) {
                                         e.printStackTrace();
                                     }

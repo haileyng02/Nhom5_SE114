@@ -7,6 +7,9 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.database.DataSetObserver;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
@@ -61,9 +64,11 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class CheckOutFragment extends Fragment {
 
@@ -73,11 +78,15 @@ public class CheckOutFragment extends Fragment {
     TextView bottomMethodText;
 
     SharedPreferences sharedPref;
+    SharedPreferences.Editor editor;
 
     String address;
+    String addressName;
+
 
     String storeID;
     String storeAddress;
+
 
     public CheckOutFragment() {
         // Required empty public constructor
@@ -140,8 +149,17 @@ public class CheckOutFragment extends Fragment {
 
         //Get store
         sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-        storeID = sharedPref.getString("store" ,null);
-        storeAddress = sharedPref.getString("storeAddress",null);
+        editor = sharedPref.edit();
+        storeID = sharedPref.getString("store" ,"Chọn cửa hàng");
+        storeAddress = sharedPref.getString("storeAddress","Chọn cửa hàng");
+
+        //Get address
+        address = sharedPref.getString("dc","Chọn địa chỉ");
+        addressName = sharedPref.getString("tendc","Chọn địa chỉ");
+
+        //Get receiver info
+        receiverName = sharedPref.getString("receiverName","Thêm tên");
+        receiverPhone = sharedPref.getString("receiverPhone","Thêm số điện thoại");
 
         //Toolbar
         Toolbar toolbar = (Toolbar) view.findViewById(R.id.checkout_toolbar);
@@ -203,18 +221,35 @@ public class CheckOutFragment extends Fragment {
         Date now = new Date();
         String strDate = sdfDate.format(now);
         tvDate.setText(strDate);
-        db.collection("users").document(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                receiverName = documentSnapshot.getString("Ten");
-                receiverPhone = documentSnapshot.getString("Sdt");
-                if (!receiverName.isEmpty())
-                    tvName.setText(receiverName);
-                if (!receiverPhone.isEmpty())
-                    tvPhone.setText(receiverPhone);
-            }
-        });
+        tvName.setText(receiverName);
+        tvPhone.setText(receiverPhone);
+        if (tvName.getText().toString().equals("Thêm tên")||tvPhone.getText().toString().equals("Thêm số điện thoại"))
+            db.collection("users").document(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                    .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    receiverName = documentSnapshot.getString("Ten");
+                    receiverPhone = documentSnapshot.getString("Sdt");
+                    if (receiverName != null)
+                        if (!receiverName.isEmpty()) {
+                            tvName.setText(receiverName);
+                            editor.putString("receiverName",receiverName);
+                            editor.apply();
+                            System.out.println("Dòng 207: "+receiverName);
+                        }
+
+                    if(receiverPhone.isEmpty())
+                        System.out.println("Chốt phone nè: "+receiverPhone);
+                    if (receiverPhone != null)
+                        if (!receiverPhone.isEmpty() ) {
+                            tvPhone.setText(receiverPhone);
+                            editor.putString("receiverPhone",receiverPhone);
+                            editor.apply();
+                            System.out.println("Dòng 217: "+receiverPhone);
+                        }
+
+                }
+            });
 
         //Receiver information
         LinearLayout receiver = view.findViewById(R.id.checkout_receiver);
@@ -239,9 +274,11 @@ public class CheckOutFragment extends Fragment {
                 });
                 EditText edtName = bottomSheetView.findViewById(R.id.receiver_name);
                 EditText edtPhone = bottomSheetView.findViewById(R.id.receiver_phone);
-                if (!receiverName.isEmpty())
+                if (receiverName != null)
+                    if (!receiverName.isEmpty())
                     edtName.setText(receiverName);
-                if (!receiverPhone.isEmpty())
+                if (receiverPhone != null)
+                    if (!receiverPhone.isEmpty())
                     edtPhone.setText(receiverPhone);
                 Button doneBtn = bottomSheetView.findViewById(R.id.receiver_doneBtn);
                 doneBtn.setOnClickListener(new View.OnClickListener() {
@@ -252,8 +289,14 @@ public class CheckOutFragment extends Fragment {
                         } else {
                             receiverName = edtName.getText().toString().trim();
                             tvName.setText(receiverName);
+                            editor.putString("receiverName",receiverName);
+                            editor.apply();
                             receiverPhone = edtPhone.getText().toString().trim();
                             tvPhone.setText(receiverPhone);
+                            System.out.println("Ở đây: "+ receiverPhone);
+                            editor.putString("receiverPhone",receiverPhone);
+                            editor.apply();
+                            System.out.println("Bí mật mí: "+sharedPref.getString("receiverPhone","Không có nha má"));
                             bottomSheetDialog.dismiss();
                         }
                     }
@@ -472,6 +515,7 @@ public class CheckOutFragment extends Fragment {
                                                 if (task.isSuccessful()) {
                                                     for (QueryDocumentSnapshot snapshot : task.getResult()) {
                                                         docID = snapshot.getId();
+                                                        System.out.println(docID);
                                                         if (numberUnit != 0) {
                                                             long sum = 0;
                                                             for (int n = 0; n < 8; n++) {
@@ -595,9 +639,7 @@ public class CheckOutFragment extends Fragment {
         addBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Bundle bundle = new Bundle();
-                bundle.putString("back","menu");
-                Navigation.findNavController(view).navigate(R.id.action_global_mainFragment,bundle);
+                Navigation.findNavController(view).navigate(R.id.menuFragment);
             }
         });
 
@@ -673,6 +715,9 @@ public class CheckOutFragment extends Fragment {
                 if (cart.isEmpty()) {
                     Toast.makeText(getContext(),"Giỏ hàng của bạn không có gì hết! Vui lòng chọn sản phẩm!", Toast.LENGTH_LONG).show();
                 }
+                else if (receiverName == null || receiverPhone == null) {
+                    Toast.makeText(getContext(),"Vui lòng nhập đầy đủ thông tin người nhận", Toast.LENGTH_LONG).show();
+                }
                 else if (receiverName.isEmpty() || receiverPhone.isEmpty()) {
                     Toast.makeText(getContext(),"Vui lòng nhập đầy đủ thông tin người nhận", Toast.LENGTH_LONG).show();
                 } else {
@@ -683,30 +728,6 @@ public class CheckOutFragment extends Fragment {
                     } else {
                         Date date = new Date();
                         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-                        if (method == 0) {
-                            String deliveryNote = edtNote.getText().toString().trim();
-                            db.collection("order").document(cartID)
-                                    .update("address", address,
-                                            "date", formatter.format(date),
-                                            "deliveryNote", deliveryNote, "method", 0,
-                                            "name", receiverName, "phoneNumber", receiverPhone,
-                                            "ship", ship, "status", 1,
-                                            "subtotal", subtotal, "total", total);
-                            Toast.makeText(getContext(), "Đặt hàng thành công!", Toast.LENGTH_LONG).show();
-                        } else if (method == 1) {
-                            db.collection("order").document(cartID)
-                                    .update("date", formatter.format(date),
-                                            "method", 1, "storeID", storeID,
-                                            "name", receiverName, "phoneNumber", receiverPhone,
-                                            "ship", ship, "status", 1,
-                                            "subtotal", subtotal, "total", total);
-                            Toast.makeText(getContext(), "Đặt hàng thành công!", Toast.LENGTH_LONG).show();
-                        }
-                        //Create new cart
-                        Order order = new Order(
-                                FirebaseAuth.getInstance().getCurrentUser().getUid(), 0
-                        );
-                        db.collection("order").add(order);
                         Bundle bundle = new Bundle();
                         bundle.putInt("method", method);
                         bundle.putString("orderID", cartID);
@@ -716,11 +737,81 @@ public class CheckOutFragment extends Fragment {
                         bundle.putLong("numberOfItems", number);
                         bundle.putString("receiverName", receiverName);
                         bundle.putString("receiverPhone", receiverPhone);
+                        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+                        bundle.putString("time", sdf.format(new Date()));
                         if (method == 0) {
                             bundle.putString("address", address);
                         } else
                             bundle.putString("address", storeAddress);
+                        if (method == 0) {
+                            Geocoder geocoder = new Geocoder(getContext());
+                            try {
+                                List<Address> addressList;
+                                addressList = geocoder.getFromLocationName(address, 1);
+                                if (addressList != null) {
+                                    double lat = addressList.get(0).getLatitude();
+                                    double lng = addressList.get(0).getLongitude();
+                                    float[] result = new float[1];
+                                    float[] min = new float[1];
+                                    min[0] = Float.MAX_VALUE;
+                                    db.collection("stores").get()
+                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                    if (task.isSuccessful()) {
+                                                        for (QueryDocumentSnapshot snapshot : task.getResult()) {
+                                                            Location.distanceBetween(lat,lng,
+                                                                    snapshot.getDouble("latitude"), snapshot.getDouble("longitude"), result);
+                                                            float distance = result[0] / 1000;
+                                                            if (min[0] > distance) {
+                                                                min[0] = distance;
+                                                                storeID = snapshot.getId();
+                                                            }
+                                                        }
+                                                        if (min[0] > 15) {
+                                                            Toast.makeText(getContext(), "Địa chỉ của bạn nằm ngoài bán kính giao hàng (15km) nên đơn hàng không thể đặt", Toast.LENGTH_LONG).show();
+                                                        } else {
+                                    String deliveryNote = edtNote.getText().toString().trim();
+                                    db.collection("order").document(cartID)
+                                            .update("address", address, "orderID", cartID,
+                                                    "date", formatter.format(date),
+                                                    "deliveryNote", deliveryNote, "method", 0,
+                                                    "name", receiverName, "phoneNumber", receiverPhone,
+                                                    "ship", ship, "status", 1, "storeID", storeID,
+                                                    "subtotal", subtotal, "total", total);
+                                    Toast.makeText(getContext(), "Đặt hàng thành công!", Toast.LENGTH_LONG).show();
+                                                            //Create new cart
+                                                            Order order = new Order(
+                                                                    FirebaseAuth.getInstance().getCurrentUser().getUid(), 0
+                                                            );
+                                                            db.collection("order").add(order);
+                                                            Navigation.findNavController(getView()).navigate(R.id.action_checkOutFragment_to_orderFragment, bundle);
+                                                        }
+                                                    }
+                                                }
+                                            });
+                                } else {
+                                    Toast.makeText(getContext(), "Không tìm thấy địa chỉ, vui lòng nhập địa chỉ khác", Toast.LENGTH_SHORT).show();
+                                }
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    else if (method == 1) {
+                        db.collection("order").document(cartID)
+                                .update("date", formatter.format(date), "orderID", cartID,
+                                        "method", 1, "storeID", storeID,
+                                        "name", receiverName, "phoneNumber", receiverPhone,
+                                        "ship", ship, "status", 1,
+                                        "subtotal", subtotal, "total", total);
+                        Toast.makeText(getContext(), "Đặt hàng thành công!", Toast.LENGTH_LONG).show();
+                        //Create new cart
+                        Order order = new Order(
+                                FirebaseAuth.getInstance().getCurrentUser().getUid(), 0
+                        );
+                        db.collection("order").add(order);
                         Navigation.findNavController(getView()).navigate(R.id.action_checkOutFragment_to_orderFragment, bundle);
+                        }
                     }
                 }
             }
@@ -828,16 +919,12 @@ public class CheckOutFragment extends Fragment {
         orderMethodTxt.setText("Giao tận nơi");
         bottomMethodText.setText("Giao tận nơi • ");
 
-
         //Address
         TextView txtTendc= getView().findViewById(R.id.tendc_checkout);
         TextView txtdc=getView().findViewById(R.id.dc_checkout);
 
-        address = sharedPref.getString("dc","Chọn địa chỉ");
-        String addressName = sharedPref.getString("tendc","Chọn địa chỉ");
         txtTendc.setText(addressName);
         txtdc.setText(address);
-
 
         //Navigate to Address Fragment
         LinearLayout chooseAddress = getView().findViewById(R.id.checkout_chooseAddress);
@@ -862,15 +949,20 @@ public class CheckOutFragment extends Fragment {
         ship.setVisibility(View.GONE);
 
         //Address
-        if (storeAddress!=null) {
+        if (!storeAddress.equals("Chọn cửa hàng")) {
             String addressName = storeAddress.substring(0,storeAddress.indexOf(","));
             addressNameTxt.setText(addressName);
             addressTxt.setText(storeAddress);
         }
+        else {
+            editor.putString("storeAddress","Tầng 50 Bitexco Tower, 2 Hải Triều, Phường Bến Nghé, Quận 1");
+            editor.putString("store","store-1");
+            editor.apply();
+        }
+
 
         orderMethodTxt.setText("Tự đến lấy");
         bottomMethodText.setText("Tự đến lấy • ");
-
 
         //Choose store
         LinearLayout chooseAddress = getView().findViewById(R.id.takeaway_store);
@@ -878,9 +970,8 @@ public class CheckOutFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Bundle bundle = new Bundle();
-                bundle.putString("back","store");
                 bundle.putString("from","checkout");
-                Navigation.findNavController(getView()).navigate(R.id.action_global_mainFragment,bundle);
+                Navigation.findNavController(getView()).navigate(R.id.action_checkOutFragment_to_storeFragment,bundle);
             }
         });
     }
@@ -894,9 +985,13 @@ public class CheckOutFragment extends Fragment {
         //Handle bottom sheet
         Button editDeliveryBtn = bottomSheetView.findViewById(R.id.delivery_editBtn);
         Button editTABtn = bottomSheetView.findViewById(R.id.takeaway_editBtn);
+        TextView addressTxt = bottomSheetView.findViewById(R.id.delivery_address);
+        TextView storeAddressTxt = bottomSheetView.findViewById(R.id.checkout_address);
 
         editDeliveryBtn.setVisibility(View.GONE);
         editTABtn.setVisibility(View.GONE);
+        addressTxt.setText(address);
+        storeAddressTxt.setText(storeAddress);
 
         //Delivery
         LinearLayout delivery = bottomSheetView.findViewById(R.id.ordermethod_delivery);

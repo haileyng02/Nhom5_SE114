@@ -9,6 +9,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.navigation.Navigation;
@@ -21,6 +22,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.TextView;
 
 import com.example.koffi.R;
 import com.example.koffi.adapter.CartItemAdapter;
@@ -46,6 +48,7 @@ import java.util.Date;
 
 public class OrderDetailFragment extends Fragment {
 
+    TextView title;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -54,8 +57,6 @@ public class OrderDetailFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-
-
     public OrderDetailFragment() {
         // Required empty public constructor
     }
@@ -63,20 +64,12 @@ public class OrderDetailFragment extends Fragment {
     ArrayList<CartItem> cart=new ArrayList<CartItem>();
     public static OrderDetailFragment newInstance(String param1, String param2) {
         OrderDetailFragment fragment = new OrderDetailFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -92,8 +85,17 @@ public class OrderDetailFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         Date date = Calendar.getInstance().getTime();
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yy HH:mm:ss");
-        //Init
 
+        //Toolbar
+        Toolbar toolbar = (Toolbar) view.findViewById(R.id.orderdetail_toolbar);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().onBackPressed();
+            }
+        });
+
+        //Init
         Button cancelBtn = view.findViewById(R.id.orderdetail_cancelBtn);
         Button btnchangeState=view.findViewById(R.id.orderdetail_confirmBtn);
         TextView txtSubtotal=view.findViewById(R.id.order_subtotal);
@@ -132,6 +134,15 @@ public class OrderDetailFragment extends Fragment {
         });
         //setInfomation
         if(getArguments().getString("documentID")!=null) {
+        title = view.findViewById(R.id.order_title);
+
+        //Setting
+        FragmentManager fm = getParentFragmentManager();
+        int count = fm.getBackStackEntryCount();
+//        switch (Navigation.findNavController(getView()).getPreviousBackStackEntry().getDestination().getId()) {
+//            case R.id.orderHistoryFragment:
+//                System.out.println("ten ne");
+//        }
 
             DocumentReference docRef = db.collection("order").document(getArguments().getString("documentID"));
             db.collection("order").addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -214,5 +225,8 @@ public class OrderDetailFragment extends Fragment {
         }
 
 
+    }
+    private void ClientSideSetting() {
+        title.setText("Đơn hàng của bạn");
     }
 }

@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
@@ -48,6 +49,7 @@ public class AddressFragment extends Fragment {
     ArrayList<Address> addressList ;
     SharedPreferences sharedPref;
     SharedPreferences.Editor editor;
+    NavController navController;
 
     public AddressFragment() {
         // Required empty public constructor
@@ -91,7 +93,7 @@ public class AddressFragment extends Fragment {
             from = getArguments().getString("from");
 
         //backPress
-        if (from.equals("Other")) {
+        //if (from.equals("Other")) {
             /*OnBackPressedCallback callback = new OnBackPressedCallback(true *//* enabled by default *//*) {
                 @Override
                 public void handleOnBackPressed() {
@@ -101,7 +103,7 @@ public class AddressFragment extends Fragment {
                 }
             };
             requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(),callback);*/
-        }
+        //}
 
         //Toolbar
         Toolbar toolbar = (Toolbar) view.findViewById(R.id.address_toolbar);
@@ -112,6 +114,7 @@ public class AddressFragment extends Fragment {
             }
         });
 
+        navController = Navigation.findNavController(getView());
 
         //Navigate to add address
         addHome.setOnClickListener(new View.OnClickListener() {
@@ -121,14 +124,24 @@ public class AddressFragment extends Fragment {
                 {
                     Bundle bundle = new Bundle();
                     bundle.putString("type", "Nhà");
+                    if (from.equals("checkout"))
+                        bundle.putString("from","checkoutNew");
                     Navigation.findNavController(getView()).navigate(R.id.action_addressFragment2_to_addAddressFragment, bundle);
                 }
-                else {
+                else if (from.equals("checkoutNew")) {
                     editor.putString("tendc","Nhà");
                     editor.putString("dc",addressHome.getText().toString());
                     editor.apply();
 
-                    Navigation.findNavController(getView()).popBackStack();
+                    navController.popBackStack();
+                    navController.popBackStack();
+                    navController.popBackStack();
+                }
+                else {
+                    editor.putString("tendc", "Nhà");
+                    editor.putString("dc", addressHome.getText().toString());
+                    editor.apply();
+                    navController.popBackStack();
                 }
             }
 
@@ -140,14 +153,24 @@ public class AddressFragment extends Fragment {
                 {
                     Bundle bundle = new Bundle();
                     bundle.putString("type", "Công ty");
+                    if (from.equals("checkout"))
+                        bundle.putString("from","checkoutNew");
                     Navigation.findNavController(getView()).navigate(R.id.action_addressFragment2_to_addAddressFragment, bundle);
+                }
+                else if (from.equals("checkoutNew")) {
+                    editor.putString("tendc", "Công ty");
+                    editor.putString("dc", addressCompany.getText().toString());
+                    editor.apply();
+
+                    navController.popBackStack();
+                    navController.popBackStack();
+                    navController.popBackStack();
                 }
                 else {
                     editor.putString("tendc", "Công ty");
                     editor.putString("dc", addressCompany.getText().toString());
                     editor.apply();
-
-                    Navigation.findNavController(getView()).popBackStack();
+                    navController.popBackStack();
                 }
             }
         });
@@ -186,9 +209,7 @@ public class AddressFragment extends Fragment {
                     Navigation.findNavController(getView()).navigate(R.id.action_addressFragment2_to_addAddressFragment, bundle);
                 }*/
                 else {
-                    Bundle bundle = new Bundle();
-                    bundle.putString("back","menu");
-                    Navigation.findNavController(getView()).navigate(R.id.action_global_mainFragment,bundle);
+                    Navigation.findNavController(getView()).navigate(R.id.menuFragment);
                 }
             }
         });

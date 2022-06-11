@@ -1,39 +1,32 @@
 package com.example.koffi.activity;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
+import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.Toast;
 
 import com.example.koffi.R;
-import com.google.android.gms.auth.api.credentials.IdToken;
+import com.example.koffi.databinding.ActivityMainBinding;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.appbar.AppBarLayout;
-import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GetTokenResult;
-import com.google.firebase.auth.UserInfo;
-
-import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
     Task<GetTokenResult> task;
+    ActivityMainBinding binding;
+    NavController navController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,5 +46,41 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
+
+        //Bottom nav
+        navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
+        BottomNavigationView bottomNavigationView = findViewById(R.id.main_bottom_nav);
+        NavigationUI.setupWithNavController(bottomNavigationView, navController);
+        navController.addOnDestinationChangedListener(new NavController.OnDestinationChangedListener() {
+            @Override
+            public void onDestinationChanged(@NonNull NavController navController, @NonNull NavDestination navDestination, @Nullable Bundle bundle) {
+                String label = navDestination.getLabel().toString();
+                if (label.equals("fragment_home") || label.equals("fragment_menu") || label.equals("fragment_store")|| label.equals("fragment_other"))
+                    bottomNavigationView.setVisibility(View.VISIBLE);
+                else
+                    bottomNavigationView.setVisibility(View.GONE);
+            }
+        });
+
+        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.home:
+                        navController.navigate(R.id.action_global_homeFragment);
+                        break;
+                    case R.id.delivery:
+                        navController.navigate(R.id.menuFragment);
+                        break;
+                    case R.id.store:
+                        navController.navigate(R.id.storeFragment);
+                        break;
+                    case R.id.other:
+                        navController.navigate(R.id.otherFragment);
+                        break;
+                }
+                return true;
+            }
+        });
     }
 }

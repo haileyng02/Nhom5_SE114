@@ -57,9 +57,9 @@ public class OrderAdapter extends BaseAdapter {
         TextView stateTxt = view.findViewById(R.id.orderStateText);
 
         //Handle
-
+        //Còn id nữa
         idTxt.setText(orderArray.get(i).orderID);
-        DateFormat df = new SimpleDateFormat("dd/mm/yyyy");
+        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         dateTxt.setText(df.format(orderArray.get(i).date));
         nameTxt.setText(orderArray.get(i).name);
         priceTxt.setText(Long.toString(orderArray.get(i).total)+"đ");
@@ -76,9 +76,13 @@ public class OrderAdapter extends BaseAdapter {
                 stateBtn.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context,R.color.koffiBlue)));
                 stateTxt.setText("Đang giao");
                 break;
-            case 5:
+            case 4:
                 stateBtn.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context,R.color.koffiGreen)));
                 stateTxt.setText("Hoàn thành");
+                break;
+            case 5:
+                stateBtn.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context,R.color.koffiGrey)));
+                stateTxt.setText("Đã hủy");
                 break;
         }
         return view;

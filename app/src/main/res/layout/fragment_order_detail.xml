@@ -12,7 +12,7 @@
         android:orientation="vertical">
 
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/order_toolbar"
+            android:id="@+id/orderdetail_toolbar"
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
             android:background="@color/white"
@@ -35,9 +35,10 @@
                     android:orientation="vertical">
 
                     <TextView
+                        android:id="@+id/order_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Đơn hàng của khách hàng"
+                        android:text="Đơn hàng của khách"
                         android:textColor="@color/black"
                         android:textSize="18sp"
                         android:textStyle="bold" />
@@ -246,11 +247,13 @@
                         android:text="• "
                         android:textColor="#00FF00"
                         android:textSize="20sp" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Trạng thái: "
-                        android:textColor="@color/black"/>
+                        android:textColor="@color/black" />
+
                     <TextView
                         android:id="@+id/state_order"
                         android:layout_width="wrap_content"
@@ -258,16 +261,18 @@
                         android:text="Chờ xác nhận"
                         android:textColor="@color/black"/>
                 </LinearLayout>
+
                 <Button
                     android:id="@+id/orderdetail_confirmBtn"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
                     android:layout_marginHorizontal="15dp"
-                    android:padding="15dp"
+                    android:layout_marginTop="15dp"
                     android:backgroundTint="@color/primary"
+                    android:padding="15dp"
                     android:text="Xác nhận đơn hàng"
-                    android:textAllCaps="false"/>
+                    android:textAllCaps="false" />
+
                 <Button
                     android:id="@+id/orderdetail_cancelBtn"
                     android:layout_width="match_parent"

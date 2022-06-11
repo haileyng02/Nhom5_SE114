@@ -2,7 +2,7 @@ package com.example.koffi.models;
 
 import java.util.Date;
 
-public class Order {
+public class Order implements Comparable<Order>{
     public Order(String orderID, String userID, String name, String storeID, Date date, int status, String address, String phoneNumber, long subtotal, long ship, long total, String deliveryNote, int method) {
         this.orderID = orderID;
         this.userID = userID;
@@ -55,4 +55,8 @@ public class Order {
     }
 
 
+    @Override
+    public int compareTo(Order order) {
+        return this.date.compareTo(order.date);
+    }
 }

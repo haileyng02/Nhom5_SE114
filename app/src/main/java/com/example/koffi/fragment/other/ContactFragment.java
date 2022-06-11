@@ -62,17 +62,6 @@ public class ContactFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        //Back press handle
-        OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
-            @Override
-            public void handleOnBackPressed() {
-                Bundle bundle = new Bundle();
-                bundle.putString("back","other");
-                Navigation.findNavController(view).navigate(R.id.action_global_mainFragment,bundle);
-            }
-        };
-        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(),callback);
-
         //Toolbar
         Toolbar toolbar = (Toolbar) view.findViewById(R.id.contact_toolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {

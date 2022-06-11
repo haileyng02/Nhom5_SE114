@@ -42,12 +42,21 @@ public class OtherFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        //Order History
+        LinearLayout orderHistory = view.findViewById(R.id.other_orderHistory);
+        orderHistory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Navigation.findNavController(getView()).navigate(R.id.action_otherFragment_to_orderHistoryFragment);
+            }
+        });
+
         //Terms
         LinearLayout terms = view.findViewById(R.id.other_terms);
         terms.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Navigation.findNavController(getView()).navigate(R.id.action_mainFragment_to_termFragment);
+                Navigation.findNavController(getView()).navigate(R.id.action_otherFragment_to_termFragment);
             }
         });
 
@@ -56,7 +65,7 @@ public class OtherFragment extends Fragment {
         contact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Navigation.findNavController(getView()).navigate(R.id.action_mainFragment_to_contactFragment);
+                Navigation.findNavController(getView()).navigate(R.id.action_otherFragment_to_contactFragment);
             }
         });
 
@@ -65,7 +74,7 @@ public class OtherFragment extends Fragment {
         profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Navigation.findNavController(getView()).navigate(R.id.action_mainFragment_to_profileFragment);
+                Navigation.findNavController(getView()).navigate(R.id.action_otherFragment_to_profileFragment);
             }
         });
 
@@ -82,7 +91,7 @@ public class OtherFragment extends Fragment {
 
                 Bundle bundle = new Bundle();
                 bundle.putString("from","Other");
-                Navigation.findNavController(getView()).navigate(R.id.action_mainFragment_to_addressFragment2,bundle);
+                Navigation.findNavController(getView()).navigate(R.id.action_otherFragment_to_addressFragment2,bundle);
             }
         });
 

@@ -245,7 +245,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="25dp"
-                android:layout_weight="1"
                 android:gravity="center|start">
 
                 <ImageButton
@@ -279,6 +278,7 @@
                 android:id="@+id/itemTotalPrice"
                 android:layout_width="200dp"
                 android:layout_height="60dp"
+                android:layout_weight="1"
                 android:layout_marginRight="15dp"
                 android:backgroundTint="@color/primary"
                 android:text="0đ"

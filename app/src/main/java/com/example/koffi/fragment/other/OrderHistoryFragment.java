@@ -201,6 +201,6 @@ public class OrderHistoryFragment extends Fragment {
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         MenuInflater inflater1 = getActivity().getMenuInflater();
-        inflater1.inflate(R.menu.order_history_option_menu,menu);
+        inflater1.inflate(R.menu.order_history_option_menu, menu);
     }
 }

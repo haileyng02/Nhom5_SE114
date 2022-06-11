@@ -87,4 +87,9 @@ public class OrderAdapter extends BaseAdapter {
         }
         return view;
     }
+
+    public void filteredList(ArrayList<Order> filteredList) {
+        orderArray = filteredList;
+        notifyDataSetChanged();
+    }
 }

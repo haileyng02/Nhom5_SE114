@@ -130,7 +130,7 @@ public class TATabFragment extends Fragment {
                                                         if (document1.getString("store").toString().equals(document.getString("storeID"))) {
                                                             if (document.getLong("method") == 1) {
                                                                 if (document.getLong("status") != 5&&document.getLong("status")!=4) {
-                                                                    Order order = new Order(document.getString("orderID"), document.getString("userID"), document.getString("name")
+                                                                    Order order =new Order(document.getString("orderID"), document.getString("userID"), document.getString("name")
                                                                             , document.getString("storeID"), date, document.getLong("status").intValue()
                                                                             , document.getString("address"), document.getString("phoneNumber")
                                                                             , document.getLong("subtotal"), document.getLong("ship")

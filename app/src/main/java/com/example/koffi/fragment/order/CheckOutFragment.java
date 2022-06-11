@@ -17,10 +17,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentResultListener;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.Observer;
 import androidx.navigation.Navigation;
 
 import android.util.Log;
@@ -39,7 +35,6 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.RadioButton;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.koffi.models.CartItem;
@@ -52,7 +47,6 @@ import com.example.koffi.adapter.ToppingAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentChange;
@@ -125,27 +119,8 @@ public class CheckOutFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        TextView txtTendc= getView().findViewById(R.id.tendc_checkout);
-        TextView txtdc=getView().findViewById(R.id.dc_checkout);
-        getParentFragmentManager().setFragmentResultListener("addressResult", getViewLifecycleOwner(),
-                new FragmentResultListener() {
-                    @Override
-                    public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
-                        txtTendc.setText(result.getString("tendc"));
-                        txtdc.setText(result.getString("dc"));
-                    }
-                });
-        db=FirebaseFirestore.getInstance();
-        //Back pressed
-        OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
-            @Override
-            public void handleOnBackPressed() {
-                Bundle bundle = new Bundle();
-                bundle.putString("back","menu");
-                Navigation.findNavController(view).navigate(R.id.action_global_mainFragment,bundle);
-            }
-        };
-        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(),callback);
+
+        db = FirebaseFirestore.getInstance();
 
         //Get store
         sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
@@ -276,10 +251,10 @@ public class CheckOutFragment extends Fragment {
                 EditText edtPhone = bottomSheetView.findViewById(R.id.receiver_phone);
                 if (receiverName != null)
                     if (!receiverName.isEmpty())
-                    edtName.setText(receiverName);
+                        edtName.setText(receiverName);
                 if (receiverPhone != null)
                     if (!receiverPhone.isEmpty())
-                    edtPhone.setText(receiverPhone);
+                        edtPhone.setText(receiverPhone);
                 Button doneBtn = bottomSheetView.findViewById(R.id.receiver_doneBtn);
                 doneBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -566,13 +541,13 @@ public class CheckOutFragment extends Fragment {
                                                                                             "quantity", numberUnit + itemInCart.quantity,
                                                                                             "price", totalUnit + itemInCart.price)
                                                                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                                @Override
-                                                                                public void onSuccess(Void unused) {
-                                                                                    db.collection("cartItems").document(docID).delete();
-                                                                                    Toast.makeText(getContext(), "Đã cập nhật sản phẩm trong giỏ hàng", Toast.LENGTH_SHORT).show();
-                                                                                    bottomSheetDialog.dismiss();
-                                                                                }
-                                                                            });
+                                                                                        @Override
+                                                                                        public void onSuccess(Void unused) {
+                                                                                            db.collection("cartItems").document(docID).delete();
+                                                                                            Toast.makeText(getContext(), "Đã cập nhật sản phẩm trong giỏ hàng", Toast.LENGTH_SHORT).show();
+                                                                                            bottomSheetDialog.dismiss();
+                                                                                        }
+                                                                                    });
                                                                         }
                                                                     }
                                                                 }
@@ -748,7 +723,7 @@ public class CheckOutFragment extends Fragment {
                             try {
                                 List<Address> addressList;
                                 addressList = geocoder.getFromLocationName(address, 1);
-                                if (addressList != null) {
+                                if (addressList != null && addressList.size() > 0) {
                                     double lat = addressList.get(0).getLatitude();
                                     double lng = addressList.get(0).getLongitude();
                                     float[] result = new float[1];
@@ -771,15 +746,15 @@ public class CheckOutFragment extends Fragment {
                                                         if (min[0] > 15) {
                                                             Toast.makeText(getContext(), "Địa chỉ của bạn nằm ngoài bán kính giao hàng (15km) nên đơn hàng không thể đặt", Toast.LENGTH_LONG).show();
                                                         } else {
-                                    String deliveryNote = edtNote.getText().toString().trim();
-                                    db.collection("order").document(cartID)
-                                            .update("address", address, "orderID", cartID,
-                                                    "date", formatter.format(date),
-                                                    "deliveryNote", deliveryNote, "method", 0,
-                                                    "name", receiverName, "phoneNumber", receiverPhone,
-                                                    "ship", ship, "status", 1, "storeID", storeID,
-                                                    "subtotal", subtotal, "total", total);
-                                    Toast.makeText(getContext(), "Đặt hàng thành công!", Toast.LENGTH_LONG).show();
+                                                            String deliveryNote = edtNote.getText().toString().trim();
+                                                            db.collection("order").document(cartID)
+                                                                    .update("address", address, "orderID", cartID,
+                                                                            "date", formatter.format(date),
+                                                                            "deliveryNote", deliveryNote, "method", 0,
+                                                                            "name", receiverName, "phoneNumber", receiverPhone,
+                                                                            "ship", ship, "status", 1, "storeID", storeID,
+                                                                            "subtotal", subtotal, "total", total);
+                                                            Toast.makeText(getContext(), "Đặt hàng thành công!", Toast.LENGTH_LONG).show();
                                                             //Create new cart
                                                             Order order = new Order(
                                                                     FirebaseAuth.getInstance().getCurrentUser().getUid(), 0
@@ -797,20 +772,20 @@ public class CheckOutFragment extends Fragment {
                                 e.printStackTrace();
                             }
                         }
-                    else if (method == 1) {
-                        db.collection("order").document(cartID)
-                                .update("date", formatter.format(date), "orderID", cartID,
-                                        "method", 1, "storeID", storeID,
-                                        "name", receiverName, "phoneNumber", receiverPhone,
-                                        "ship", ship, "status", 1,
-                                        "subtotal", subtotal, "total", total);
-                        Toast.makeText(getContext(), "Đặt hàng thành công!", Toast.LENGTH_LONG).show();
-                        //Create new cart
-                        Order order = new Order(
-                                FirebaseAuth.getInstance().getCurrentUser().getUid(), 0
-                        );
-                        db.collection("order").add(order);
-                        Navigation.findNavController(getView()).navigate(R.id.action_checkOutFragment_to_orderFragment, bundle);
+                        else if (method == 1) {
+                            db.collection("order").document(cartID)
+                                    .update("date", formatter.format(date), "orderID", cartID,
+                                            "method", 1, "storeID", storeID,
+                                            "name", receiverName, "phoneNumber", receiverPhone,
+                                            "ship", ship, "status", 1,
+                                            "subtotal", subtotal, "total", total);
+                            Toast.makeText(getContext(), "Đặt hàng thành công!", Toast.LENGTH_LONG).show();
+                            //Create new cart
+                            Order order = new Order(
+                                    FirebaseAuth.getInstance().getCurrentUser().getUid(), 0
+                            );
+                            db.collection("order").add(order);
+                            Navigation.findNavController(getView()).navigate(R.id.action_checkOutFragment_to_orderFragment, bundle);
                         }
                     }
                 }

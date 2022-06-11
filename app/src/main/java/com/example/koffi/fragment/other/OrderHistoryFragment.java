@@ -125,8 +125,10 @@ public class OrderHistoryFragment extends Fragment {
                 ArrayList<CartItem> cart = new ArrayList<>();
                 Bundle bundle = new Bundle();
                 Order order = (Order) listView.getItemAtPosition(i);
-                if (order.status==4 || order.status==5)
-                    Navigation.findNavController(getView()).navigate(R.id.action_orderHistoryFragment_to_orderDetailFragment2);
+                if (order.status==4 || order.status==5) {
+                    bundle.putString("documentID", order.orderID);
+                    Navigation.findNavController(getView()).navigate(R.id.action_orderHistoryFragment_to_orderDetailFragment2, bundle);
+                }
                 else {
 //                                bundle.putParcelableArrayList("orderItems", cart);
 //                                bundle.putLong("numberOfItems", num[0]);
@@ -137,6 +139,7 @@ public class OrderHistoryFragment extends Fragment {
                     bundle.putString("receiverName", order.name);
                     bundle.putString("receiverPhone", order.phoneNumber);
                     bundle.putString("address", order.address);
+                    bundle.putString("from", "history");
                     SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
                     bundle.putString("time", sdf.format(order.date));
                     Navigation.findNavController(getView()).navigate(R.id.action_orderHistoryFragment_to_orderFragment, bundle);

@@ -26,6 +26,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -100,7 +101,7 @@ public class OrderFragment extends Fragment {
         if (getArguments()!=null) {
             cart = new ArrayList<CartItem>();
             if (getArguments().getParcelableArrayList("orderItems") != null)
-//            cart = getArguments().getParcelableArrayList("orderItems");
+            cart = getArguments().getParcelableArrayList("orderItems");
             orderMethod = getArguments().getInt("method");
             orderID = getArguments().getString("orderID");
             total = getArguments().getLong("total");
@@ -145,6 +146,12 @@ public class OrderFragment extends Fragment {
         Toolbar toolbar = view.findViewById(R.id.order_toolbar);
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().onBackPressed();
+            }
+        });
 
         //Cart list
 
@@ -325,7 +332,9 @@ public class OrderFragment extends Fragment {
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void unused) {
-                                        Navigation.findNavController(getView()).navigate(R.id.action_orderFragment_to_orderDetailFragment2);
+                                        Bundle bundle = new Bundle();
+                                        bundle.putString("documentID", orderID);
+                                        Navigation.findNavController(getView()).navigate(R.id.action_orderFragment_to_orderDetailFragment2, bundle);
                                         Toast.makeText(getContext(), "Hủy đơn hàng thành công", Toast.LENGTH_SHORT).show();
                                         cancelOrderDialog.dismiss();
                                     }

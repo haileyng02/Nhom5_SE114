@@ -105,7 +105,7 @@ public class OrderDetailFragment extends Fragment {
         TextView orderphone=view.findViewById(R.id.order_phone);
         TextView orderaddress=view.findViewById(R.id.order_address);
         TextView state=view.findViewById(R.id.state_order);
-        if(getArguments().getString("documentID")!=null)
+        if(getArguments()!=null)
             orderID=getArguments().getString("documentID");
 
         //listview
@@ -133,7 +133,7 @@ public class OrderDetailFragment extends Fragment {
             }
         });
         //setInfomation
-        if(getArguments().getString("documentID")!=null) {
+        if(getArguments()!=null) {
         title = view.findViewById(R.id.order_title);
 
         //Setting

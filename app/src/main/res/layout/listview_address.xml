@@ -41,7 +41,11 @@
                     android:text="86 Cao Thắng, Quận 3, Hồ Chí Minh, Việt Nam" />
 
             </LinearLayout>
-
+            <ImageView
+                android:id="@+id/edit_address"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/icon_edit"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"

@@ -33,7 +33,7 @@ public class CancelOrderDialog extends Dialog {
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.dialog_cancel_order);
-        EditText lydo=findViewById(R.id.lydohuy_edittxt);
+        EditText lydo=findViewById(R.id.cancel_reason);
         TextView noBtn = findViewById(R.id.cancel_noBtn);
         TextView yesBtn = findViewById(R.id.cancel_yesBtn);
 

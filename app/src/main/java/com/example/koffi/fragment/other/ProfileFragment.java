@@ -96,12 +96,17 @@ public class ProfileFragment extends Fragment {
                                 DocumentSnapshot document = task.getResult();
                                 if (document != null) {
                                     if (document.exists()) {
-                                        String a = document.get("Ten").toString();
-                                        String[] name = a.split(" ", 2);
-                                        if (name.length > 1)
-                                        Ho.setText(name[1]);
-                                        Ten.setText(name[0]);
+                                        if (document.get("Ten") != null) {
+                                            String a = document.get("Ten").toString();
+                                            String[] name = a.split(" ", 2);
+                                            if (name.length > 1) {
+                                                Ho.setText(name[1]);
+                                                Ten.setText(name[0]);
+                                            }
+                                        }
+                                        if (document.get("Email") != null)
                                         Email.setText((CharSequence) document.get("Email"));
+                                        if (document.get("Sdt") != null)
                                         Sdt.setText((((CharSequence) document.get("Sdt"))));
                                         NgaySinh.setText((CharSequence) document.get("NgaySinh"));
                                         if (document.getString("GioiTinh") != null)
@@ -113,13 +118,16 @@ public class ProfileFragment extends Fragment {
                         }
                     });
                 String a = user.getDisplayName();
-                if (!a.equals("")) {
+                if (!a.equals("") && a != null) {
+                    System.out.println("here");
                     String[] name = a.split(" ", 2);
                     if (name.length > 1)
                     Ho.setText(name[1]);
                     Ten.setText(name[0]);
                 }
+                if (user.getEmail() != null && !user.getEmail().isEmpty())
                 Email.setText((user.getEmail()));
+            if (user.getPhoneNumber() != null && !user.getPhoneNumber().isEmpty())
                 Sdt.setText(user.getPhoneNumber());
 
 

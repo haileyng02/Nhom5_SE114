@@ -91,6 +91,9 @@
         <action
             android:id="@+id/action_otherFragment_to_orderHistoryFragment"
             app:destination="@id/orderHistoryFragment" />
+        <action
+            android:id="@+id/action_otherFragment_to_changePasswordFragment2"
+            app:destination="@id/changePasswordFragment2" />
     </fragment>
     <fragment
         android:id="@+id/homeFragment2"
@@ -120,4 +123,9 @@
         android:name="com.example.koffi.fragment.staff.OrderDetailFragment"
         android:label="fragment_order_detail"
         tools:layout="@layout/fragment_order_detail" />
+    <fragment
+        android:id="@+id/changePasswordFragment2"
+        android:name="com.example.koffi.fragment.other.ChangePasswordFragment"
+        android:label="fragment_change_password"
+        tools:layout="@layout/fragment_change_password" />
 </navigation>

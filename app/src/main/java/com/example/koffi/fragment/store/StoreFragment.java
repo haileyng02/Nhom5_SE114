@@ -93,7 +93,8 @@ public class StoreFragment extends Fragment {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
                             Store store = new Store(documentSnapshot.getId(), documentSnapshot.getString("address"),
-                                    documentSnapshot.getString("image"), documentSnapshot.getString("PhoneNumber"));
+                                    documentSnapshot.getString("image"), documentSnapshot.getString("phoneNumber"),
+                                    documentSnapshot.getDouble("latitude"),documentSnapshot.getDouble("longitude"));
                             storeArray.add(store);
                         }
                         adapter.notifyDataSetChanged();
@@ -215,6 +216,7 @@ public class StoreFragment extends Fragment {
                         Intent intent = new Intent(Intent.ACTION_SEND);
                         intent.setType("text/plain");
                         intent.putExtra(Intent.EXTRA_SUBJECT, "Hẹn bạn tại Koffi, ");
+                        String directionsUrl = "https://www.google.co.in/maps/dir/''/'" + store.latitude + "," + store.longitude + "'/";
                         intent.putExtra(Intent.EXTRA_TEXT,
                                 "https://www.google.co.in/maps/dir//" + store.address);
                         startActivity(Intent.createChooser(intent, "Chia sẻ với thiết bị"));

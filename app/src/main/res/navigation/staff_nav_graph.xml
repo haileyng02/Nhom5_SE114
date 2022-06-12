@@ -28,4 +28,18 @@
         android:label="fragment_order_detail"
         tools:layout="@layout/fragment_order_detail" />
     <action android:id="@+id/action_global_staffOrderFragment" app:destination="@id/staffOrderFragment" />
+    <fragment
+        android:id="@+id/staffProfileFragment"
+        android:name="com.example.koffi.fragment.staff.StaffProfileFragment"
+        android:label="fragment_staff_profile"
+        tools:layout="@layout/fragment_staff_profile" >
+        <action
+            android:id="@+id/action_staffProfileFragment_to_changePasswordFragment"
+            app:destination="@id/changePasswordFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/changePasswordFragment"
+        android:name="com.example.koffi.fragment.other.ChangePasswordFragment"
+        android:label="fragment_change_password"
+        tools:layout="@layout/fragment_change_password" />
 </navigation>

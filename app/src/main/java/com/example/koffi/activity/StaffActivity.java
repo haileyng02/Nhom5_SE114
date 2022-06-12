@@ -52,6 +52,9 @@ public class StaffActivity extends AppCompatActivity {
                         break;
                     case R.id.statistic:
                         navController.navigate(R.id.statisticFragment);
+                        break;
+                    case R.id.profile:
+                        navController.navigate(R.id.staffProfileFragment);
                 }
                 return true;
             }

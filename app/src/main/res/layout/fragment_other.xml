@@ -103,6 +103,7 @@
                 android:orientation="vertical">
 
                 <LinearLayout
+                    android:id="@+id/other_changepassword"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:padding="20dp"
@@ -118,13 +119,13 @@
                             android:id="@+id/imageView7"
                             android:layout_width="20dp"
                             android:layout_height="20dp"
-                            android:src="@drawable/icon_star" />
+                            android:src="@drawable/icon_password" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="15dp"
-                            android:text="Đánh giá đơn hàng"
+                            android:text="Đổi mật khẩu"
                             android:textColor="@color/black"
                             android:textSize="16sp" />
                     </LinearLayout>

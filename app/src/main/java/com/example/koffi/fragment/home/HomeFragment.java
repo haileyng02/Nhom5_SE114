@@ -1,7 +1,9 @@
 package com.example.koffi.fragment.home;
 import static com.example.koffi.FunctionClass.setListViewHeight;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -9,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 import androidx.viewpager2.widget.CompositePageTransformer;
 import androidx.viewpager2.widget.MarginPageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
@@ -17,7 +20,9 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.example.koffi.activity.LoginActivity;
@@ -51,6 +56,8 @@ public class HomeFragment extends Fragment {
     ListView listView;
     ArrayList<Item> itemArray;
     MenuItemAdapter adapter;
+    SharedPreferences sharedPref;
+    SharedPreferences.Editor editor;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -162,6 +169,10 @@ public class HomeFragment extends Fragment {
         listView = view.findViewById(R.id.featuredList);
         itemArray = new ArrayList<Item>();
         adapter = new MenuItemAdapter(getContext(),itemArray);
+        LinearLayout delivery = view.findViewById(R.id.home_delivery);
+        LinearLayout takeaway = view.findViewById(R.id.home_takeaway);
+        sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        editor = sharedPref.edit();
 
         //Banner Slider
         ArrayList<SliderItem> sliderItems = new ArrayList<>();
@@ -196,9 +207,33 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        //Delivery
+        delivery.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                navigateToMenu(0);
+            }
+        });
+
+        //Take away
+        takeaway.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                navigateToMenu(1);
+            }
+        });
+
         // Featured list view
         listView.setAdapter(adapter);
         getFeaturedItems();
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Item item = (Item) listView.getItemAtPosition(i);
+                Bundle bundle = new Bundle();
+                bundle.putString("bottomsheet",item.id);
+            }
+        });
     }
 
     private Runnable slideRunnable = new Runnable() {
@@ -226,5 +261,11 @@ public class HomeFragment extends Fragment {
                         }
                     }
                 });
+    }
+    private void navigateToMenu(int method) {
+        editor.putInt("orderMethod",method);
+        editor.apply();
+
+        Navigation.findNavController(getView()).navigate(R.id.menuFragment);
     }
 }

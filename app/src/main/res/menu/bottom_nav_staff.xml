@@ -8,4 +8,8 @@
         android:title="Thống kê"
         android:id="@+id/statistic"
         android:icon="@drawable/icon_statistic"   />
+    <item
+        android:title="Thông tin"
+        android:id="@+id/profile"
+        android:icon="@drawable/icon_profile"   />
 </menu>

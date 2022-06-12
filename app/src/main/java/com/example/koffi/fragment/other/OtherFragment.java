@@ -60,15 +60,6 @@ public class OtherFragment extends Fragment {
             }
         });
 
-        // Change password
-        LinearLayout changePassword = view.findViewById(R.id.other_changepassword);
-        changePassword.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Navigation.findNavController(getView()).navigate(R.id.action_otherFragment_to_changePasswordFragment2);
-            }
-        });
-
         //Contact
         LinearLayout contact = view.findViewById(R.id.other_contact);
         contact.setOnClickListener(new View.OnClickListener() {

@@ -1,4 +1,4 @@
-package com.example.koffi.fragment.other;
+package com.example.koffi.fragment.staff;
 
 import android.os.Bundle;
 

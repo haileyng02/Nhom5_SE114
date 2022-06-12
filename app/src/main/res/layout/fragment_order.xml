@@ -36,6 +36,7 @@
                         android:text="Đơn hàng đã được tiếp nhận"/>
 
                     <TextView
+                        android:id="@+id/order_tvState"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Đang xác nhận"
@@ -44,6 +45,7 @@
                         android:textStyle="bold" />
 
                     <Button
+                        android:id="@+id/order_cancelBtn"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="15dp"
@@ -60,6 +62,7 @@
                         android:backgroundTint="#be9e74">
 
                         <ImageView
+                            android:id="@+id/order_img"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
@@ -81,24 +84,22 @@
                             android:orientation="vertical">
 
                             <TextView
+                                android:id="@+id/order_checking"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Đang kiểm tra"
                                 android:textAlignment="center"
                                 android:textColor="@color/black"
-                                android:textSize="12sp"
-                                android:textStyle="bold" />
+                                android:textSize="12sp"/>
 
                             <TextView
                                 android:id="@+id/order_time"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
-                                android:text="12:00"
                                 android:textAlignment="center"
                                 android:textColor="@color/black"
-                                android:textSize="12sp"
-                                android:textStyle="bold" />
+                                android:textSize="12sp"/>
                         </LinearLayout>
                         <LinearLayout
                             android:layout_width="50dp"
@@ -109,6 +110,7 @@
                             android:orientation="vertical">
 
                             <TextView
+                                android:id="@+id/order_prepare"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Đang chuẩn bị"
@@ -116,10 +118,10 @@
                                 android:textSize="12sp" />
 
                             <TextView
+                                android:id="@+id/order_prepareTime"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
-                                android:text="12:00"
                                 android:textAlignment="center"
                                 android:textSize="12sp" />
                         </LinearLayout>
@@ -141,11 +143,11 @@
                                 android:textSize="12sp" />
 
                             <TextView
+                                android:id="@+id/order_readyTime"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
 
-                                android:text="12:00"
                                 android:textAlignment="center"
                                 android:textSize="12sp" />
                         </LinearLayout>
@@ -157,6 +159,7 @@
                             android:orientation="vertical">
 
                             <TextView
+                                android:id="@+id/order_complete"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Đã hoàn thành"
@@ -164,10 +167,10 @@
                                 android:textSize="12sp" />
 
                             <TextView
+                                android:id="@+id/order_completeTime"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
-                                android:text="12:00"
                                 android:textAlignment="center"
                                 android:textSize="12sp" />
                         </LinearLayout>
@@ -189,13 +192,15 @@
                         android:textColor="@color/black"
                         android:textSize="18sp"
                         android:textStyle="bold" />
+
                     <ListView
                         android:id="@+id/order_cartList"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginVertical="15dp"
                         android:divider="@android:color/transparent"
-                        android:dividerHeight="10dp"
-                        android:layout_marginVertical="15dp"/>
+                        android:dividerHeight="10dp" />
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

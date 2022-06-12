@@ -60,7 +60,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:text="0528325771"/>
+                    android:text="0344242643"/>
             </LinearLayout>
             <ImageView
                 android:layout_width="20dp"
@@ -122,6 +122,7 @@
                 android:layout_height="20dp"
                 android:layout_marginRight="15dp"
                 android:src="@drawable/icon_facebook_outline" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -134,12 +135,14 @@
                     android:text="Facebook"
                     android:textColor="@color/black"
                     android:textSize="16sp" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:text="facebook.com/tienhaileygg"/>
+                    android:text="facebook.com/tienhaileygg" />
             </LinearLayout>
+
             <ImageView
                 android:layout_width="20dp"
                 android:layout_height="20dp"

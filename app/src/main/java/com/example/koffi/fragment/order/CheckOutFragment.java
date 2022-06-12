@@ -251,10 +251,10 @@ public class CheckOutFragment extends Fragment {
                 EditText edtPhone = bottomSheetView.findViewById(R.id.receiver_phone);
                 if (receiverName != null)
                     if (!receiverName.isEmpty())
-                    edtName.setText(receiverName);
+                        edtName.setText(receiverName);
                 if (receiverPhone != null)
                     if (!receiverPhone.isEmpty())
-                    edtPhone.setText(receiverPhone);
+                        edtPhone.setText(receiverPhone);
                 Button doneBtn = bottomSheetView.findViewById(R.id.receiver_doneBtn);
                 doneBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -541,13 +541,13 @@ public class CheckOutFragment extends Fragment {
                                                                                             "quantity", numberUnit + itemInCart.quantity,
                                                                                             "price", totalUnit + itemInCart.price)
                                                                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                                @Override
-                                                                                public void onSuccess(Void unused) {
-                                                                                    db.collection("cartItems").document(docID).delete();
-                                                                                    Toast.makeText(getContext(), "Đã cập nhật sản phẩm trong giỏ hàng", Toast.LENGTH_SHORT).show();
-                                                                                    bottomSheetDialog.dismiss();
-                                                                                }
-                                                                            });
+                                                                                        @Override
+                                                                                        public void onSuccess(Void unused) {
+                                                                                            db.collection("cartItems").document(docID).delete();
+                                                                                            Toast.makeText(getContext(), "Đã cập nhật sản phẩm trong giỏ hàng", Toast.LENGTH_SHORT).show();
+                                                                                            bottomSheetDialog.dismiss();
+                                                                                        }
+                                                                                    });
                                                                         }
                                                                     }
                                                                 }
@@ -723,7 +723,7 @@ public class CheckOutFragment extends Fragment {
                             try {
                                 List<Address> addressList;
                                 addressList = geocoder.getFromLocationName(address, 1);
-                                if (addressList != null) {
+                                if (addressList != null && addressList.size() > 0) {
                                     double lat = addressList.get(0).getLatitude();
                                     double lng = addressList.get(0).getLongitude();
                                     float[] result = new float[1];
@@ -746,15 +746,15 @@ public class CheckOutFragment extends Fragment {
                                                         if (min[0] > 15) {
                                                             Toast.makeText(getContext(), "Địa chỉ của bạn nằm ngoài bán kính giao hàng (15km) nên đơn hàng không thể đặt", Toast.LENGTH_LONG).show();
                                                         } else {
-                                    String deliveryNote = edtNote.getText().toString().trim();
-                                    db.collection("order").document(cartID)
-                                            .update("address", address, "orderID", cartID,
-                                                    "date", formatter.format(date),
-                                                    "deliveryNote", deliveryNote, "method", 0,
-                                                    "name", receiverName, "phoneNumber", receiverPhone,
-                                                    "ship", ship, "status", 1, "storeID", storeID,
-                                                    "subtotal", subtotal, "total", total);
-                                    Toast.makeText(getContext(), "Đặt hàng thành công!", Toast.LENGTH_LONG).show();
+                                                            String deliveryNote = edtNote.getText().toString().trim();
+                                                            db.collection("order").document(cartID)
+                                                                    .update("address", address, "orderID", cartID,
+                                                                            "date", formatter.format(date),
+                                                                            "deliveryNote", deliveryNote, "method", 0,
+                                                                            "name", receiverName, "phoneNumber", receiverPhone,
+                                                                            "ship", ship, "status", 1, "storeID", storeID,
+                                                                            "subtotal", subtotal, "total", total);
+                                                            Toast.makeText(getContext(), "Đặt hàng thành công!", Toast.LENGTH_LONG).show();
                                                             //Create new cart
                                                             Order order = new Order(
                                                                     FirebaseAuth.getInstance().getCurrentUser().getUid(), 0
@@ -772,20 +772,20 @@ public class CheckOutFragment extends Fragment {
                                 e.printStackTrace();
                             }
                         }
-                    else if (method == 1) {
-                        db.collection("order").document(cartID)
-                                .update("date", formatter.format(date), "orderID", cartID,
-                                        "method", 1, "storeID", storeID,
-                                        "name", receiverName, "phoneNumber", receiverPhone,
-                                        "ship", ship, "status", 1,
-                                        "subtotal", subtotal, "total", total);
-                        Toast.makeText(getContext(), "Đặt hàng thành công!", Toast.LENGTH_LONG).show();
-                        //Create new cart
-                        Order order = new Order(
-                                FirebaseAuth.getInstance().getCurrentUser().getUid(), 0
-                        );
-                        db.collection("order").add(order);
-                        Navigation.findNavController(getView()).navigate(R.id.action_checkOutFragment_to_orderFragment, bundle);
+                        else if (method == 1) {
+                            db.collection("order").document(cartID)
+                                    .update("date", formatter.format(date), "orderID", cartID,
+                                            "method", 1, "storeID", storeID,
+                                            "name", receiverName, "phoneNumber", receiverPhone,
+                                            "ship", ship, "status", 1,
+                                            "subtotal", subtotal, "total", total);
+                            Toast.makeText(getContext(), "Đặt hàng thành công!", Toast.LENGTH_LONG).show();
+                            //Create new cart
+                            Order order = new Order(
+                                    FirebaseAuth.getInstance().getCurrentUser().getUid(), 0
+                            );
+                            db.collection("order").add(order);
+                            Navigation.findNavController(getView()).navigate(R.id.action_checkOutFragment_to_orderFragment, bundle);
                         }
                     }
                 }

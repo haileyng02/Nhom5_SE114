@@ -1,14 +1,13 @@
 ## Nhóm 5
-
-<div align="center">
-<img src="https://www.uit.edu.vn/sites/vi/files/images/Logos/Logo_UIT_Web_Transparent.png" width="80" />
+<h2 align="center">
+    Đồ án nhập môn ứng dụng di động</h2>
+    <div align="center">
+<img src="https://user-images.githubusercontent.com/91247482/173222142-3949c081-0a56-4a10-bcb9-371cd579d7ff.png" width="150" />
   </div>
-<h4 align="center">
-    Đồ án nhập môn ứng dụng di động</h4>
-    <h4 align="center">
-    Lớp SE114.M22.PMCL</h4>
+    <h3 align="center">
+    Lớp SE114.M22.PMCL</h3>
     <h1 align="center">Tên đề tài: Ứng dụng đặt đồ uống Koffi</h1>
-    
+   
 <!-- Thành viên -->
 ## Thành viên
 

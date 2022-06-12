@@ -30,7 +30,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -87,7 +89,7 @@ public class OrderHistoryFragment extends Fragment {
             }
         });
 
-        ArrayList<Order> orderArray = new ArrayList<Order>();
+        ArrayList<Order> orderArray = new ArrayList<>();
 
         //Sample data
         Date date = Calendar.getInstance().getTime();
@@ -107,49 +109,15 @@ public class OrderHistoryFragment extends Fragment {
                 setListViewHeight(listView);
             }
         });
-
         db.collection("order").whereEqualTo("userID", user.getUid())
-                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                        orderArray.clear();
+                        getOrderArray(orderArray, orderAdapter);
+                    }
+                });
 
-                if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot snapshot : task.getResult()) {
-                        if (snapshot.get("status", Integer.class) != 0) {
-                            System.out.println("found order");
-                            String sDate1 = snapshot.getString("date");
-                            SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
-                        try {
-                            Date date1 = df.parse(sDate1);
-                            System.out.println(date1);
-                            String orderID = snapshot.getId();
-                            String address = snapshot.getString("address");
-                            String deliveryNote = snapshot.getString("deliveryNote");
-                            int method = snapshot.get("method", Integer.class);
-                            String name = snapshot.getString("name");
-                            String phone = snapshot.getString("phoneNumber");
-                            long ship = snapshot.getLong("ship");
-                            int status = snapshot.get("status", Integer.class);
-                            String storeID = snapshot.getString("storeID");
-                            long subtotal = snapshot.getLong("subtotal");
-                            long total = snapshot.getLong("total");
-                            String userID = snapshot.getString("userID");
-                            Order order = new Order(orderID, userID, name, storeID, date1, status, address, phone,
-                                    subtotal, ship, total, deliveryNote, method);
-                            orderArray.add(order);
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
-                        }
-                    }
-                    if (orderArray.size() > 1) {
-                        orderArray.sort(Comparator.comparing(a -> a.date));
-                        Collections.sort(orderArray, Collections.reverseOrder());
-                    }
-                    orderAdapter.notifyDataSetChanged();
-                }
-            }
-        });
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -157,42 +125,86 @@ public class OrderHistoryFragment extends Fragment {
                 ArrayList<CartItem> cart = new ArrayList<>();
                 Bundle bundle = new Bundle();
                 Order order = (Order) listView.getItemAtPosition(i);
-                cartAdapter = new CartItemAdapter(getContext(),cart,true);
-
-                long num[] = new long[1];
-                num[0] = 0;
-                db.collection("cartItems").whereEqualTo("orderID", order.orderID)
-                        .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot snapshot : task.getResult()) {
-                                CartItem item = snapshot.toObject(CartItem.class);
-                                cart.add(item);
-                                num[0] += item.quantity;
-                            }
-                            cartAdapter.notifyDataSetChanged();
-                            if (order.status==4 || order.status==5)
-                                Navigation.findNavController(getView()).navigate(R.id.action_orderHistoryFragment_to_orderDetailFragment2);
-                            else {
+                if (order.status==4 || order.status==5)
+                    Navigation.findNavController(getView()).navigate(R.id.action_orderHistoryFragment_to_orderDetailFragment2);
+                else {
 //                                bundle.putParcelableArrayList("orderItems", cart);
 //                                bundle.putLong("numberOfItems", num[0]);
-                                bundle.putInt("method", order.method);
-                                bundle.putString("orderID", order.orderID);
-                                bundle.putLong("total", order.total);
-                                bundle.putLong("subtotal", order.subtotal);
-                                bundle.putString("receiverName", order.name);
-                                bundle.putString("receiverPhone", order.phoneNumber);
-                                bundle.putString("address", order.address);
-                                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-                                bundle.putString("time", sdf.format(order.date));
-                                Navigation.findNavController(getView()).navigate(R.id.action_orderHistoryFragment_to_orderFragment, bundle);
+                    bundle.putInt("method", order.method);
+                    bundle.putString("orderID", order.orderID);
+                    bundle.putLong("total", order.total);
+                    bundle.putLong("subtotal", order.subtotal);
+                    bundle.putString("receiverName", order.name);
+                    bundle.putString("receiverPhone", order.phoneNumber);
+                    bundle.putString("address", order.address);
+                    SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+                    bundle.putString("time", sdf.format(order.date));
+                    Navigation.findNavController(getView()).navigate(R.id.action_orderHistoryFragment_to_orderFragment, bundle);
+                }
+//                cartAdapter = new CartItemAdapter(getContext(),cart,true);
+//
+//                long num[] = new long[1];
+//                num[0] = 0;
+//                db.collection("cartItems").whereEqualTo("orderID", order.orderID)
+//                        .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                        if (task.isSuccessful()) {
+//                            for (QueryDocumentSnapshot snapshot : task.getResult()) {
+//                                CartItem item = snapshot.toObject(CartItem.class);
+//                                cart.add(item);
+//                                num[0] += item.quantity;
+//                            }
+//                            cartAdapter.notifyDataSetChanged();
+//
+//                        }
+//                    }
+//                });
+            }
+        });
+    }
+
+    private void getOrderArray(ArrayList<Order> orderArray, OrderAdapter orderAdapter) {
+        db.collection("order").whereEqualTo("userID", user.getUid())
+                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
+                if (task.isSuccessful()) {
+                    orderArray.clear();
+                    for (QueryDocumentSnapshot snapshot : task.getResult()) {
+                        if (snapshot.get("status", Integer.class) != 0) {
+                            System.out.println("found order");
+                            String sDate1 = snapshot.getString("date");
+                            SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+                            try {
+                                Date date1 = df.parse(sDate1);
+                                System.out.println(date1);
+                                String orderID = snapshot.getId();
+                                String address = snapshot.getString("address");
+                                String deliveryNote = snapshot.getString("deliveryNote");
+                                int method = snapshot.get("method", Integer.class);
+                                String name = snapshot.getString("name");
+                                String phone = snapshot.getString("phoneNumber");
+                                long ship = snapshot.getLong("ship");
+                                int status = snapshot.get("status", Integer.class);
+                                String storeID = snapshot.getString("storeID");
+                                long subtotal = snapshot.getLong("subtotal");
+                                long total = snapshot.getLong("total");
+                                String userID = snapshot.getString("userID");
+                                Order order = new Order(orderID, userID, name, storeID, date1, status, address, phone,
+                                        subtotal, ship, total, deliveryNote, method);
+                                orderArray.add(order);
+                            } catch (ParseException e) {
+                                e.printStackTrace();
                             }
                         }
                     }
-                });
-
-
+                    if (orderArray.size() > 1) {
+                        Collections.sort(orderArray, Collections.reverseOrder());
+                    }
+                    orderAdapter.notifyDataSetChanged();
+                }
             }
         });
     }
@@ -201,6 +213,6 @@ public class OrderHistoryFragment extends Fragment {
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         MenuInflater inflater1 = getActivity().getMenuInflater();
-        inflater1.inflate(R.menu.order_history_option_menu,menu);
+        inflater1.inflate(R.menu.order_history_option_menu, menu);
     }
 }

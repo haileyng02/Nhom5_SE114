@@ -1,5 +1,6 @@
 package com.example.koffi.fragment.staff;
 
+import static android.content.ContentValues.TAG;
 import static com.example.koffi.FunctionClass.setListViewHeight;
 
 import android.database.DataSetObserver;
@@ -10,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +21,17 @@ import android.widget.ListView;
 import com.example.koffi.R;
 import com.example.koffi.adapter.OrderAdapter;
 import com.example.koffi.models.Order;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -27,40 +39,19 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link DeliveryTabFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class DeliveryTabFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
     public DeliveryTabFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment DeliveryTabFragment.
-     */
-    // TODO: Rename and change types and number of parameters
+
     public static DeliveryTabFragment newInstance(String param1, String param2) {
         DeliveryTabFragment fragment = new DeliveryTabFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+
         fragment.setArguments(args);
         return fragment;
     }
@@ -69,8 +60,7 @@ public class DeliveryTabFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+
         }
     }
 
@@ -85,16 +75,12 @@ public class DeliveryTabFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-
-        ArrayList<Order> orderArray = new ArrayList<Order>();
-
-        //Sample data
         Date date = Calendar.getInstance().getTime();
-        orderArray.add(new Order("user123","Cẩm Tiên","store123", date,2,"123 Nhà","0123456789",new Long(35000),new Long(20000),new Long(55000),"ko co gi",0));
-        orderArray.add(new Order("user123","Cẩm Tiên","store123", date,5,"123 Nhà","0123456789",new Long(35000),new Long(20000),new Long(55000),"ko co gi",0));
-        orderArray.add(new Order("user123","Cẩm Tiên","store123", date,1,"123 Nhà","0123456789",new Long(35000),new Long(20000),new Long(55000),"ko co gi",0));
+        ArrayList<Order> orderArray = new ArrayList<Order>();
+        ArrayList<String> idList = new ArrayList<String>();
 
         ListView listView = view.findViewById(R.id.deliveryLv);
+        TabLayout tabLayout = getParentFragment().getView().findViewById(R.id.order_tabLayout);
         OrderAdapter orderAdapter = new OrderAdapter(getContext(),orderArray);
         listView.setAdapter(orderAdapter);
         setListViewHeight(listView);
@@ -105,15 +91,77 @@ public class DeliveryTabFragment extends Fragment {
                 setListViewHeight(listView);
             }
         });
+
+        //getData from firebase
+        db.collection("order").addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                if(error!=null)
+                {
+                    Log.w(TAG, "Listen failed.", error);
+                    return;
+                }
+                for (DocumentChange dc : value.getDocumentChanges()) {
+                    Log.d(TAG, "Modified Order: " + dc.getDocument().getData());
+                }
+                orderArray.clear();
+                orderAdapter.notifyDataSetChanged();
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+                if(user!=null) {
+                    db.collection("staff").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful())
+                                for (QueryDocumentSnapshot document1 : task.getResult()) {
+
+                                    if (user.getEmail().toString().equals(document1.getString("email"))) {
+                                        db.collection("order").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                if (task.isSuccessful())
+                                                    for (QueryDocumentSnapshot document : task.getResult()) {
+                                                        if (document1.getString("store").toString().equals(document.getString("storeID"))) {
+                                                            if (document.getLong("method") == 0) {
+                                                                if (document.getLong("status") != 5&&document.getLong("status")!=4) {
+                                                                    Order order =new Order(document.getString("orderID"), document.getString("userID"), document.getString("name")
+                                                                            , document.getString("storeID"), date, document.getLong("status").intValue()
+                                                                            , document.getString("address"), document.getString("phoneNumber")
+                                                                            , document.getLong("subtotal"), document.getLong("ship")
+                                                                            , document.getLong("total"), document.getString("deliveryNote")
+                                                                            , document.getLong("method").intValue());
+                                                                    orderArray.add(order);
+                                                                    idList.add(document.getId());
+                                                                    orderAdapter.notifyDataSetChanged();
+                                                                    tabLayout.getTabAt(0).getOrCreateBadge().setNumber(orderArray.size());
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                else {
+                                                    Log.w(TAG, "Error getting documents.", task.getException());
+
+                                                }
+                                            }
+                                        });
+                                    }
+                                }
+                        }
+                    });
+                }
+
+            }
+        });
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Navigation.findNavController(getView()).navigate(R.id.action_staffOrderFragment_to_orderDetailFragment);
+                Bundle bundle=new Bundle();
+                String docID=idList.get(i).toString();
+                bundle.putString("documentID",docID);
+                Navigation.findNavController(getView()).navigate(R.id.action_staffOrderFragment_to_orderDetailFragment,bundle);
             }
         });
 
-        //Badge
-        TabLayout tabLayout = getParentFragment().getView().findViewById(R.id.order_tabLayout);
-        tabLayout.getTabAt(0).getOrCreateBadge().setNumber(orderArray.size());
+
     }
 }

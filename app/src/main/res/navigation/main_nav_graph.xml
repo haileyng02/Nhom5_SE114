@@ -125,7 +125,7 @@
         tools:layout="@layout/fragment_order_detail" />
     <fragment
         android:id="@+id/changePasswordFragment2"
-        android:name="com.example.koffi.fragment.other.ChangePasswordFragment"
+        android:name="com.example.koffi.fragment.staff.ChangePasswordFragment"
         android:label="fragment_change_password"
         tools:layout="@layout/fragment_change_password" />
 </navigation>

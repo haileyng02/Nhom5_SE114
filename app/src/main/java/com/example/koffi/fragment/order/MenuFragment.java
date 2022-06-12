@@ -131,7 +131,6 @@ public class MenuFragment extends Fragment {
         //Set order method
         setOrderMethod(orderMethod);
 
-
         //Toolbar
         Toolbar toolbar = view.findViewById(R.id.menu_toolbar);
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
@@ -153,6 +152,11 @@ public class MenuFragment extends Fragment {
 
         recyclerView.setAdapter(menuAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        //Get arguments
+        if (getArguments()!=null) {
+
+        }
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

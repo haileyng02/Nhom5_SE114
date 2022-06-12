@@ -36,7 +36,7 @@ public class StaffActivity extends AppCompatActivity {
             @Override
             public void onDestinationChanged(@NonNull NavController navController, @NonNull NavDestination navDestination, @Nullable Bundle bundle) {
                 String label = navDestination.getLabel().toString();
-                if (label.equals("fragment_staff_order") || label.equals("fragment_statistic"))
+                if (label.equals("fragment_staff_order") || label.equals("fragment_statistic")|| label.equals("fragment_staff_profile"))
                     bottomNavigationView.setVisibility(View.VISIBLE);
                 else
                     bottomNavigationView.setVisibility(View.GONE);
@@ -52,6 +52,9 @@ public class StaffActivity extends AppCompatActivity {
                         break;
                     case R.id.statistic:
                         navController.navigate(R.id.statisticFragment);
+                        break;
+                    case R.id.profile:
+                        navController.navigate(R.id.staffProfileFragment);
                 }
                 return true;
             }

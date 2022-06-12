@@ -1,7 +1,24 @@
-  <h1 align="center">Welcome to Koffi</h1>
-  <p align="center">
-    Đồ án nhập môn ứng dụng di động</p>
+## Nhóm 5
+
+<div align="center">
+<img src="https://www.uit.edu.vn/sites/vi/files/images/Logos/Logo_UIT_Web_Transparent.png" width="80" />
+  </div>
+<h4 align="center">
+    Đồ án nhập môn ứng dụng di động</h4>
+    <h4 align="center">
+    Lớp SE114.M22.PMCL</h4>
+    <h1 align="center">Tên đề tài: Ứng dụng đặt đồ uống Koffi</h1>
     
+<!-- Thành viên -->
+## Thành viên
+
+| Tên thành viên | MSSV | Facebook | SDT |  
+| ------ | ------ | ------ | ------ |    
+| Nguyễn Trần Cẩm Tiên (Nhóm trưởng) | 20522011 | https://www.facebook.com/tienhaileygg | 0528 325 771 |  
+| Phạm Thị Thu Trang | 20522041 | https://www.facebook.com/thutrang.phamthi.378 | 0932 708 316 |  
+| Phạm Thị Nhật Khánh | 20521455 | https://www.facebook.com/nhatkhanh.pham.5817 | 0344 242 643 |  
+| Nguyễn Hữu Trung Kiên | 20521489 | https://www.facebook.com/iamkyel | 097 530 50 60 |   
+
 <!-- Giới thiệu -->
 ## Giới thiệu
 ### Koffi là gì?
@@ -53,11 +70,6 @@ _Lưu ý: Do ứng dụng còn đang phát triển nên tính năng đăng nhậ
   - Google Map API
   - Photoshop
 
-<!-- Thành viên -->
-## Thành viên
-  Nguyễn Trần Cẩm Tiên – 20522011 (nhóm trưởng)  
-  Phạm Thị Thu Trang - 20522041  
-  Phạm Thị Nhật Khánh - 20521455  
-  Nguyễn Hữu Trung Kiên - 20521489  
-
-
+<!-- Giấy phép -->
+## Giấy phép
+Distributed under the MIT License. 

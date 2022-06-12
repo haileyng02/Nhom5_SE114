@@ -55,9 +55,9 @@ _Lưu ý: Do ứng dụng còn đang phát triển nên tính năng đăng nhậ
 
 <!-- Thành viên -->
 ## Thành viên
-Nguyễn Trần Cẩm Tiên – 20522011 (nhóm trưởng)
-Phạm Thị Thu Trang - 20522041
-Phạm Thị Nhật Khánh - 20521455
-Nguyễn Hữu Trung Kiên - 20521489
+  Nguyễn Trần Cẩm Tiên – 20522011 (nhóm trưởng)  
+  Phạm Thị Thu Trang - 20522041  
+  Phạm Thị Nhật Khánh - 20521455  
+  Nguyễn Hữu Trung Kiên - 20521489  
 
 

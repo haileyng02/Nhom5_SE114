@@ -107,6 +107,8 @@ public class OrderDetailFragment extends Fragment {
         TextView state=view.findViewById(R.id.state_order);
         TextView note=view.findViewById(R.id.note_order);
         TextView kieunhan=view.findViewById(R.id.kieunhan_txt);
+        TextView tvAddress = view.findViewById(R.id.order_tvAddress);
+
         if(getArguments().getString("documentID")!=null)
             orderID=getArguments().getString("documentID");
 
@@ -122,14 +124,20 @@ public class OrderDetailFragment extends Fragment {
         });
         cartList.setAdapter(cartAdapter);
         setListViewHeight(cartList);
+        TextView tvNum = view.findViewById(R.id.order_number);
+        int num[] = new int[1];
         db.collection("cartItems").whereEqualTo("cartID", orderID)
                 .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
+                    num[0] = 0;
                     for (QueryDocumentSnapshot snapshot : task.getResult()) {
-                        cart.add(snapshot.toObject(CartItem.class));
+                        CartItem cartItem = snapshot.toObject(CartItem.class);
+                        num[0] += cartItem.quantity;
+                        cart.add(cartItem);
                     }
+                    tvNum.setText("(" + num[0] + " món)");
                     cartAdapter.notifyDataSetChanged();
                 }
             }
@@ -139,14 +147,17 @@ public class OrderDetailFragment extends Fragment {
             title = view.findViewById(R.id.order_title);
         //settype
         if(getArguments().getString("nhanhang")!=null&&getArguments().getString("nhanhang").toString().equals("taicho"))
+        {
             kieunhan.setText("(Tự đến lấy)");
+            tvAddress.setText("Cửa hàng:  ");
+        }
+        if(getArguments().getString("from") != null && getArguments().getString("from").equals("yes")) {
+            cancelBtn.setVisibility(View.GONE);
+            btnchangeState.setVisibility(View.GONE);
+        }
         //Setting
         FragmentManager fm = getParentFragmentManager();
         int count = fm.getBackStackEntryCount();
-//        switch (Navigation.findNavController(getView()).getPreviousBackStackEntry().getDestination().getId()) {
-//            case R.id.orderHistoryFragment:
-//                System.out.println("ten ne");
-//        }
 
             DocumentReference docRef = db.collection("order").document(getArguments().getString("documentID"));
             db.collection("order").addSnapshotListener(new EventListener<QuerySnapshot>() {

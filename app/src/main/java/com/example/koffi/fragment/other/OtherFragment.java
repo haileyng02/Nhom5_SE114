@@ -47,6 +47,10 @@ public class OtherFragment extends Fragment {
         orderHistory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+                    Toast.makeText(getContext(), "Bạn chưa đăng nhập!\nVui lòng đăng nhập!", Toast.LENGTH_LONG).show();
+                    startActivity(new Intent(getActivity(), LoginActivity.class));
+                } else
                 Navigation.findNavController(getView()).navigate(R.id.action_otherFragment_to_orderHistoryFragment);
             }
         });

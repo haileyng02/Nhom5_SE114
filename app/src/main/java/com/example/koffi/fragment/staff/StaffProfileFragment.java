@@ -1,6 +1,7 @@
 package com.example.koffi.fragment.staff;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.koffi.R;
+import com.example.koffi.activity.MainActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -156,7 +158,7 @@ public class StaffProfileFragment extends Fragment {
                         FirebaseAuth.getInstance().signOut();
                         Toast.makeText(getContext(), "Đăng xuất thành công!", Toast.LENGTH_LONG).show();
                         logOutDialog.dismiss();
-                        Navigation.findNavController(getView()).navigate(R.id.action_staffProfileFragment_to_homeFragment3);
+                        startActivity(new Intent(getActivity(), MainActivity.class));
                     }
                 });
                 logOutDialog.show();

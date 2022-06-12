@@ -58,6 +58,10 @@ public class Order implements Comparable<Order>{
         this.status = status;
     }
 
+    public Date confirmTime;
+    public Date serveTime;
+    public Date deliTime;
+    public Date cancelTime;
 
     @Override
     public int compareTo(Order order) {

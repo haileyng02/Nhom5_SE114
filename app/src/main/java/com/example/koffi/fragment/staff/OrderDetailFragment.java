@@ -84,7 +84,7 @@ public class OrderDetailFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Date date = Calendar.getInstance().getTime();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yy HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
         //Toolbar
         Toolbar toolbar = (Toolbar) view.findViewById(R.id.orderdetail_toolbar);
@@ -105,7 +105,9 @@ public class OrderDetailFragment extends Fragment {
         TextView orderphone=view.findViewById(R.id.order_phone);
         TextView orderaddress=view.findViewById(R.id.order_address);
         TextView state=view.findViewById(R.id.state_order);
-        if(getArguments()!=null)
+        TextView note=view.findViewById(R.id.note_order);
+        TextView kieunhan=view.findViewById(R.id.kieunhan_txt);
+        if(getArguments().getString("documentID")!=null)
             orderID=getArguments().getString("documentID");
 
         //listview
@@ -133,9 +135,11 @@ public class OrderDetailFragment extends Fragment {
             }
         });
         //setInfomation
-        if(getArguments()!=null) {
-        title = view.findViewById(R.id.order_title);
-
+        if(getArguments().getString("documentID")!=null) {
+            title = view.findViewById(R.id.order_title);
+        //settype
+        if(getArguments().getString("nhanhang")!=null&&getArguments().getString("nhanhang").toString().equals("taicho"))
+            kieunhan.setText("(Tự đến lấy)");
         //Setting
         FragmentManager fm = getParentFragmentManager();
         int count = fm.getBackStackEntryCount();
@@ -168,6 +172,9 @@ public class OrderDetailFragment extends Fragment {
                                     ordername.setText(document.getString("name"));
                                     orderphone.setText(document.getString("phoneNumber"));
                                     orderaddress.setText(document.getString("address"));
+                                    if(document.getString("deliveryNote")!=null)
+                                        if(!document.getString("deliveryNote").equals(""))
+                                            note.setText(document.getString("deliveryNote"));
                                     if (document.getLong("status") == 1)
                                         state.setText("Chờ xác nhận");
                                     else if (document.getLong("status") == 2)

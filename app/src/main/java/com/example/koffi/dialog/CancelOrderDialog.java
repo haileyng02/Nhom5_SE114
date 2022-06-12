@@ -5,10 +5,12 @@ import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.navigation.Navigation;
 
 import com.example.koffi.R;
 import com.example.koffi.fragment.staff.OrderDetailFragment;
@@ -31,7 +33,7 @@ public class CancelOrderDialog extends Dialog {
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.dialog_cancel_order);
-
+        EditText lydo=findViewById(R.id.lydohuy_edittxt);
         TextView noBtn = findViewById(R.id.cancel_noBtn);
         TextView yesBtn = findViewById(R.id.cancel_yesBtn);
 
@@ -44,8 +46,12 @@ public class CancelOrderDialog extends Dialog {
         yesBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                db.collection("order").document(OrderDetailFragment.docID).update("status",5);
+                db.collection("order").document(OrderDetailFragment.docID)
+                        .update("status",5);
+                db.collection("order").document(OrderDetailFragment.docID)
+                        .update("deliveryNote",lydo.getText().toString());
                 dismiss();
+
             }
         });
     }

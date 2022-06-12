@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,30 +34,21 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
 
 public class TATabFragment extends Fragment {
-
-
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-    private String mParam1;
-    private String mParam2;
-
     public TATabFragment() {
-
     }
 
     public static TATabFragment newInstance(String param1, String param2) {
         TATabFragment fragment = new TATabFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -65,38 +57,28 @@ public class TATabFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+
         }
     }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_t_a_tab, container, false);
     }
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         ArrayList<Order> orderArray = new ArrayList<Order>();
-
-        //Sample data->get datafirebase
         Date date = Calendar.getInstance().getTime();
-
-
 
         ListView listView = view.findViewById(R.id.deliveryLv);
         TabLayout tabLayout = getParentFragment().getView().findViewById(R.id.order_tabLayout);
         OrderAdapter orderAdapter = new OrderAdapter(getContext(),orderArray);
         listView.setAdapter(orderAdapter);
         setListViewHeight(listView);
-        int pos;
         ArrayList<String> idList = new ArrayList<String>();
-        //getStoreID
-
 
         //getData from firebase
         db.collection("order").addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -171,6 +153,7 @@ public class TATabFragment extends Fragment {
                 Bundle bundle=new Bundle();
                 String docID=idList.get(i).toString();
                 bundle.putString("documentID",docID);
+                bundle.putString("nhanhang","taicho");
                 Navigation.findNavController(getView()).navigate(R.id.action_staffOrderFragment_to_orderDetailFragment,bundle);
             }
         });

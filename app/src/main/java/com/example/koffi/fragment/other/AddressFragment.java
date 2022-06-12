@@ -50,12 +50,12 @@ public class AddressFragment extends Fragment {
     SharedPreferences sharedPref;
     SharedPreferences.Editor editor;
     NavController navController;
+    public static ArrayList<String> idListAddress=new ArrayList<>();
 
     public AddressFragment() {
         // Required empty public constructor
     }
 
-    // TODO: Rename and change types and number of parameters
     public static AddressFragment newInstance(String param1, String param2) {
         AddressFragment fragment = new AddressFragment();
         Bundle args = new Bundle();
@@ -91,19 +91,6 @@ public class AddressFragment extends Fragment {
 
         if (getArguments() != null)
             from = getArguments().getString("from");
-
-        //backPress
-        //if (from.equals("Other")) {
-            /*OnBackPressedCallback callback = new OnBackPressedCallback(true *//* enabled by default *//*) {
-                @Override
-                public void handleOnBackPressed() {
-                    Bundle bundle = new Bundle();
-                    bundle.putString("back","other");
-                    Navigation.findNavController(view).navigate(R.id.action_global_mainFragment,bundle);
-                }
-            };
-            requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(),callback);*/
-        //}
 
         //Toolbar
         Toolbar toolbar = (Toolbar) view.findViewById(R.id.address_toolbar);
@@ -203,11 +190,7 @@ public class AddressFragment extends Fragment {
                     Navigation.findNavController(getView()).popBackStack();
                     Navigation.findNavController(getView()).popBackStack();
                 }
-                /*else if (from.equals("Other")) {
-                    Bundle bundle = new Bundle();
-                    bundle.putString("type", "Normal");
-                    Navigation.findNavController(getView()).navigate(R.id.action_addressFragment2_to_addAddressFragment, bundle);
-                }*/
+
                 else {
                     Navigation.findNavController(getView()).navigate(R.id.menuFragment);
                 }
@@ -250,6 +233,7 @@ public class AddressFragment extends Fragment {
 
                             addressList.add(new Address(document.getString("name"), document.getString("address")));
                             adapter=new AddressAdapter(getContext(),addressList);
+                            idListAddress.add(document.getId().toString());
                             listView.setAdapter(adapter);
                             setListViewHeight(listView);
                             adapter.notifyDataSetChanged();

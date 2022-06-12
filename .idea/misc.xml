@@ -8,12 +8,15 @@
         <entry key="..\:/SE114/Nhom5_SE114/app/src/main/res/layout/bottomsheet_itemdetail.xml" value="0.25416666666666665" />
         <entry key="..\:/SE114/Nhom5_SE114/app/src/main/res/layout/bottomsheet_profile_avatar.xml" value="0.264" />
         <entry key="..\:/SE114/Nhom5_SE114/app/src/main/res/layout/bottomsheet_profile_gender.xml" value="0.25416666666666665" />
+        <entry key="..\:/SE114/Nhom5_SE114/app/src/main/res/layout/dialog_cancel_order.xml" value="0.25416666666666665" />
         <entry key="..\:/SE114/Nhom5_SE114/app/src/main/res/layout/fragment_add_address.xml" value="0.25416666666666665" />
         <entry key="..\:/SE114/Nhom5_SE114/app/src/main/res/layout/fragment_address.xml" value="0.264" />
         <entry key="..\:/SE114/Nhom5_SE114/app/src/main/res/layout/fragment_check_out.xml" value="0.25416666666666665" />
         <entry key="..\:/SE114/Nhom5_SE114/app/src/main/res/layout/fragment_contact.xml" value="0.25416666666666665" />
+        <entry key="..\:/SE114/Nhom5_SE114/app/src/main/res/layout/fragment_delivery_tab.xml" value="0.16875" />
         <entry key="..\:/SE114/Nhom5_SE114/app/src/main/res/layout/fragment_login.xml" value="0.25416666666666665" />
         <entry key="..\:/SE114/Nhom5_SE114/app/src/main/res/layout/fragment_main.xml" value="0.25416666666666665" />
+        <entry key="..\:/SE114/Nhom5_SE114/app/src/main/res/layout/fragment_order_detail.xml" value="0.264" />
         <entry key="..\:/SE114/Nhom5_SE114/app/src/main/res/layout/fragment_other.xml" value="0.264" />
         <entry key="..\:/SE114/Nhom5_SE114/app/src/main/res/layout/fragment_profile.xml" value="0.2" />
         <entry key="..\:/SE114/Nhom5_SE114/app/src/main/res/layout/fragment_store.xml" value="0.1956521739130435" />

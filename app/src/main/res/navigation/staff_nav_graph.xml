@@ -36,10 +36,18 @@
         <action
             android:id="@+id/action_staffProfileFragment_to_changePasswordFragment"
             app:destination="@id/changePasswordFragment" />
+        <action
+            android:id="@+id/action_staffProfileFragment_to_homeFragment3"
+            app:destination="@id/homeFragment3" />
     </fragment>
     <fragment
         android:id="@+id/changePasswordFragment"
         android:name="com.example.koffi.fragment.staff.ChangePasswordFragment"
         android:label="fragment_change_password"
         tools:layout="@layout/fragment_change_password" />
+    <fragment
+        android:id="@+id/homeFragment3"
+        android:name="com.example.koffi.fragment.home.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" />
 </navigation>

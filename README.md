@@ -66,9 +66,9 @@ _Lưu ý: Do ứng dụng còn đang phát triển nên tính năng đăng nhậ
   - Android Studio
   - Notion
   - Firebase
-  - Google Map API
   - Photoshop
 
 <!-- Giấy phép -->
 ## Giấy phép
 Distributed under the MIT License. 
+

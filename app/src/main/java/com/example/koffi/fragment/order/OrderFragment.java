@@ -2,6 +2,9 @@ package com.example.koffi.fragment.order;
 
 import static com.example.koffi.FunctionClass.setListViewHeight;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.res.ColorStateList;
 import android.database.DataSetObserver;
 import android.graphics.Color;
@@ -13,7 +16,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -21,6 +26,8 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -61,7 +68,7 @@ public class OrderFragment extends Fragment {
     ImageView imageView;
     TextView state;
     Button cancelBtn;
-    String confirm, ready, completed;
+    String confirm, ready, completed, cancel;
 
     public OrderFragment() {
         // Required empty public constructor
@@ -95,7 +102,7 @@ public class OrderFragment extends Fragment {
         if (getArguments()!=null) {
             cart = new ArrayList<CartItem>();
             if (getArguments().getParcelableArrayList("orderItems") != null)
-//            cart = getArguments().getParcelableArrayList("orderItems");
+            cart = getArguments().getParcelableArrayList("orderItems");
             orderMethod = getArguments().getInt("method");
             orderID = getArguments().getString("orderID");
             total = getArguments().getLong("total");
@@ -136,23 +143,18 @@ public class OrderFragment extends Fragment {
         state = view.findViewById(R.id.order_tvState);
         cancelBtn = view.findViewById(R.id.order_cancelBtn);
 
-        //Cancel order
-        cancelBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                CancelOrderDialog cancelOrderDialog = new CancelOrderDialog(getContext());
-
-                cancelOrderDialog.show();
-            }
-        });
-
         //Toolbar
         Toolbar toolbar = view.findViewById(R.id.order_toolbar);
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().onBackPressed();
+            }
+        });
 
         //Cart list
-
 
         //Sample data
 //        ArrayList<Topping> toppings = new ArrayList<Topping>();
@@ -304,9 +306,92 @@ public class OrderFragment extends Fragment {
                                     }
                                 }
                                 break;
+                            case 5:
+                                cancel = value.getString("cancelTime");
+                                if (cancel != null && !cancel.isEmpty()) {
+                                    try {
+                                        Date date1 = df.parse(cancel);
+                                        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+                                        String dateStr = sdf.format(date1);
+                                        AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+                                        alert.setTitle("THÔNG BÁO!");
+                                        alert.setMessage("Đơn hàng của bạn đã bị hủy!\nLý do: " + value.get("deliveryNote") +
+                                                "\nĐơn hàng bị hủy lúc: \n" + dateStr);
+                                        alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                                            }
+                                        });
+                                        alert.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                                            @Override
+                                            public void onDismiss(DialogInterface dialogInterface) {
+                                                Bundle bundle = new Bundle();
+                                                bundle.putString("documentID", orderID);
+                                                Navigation.findNavController(getView()).navigate(R.id.action_orderFragment_to_orderDetailFragment2, bundle);
+                                            }
+                                        });
+                                        alert.show();
+                                    } catch (ParseException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                                break;
                         }
                     }
                 });
+
+        //Cancel order
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Dialog cancelOrderDialog = new Dialog(getContext(), androidx.appcompat.R.style.Base_Theme_AppCompat_Dialog);
+                View cancelOrderView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_cancel_order,
+                        view.findViewById(R.id.cancel_dialog));
+                cancelOrderDialog.setContentView(cancelOrderView);
+                TextView yesBtn = cancelOrderDialog.findViewById(R.id.cancel_yesBtn);
+                TextView noBtn = cancelOrderDialog.findViewById(R.id.cancel_noBtn);
+                yesBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        EditText edtReason = cancelOrderDialog.findViewById(R.id.cancel_reason);
+                        String reason = edtReason.getText().toString().trim();
+                        Date date = new Date();
+                        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+                        db.collection("order").document(orderID)
+                                .update("status", 5, "deliveryNote", reason,
+                                        "cancelTime", formatter.format(date))
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        Bundle bundle = new Bundle();
+                                        bundle.putString("documentID", orderID);
+                                        Navigation.findNavController(getView()).navigate(R.id.action_orderFragment_to_orderDetailFragment2, bundle);
+                                        Toast.makeText(getContext(), "Hủy đơn hàng thành công", Toast.LENGTH_SHORT).show();
+                                        cancelOrderDialog.dismiss();
+                                    }
+                                });
+                    }
+                });
+                noBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        cancelOrderDialog.dismiss();
+                    }
+                });
+                cancelOrderDialog.show();
+//                cancelOrderDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+//                    @Override
+//                    public void onDismiss(DialogInterface dialogInterface) {
+//                        if (getArguments().getBoolean("cancel") && getArguments() != null) {
+////                            boolean result = getArguments().getBoolean("cancel");
+//                            System.out.println("get argument");
+//                            Toast.makeText(getContext(), getArguments().getString("reason"), Toast.LENGTH_SHORT).show();
+//                        }
+//                    }
+//                });
+            }
+        });
     }
 
     @Override

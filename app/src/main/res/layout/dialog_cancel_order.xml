@@ -3,6 +3,7 @@
     android:layout_width="300dp"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:id="@+id/cancel_dialog"
     android:padding="20dp">
 
     <TextView
@@ -18,7 +19,7 @@
         android:textColor="@color/black"
         android:textSize="16sp" />
     <EditText
-        android:id="@+id/lydohuy_edittxt"
+        android:id="@+id/cancel_reason"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"

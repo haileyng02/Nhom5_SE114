@@ -712,6 +712,7 @@ public class CheckOutFragment extends Fragment {
                         bundle.putLong("numberOfItems", number);
                         bundle.putString("receiverName", receiverName);
                         bundle.putString("receiverPhone", receiverPhone);
+                        bundle.putString("from", "checkout");
                         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
                         bundle.putString("time", sdf.format(new Date()));
                         if (method == 0) {
@@ -775,7 +776,7 @@ public class CheckOutFragment extends Fragment {
                         else if (method == 1) {
                             db.collection("order").document(cartID)
                                     .update("date", formatter.format(date), "orderID", cartID,
-                                            "method", 1, "storeID", storeID,
+                                            "method", 1, "storeID", storeID, "address", storeAddress,
                                             "name", receiverName, "phoneNumber", receiverPhone,
                                             "ship", ship, "status", 1,
                                             "subtotal", subtotal, "total", total);

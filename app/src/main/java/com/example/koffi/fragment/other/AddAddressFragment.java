@@ -2,6 +2,7 @@ package com.example.koffi.fragment.other;
 
 import android.app.ActionBar;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -242,7 +243,7 @@ public class AddAddressFragment extends Fragment {
         btnXoa.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), com.google.android.material.R.style.Base_Theme_AppCompat_Dialog_Alert);
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                 //AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
                 builder.setTitle("Xác nhận!");
@@ -272,7 +273,10 @@ public class AddAddressFragment extends Fragment {
 
                 AlertDialog alert = builder.create();
                 alert.show();
-
+                alert.getButton(DialogInterface.BUTTON_POSITIVE)
+                        .setTextColor(Color.parseColor("#795C34"));
+                alert.getButton(DialogInterface.BUTTON_NEGATIVE)
+                        .setTextColor(Color.parseColor("#795C34"));
             }
         });
 

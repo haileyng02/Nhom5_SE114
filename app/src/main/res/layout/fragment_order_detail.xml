@@ -252,6 +252,7 @@
                     android:background="@color/white"
                     android:padding="15dp">
                     <TextView
+                        android:id="@+id/detail_note"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Ghi chú: "

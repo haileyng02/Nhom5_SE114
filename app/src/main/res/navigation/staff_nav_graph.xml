@@ -21,7 +21,11 @@
         android:id="@+id/statisticFragment"
         android:name="com.example.koffi.fragment.staff.StatisticFragment"
         android:label="fragment_statistic"
-        tools:layout="@layout/fragment_statistic" />
+        tools:layout="@layout/fragment_statistic" >
+        <action
+            android:id="@+id/action_statisticFragment_to_orderDetailFragment"
+            app:destination="@id/orderDetailFragment" />
+    </fragment>
     <fragment
         android:id="@+id/orderDetailFragment"
         android:name="com.example.koffi.fragment.staff.OrderDetailFragment"

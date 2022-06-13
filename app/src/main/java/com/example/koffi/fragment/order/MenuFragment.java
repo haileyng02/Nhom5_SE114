@@ -233,6 +233,13 @@ public class MenuFragment extends Fragment {
                 //Handle bottom sheet
                 TextView addressTxt = bottomSheetView.findViewById(R.id.delivery_address);
                 TextView storeAddressTxt = bottomSheetView.findViewById(R.id.checkout_address);
+                ImageButton closeBtn = bottomSheetView.findViewById(R.id.othermethod_closeBtn);
+                closeBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        bottomSheetDialog.dismiss();
+                    }
+                });
                 addressTxt.setText(address);
                 storeAddressTxt.setText(storeAddress);
 

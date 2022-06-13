@@ -14,9 +14,10 @@
         android:id="@+id/store"
         android:icon="@drawable/store"/>
     <item
-        android:title="Tích điểm"
         android:id="@+id/coupon"
-        android:icon="@drawable/coupon"/>
+        android:icon="@drawable/coupon"
+        android:title="Tích điểm"
+        android:visible="false" />
     <item
         android:title="Khác"
         android:id="@+id/other"

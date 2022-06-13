@@ -209,17 +209,7 @@ public class OrderFragment extends Fragment {
 
                         switch (value.get("status", Integer.class)) {
                             case 1:
-//                                String date = value.getString("date");
-//                                if (date != null) {
-//                                    try {
-//                                        Date date1 = df.parse(date);
-//                                        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-//                                        String dateStr = sdf.format(date1);
-//                                        System.out.println("Ordered " + dateStr);
-//                                    } catch (ParseException e) {
-//                                        e.printStackTrace();
-//                                    }
-//                                }
+                                stateConfirm();
                                 break;
                             case 2:
                                 imageView.setImageResource(R.drawable.image_status_prepare);
@@ -331,7 +321,10 @@ public class OrderFragment extends Fragment {
                                                 Navigation.findNavController(getView()).navigate(R.id.action_orderFragment_to_orderDetailFragment2, bundle);
                                             }
                                         });
-                                        alert.show();
+                                        AlertDialog dialog = alert.create();
+                                        dialog.show();
+                                        dialog.getButton(dialog.BUTTON_POSITIVE)
+                                                .setTextColor(Color.parseColor("#795C34"));
                                     } catch (ParseException e) {
                                         e.printStackTrace();
                                     }
@@ -394,6 +387,7 @@ public class OrderFragment extends Fragment {
         });
     }
 
+
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
@@ -405,6 +399,13 @@ public class OrderFragment extends Fragment {
     }
     public void handleTakeAway(){
         readyStatusText.setText("Đã sẵn sàng");
+    }
+
+    private void stateConfirm() {
+        checkTime.setTypeface(checkTime.getTypeface(), Typeface.BOLD);
+        tvChecking.setTypeface(tvChecking.getTypeface(), Typeface.BOLD);
+        checkTime.setTextColor(Color.BLACK);
+        tvChecking.setTextColor(Color.BLACK);
     }
 
     public void statePrepare() {

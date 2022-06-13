@@ -228,7 +228,10 @@ public class StatisticFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Navigation.findNavController(getView()).navigate(R.id.action_staffOrderFragment_to_orderDetailFragment);
+                Bundle bundle = new Bundle();
+                bundle.putString("documentID", orderArray.get(i).orderID);
+                bundle.putString("from", "yes");
+                Navigation.findNavController(getView()).navigate(R.id.action_statisticFragment_to_orderDetailFragment, bundle);
             }
         });
     }

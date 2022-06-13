@@ -32,6 +32,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.koffi.models.CartItem;
@@ -155,7 +156,8 @@ public class MenuFragment extends Fragment {
 
         //Get arguments
         if (getArguments()!=null) {
-
+            //if (getArguments().getString("bottomsheet").equals(""))
+            recyclerView.findViewHolderForAdapterPosition(0).itemView.performClick();
         }
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

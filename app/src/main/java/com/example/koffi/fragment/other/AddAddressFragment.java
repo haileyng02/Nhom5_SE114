@@ -80,9 +80,10 @@ public class AddAddressFragment extends Fragment {
             type = getArguments().getString("type");
             from = getArguments().getString("from");
         }
+        //set Nha, cong ty
         if (type!="" && !type.equals("Normal"))
             nameEdit.setText(type);
-        //Home address
+        //Home address show
         if(type.equals("Nhà")) {
             btnXoa.setVisibility(View.GONE);
             db.collection("users").document(user.getUid()).get()
@@ -243,8 +244,6 @@ public class AddAddressFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), com.google.android.material.R.style.Base_Theme_AppCompat_Dialog_Alert);
-                //AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-
                 builder.setTitle("Xác nhận!");
                 builder.setMessage("Bạn chắc chắn muốn xóa?");
 

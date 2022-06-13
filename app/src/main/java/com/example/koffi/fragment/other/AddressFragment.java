@@ -102,7 +102,6 @@ public class AddressFragment extends Fragment {
         });
 
         navController = Navigation.findNavController(getView());
-
         //Navigate to add address
         addHome.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -119,10 +118,15 @@ public class AddressFragment extends Fragment {
                     editor.putString("tendc","Nhà");
                     editor.putString("dc",addressHome.getText().toString());
                     editor.apply();
-
                     navController.popBackStack();
                     navController.popBackStack();
                     navController.popBackStack();
+                }
+                else if(from.equals("Other"))
+                {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("type", "Nhà");
+                    Navigation.findNavController(getView()).navigate(R.id.action_addressFragment2_to_addAddressFragment, bundle);
                 }
                 else {
                     editor.putString("tendc", "Nhà");
@@ -152,6 +156,12 @@ public class AddressFragment extends Fragment {
                     navController.popBackStack();
                     navController.popBackStack();
                     navController.popBackStack();
+                }
+                else if(from.equals("Other"))
+                {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("type", "Công ty");
+                    Navigation.findNavController(getView()).navigate(R.id.action_addressFragment2_to_addAddressFragment, bundle);
                 }
                 else {
                     editor.putString("tendc", "Công ty");
@@ -192,7 +202,10 @@ public class AddressFragment extends Fragment {
                 }
 
                 else {
-                    Navigation.findNavController(getView()).navigate(R.id.menuFragment);
+                    Bundle bundle=new Bundle();
+                    bundle.putString("type","editAddress");
+                    bundle.putString("doc",idListAddress.get(i));
+                    Navigation.findNavController(view).navigate(R.id.action_addressFragment2_to_addAddressFragment,bundle);
                 }
             }
         });

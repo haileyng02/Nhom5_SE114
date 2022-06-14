@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 import androidx.viewpager2.widget.CompositePageTransformer;
@@ -24,6 +25,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.koffi.activity.LoginActivity;
 import com.example.koffi.activity.StaffActivity;
@@ -46,6 +48,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+
+import org.intellij.lang.annotations.Identifier;
 
 import java.util.ArrayList;
 
@@ -88,6 +92,12 @@ public class HomeFragment extends Fragment {
         FirebaseAuth auth = FirebaseAuth.getInstance();
         FirebaseUser user = auth.getCurrentUser();
         db = FirebaseFirestore.getInstance();
+        ConstraintLayout chuaDN= view.findViewById(R.id.home_login);
+        LinearLayout daDN=view.findViewById(R.id.home_profile);
+        TextView hello=view.findViewById(R.id.Hello);
+        TextView identifier=view.findViewById(R.id.identifier);
+        //System.out.println("AAAAAAAA"+user.getIdToken(false).getResult().getSignInProvider());
+        //System.out.println("BBBBBBB"+user.getDisplayName());
 //        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(getContext());
 //        userName = null;
 //        AccessToken accessToken = AccessToken.getCurrentAccessToken();
@@ -117,21 +127,42 @@ public class HomeFragment extends Fragment {
         ((AppCompatActivity)getActivity()).getSupportActionBar().setLogo(R.drawable.sun);
 
         if (user != null) {
+            daDN.setVisibility(View.VISIBLE);
+            chuaDN.setVisibility(View.GONE);
+            if(user.getIdToken(false).getResult().getSignInProvider().toString().equals("google.com"))
+                identifier.setText(user.getEmail().toString());
+            else if(user.getIdToken(false).getResult().getSignInProvider().toString().equals("phone"))
+                identifier.setText(user.getPhoneNumber());
+            else if(user.getIdToken(false).getResult().getSignInProvider().toString().equals("facebook.com"))
+            {
+                if(user.getEmail()!=null&&(!user.getEmail().toString().equals("")))
+                    identifier.setText(user.getEmail().toString());
+                else identifier.setText(user.getPhoneNumber());
+            }
             db.collection("users").document(user.getUid()).get()
                     .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                         @Override
                         public void onSuccess(DocumentSnapshot documentSnapshot) {
                             if (!documentSnapshot.exists()) {
+
                                 String email = user.getEmail();
                                 String phone = user.getPhoneNumber();
                                 String username = user.getDisplayName();
                                 db.collection("users").document(user.getUid()).set(new User(username, email, phone));
                             }
-                            if (documentSnapshot.getString("Ten") != null)
-                            ((AppCompatActivity)getActivity()).getSupportActionBar()
-                                    .setTitle("Chào " + documentSnapshot.getString("Ten") + " \uD83D\uDC4B");
+                            if (documentSnapshot.getString("Ten") != null) {
+                                ((AppCompatActivity) getActivity()).getSupportActionBar()
+                                        .setTitle("Chào " + documentSnapshot.getString("Ten") + " \uD83D\uDC4B");
+                            }
+                            if(documentSnapshot.getString("Ten")!=null&&(!documentSnapshot.getString("Ten").toString().equals("")))
+                                hello.setText(documentSnapshot.getString("Ten"));
                         }
             });
+        }
+        else
+        {
+            chuaDN.setVisibility(View.VISIBLE);
+            daDN.setVisibility(View.GONE);
         }
         //Handle loginBtn
         Button loginBtn = view.findViewById(R.id.loginBtn);

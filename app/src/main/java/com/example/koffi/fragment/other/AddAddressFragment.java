@@ -81,9 +81,10 @@ public class AddAddressFragment extends Fragment {
             type = getArguments().getString("type");
             from = getArguments().getString("from");
         }
+        //set Nha, cong ty
         if (type!="" && !type.equals("Normal"))
             nameEdit.setText(type);
-        //Home address
+        //Home address show
         if(type.equals("Nhà")) {
             btnXoa.setVisibility(View.GONE);
             db.collection("users").document(user.getUid()).get()

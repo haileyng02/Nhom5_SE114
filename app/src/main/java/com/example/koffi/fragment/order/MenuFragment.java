@@ -32,6 +32,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.koffi.models.CartItem;
@@ -155,7 +156,8 @@ public class MenuFragment extends Fragment {
 
         //Get arguments
         if (getArguments()!=null) {
-
+            //if (getArguments().getString("bottomsheet").equals(""))
+            recyclerView.findViewHolderForAdapterPosition(0).itemView.performClick();
         }
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -231,6 +233,13 @@ public class MenuFragment extends Fragment {
                 //Handle bottom sheet
                 TextView addressTxt = bottomSheetView.findViewById(R.id.delivery_address);
                 TextView storeAddressTxt = bottomSheetView.findViewById(R.id.checkout_address);
+                ImageButton closeBtn = bottomSheetView.findViewById(R.id.othermethod_closeBtn);
+                closeBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        bottomSheetDialog.dismiss();
+                    }
+                });
                 addressTxt.setText(address);
                 storeAddressTxt.setText(storeAddress);
 

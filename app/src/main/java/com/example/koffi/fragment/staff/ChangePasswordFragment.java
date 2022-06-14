@@ -2,13 +2,28 @@ package com.example.koffi.fragment.staff;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.koffi.R;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -62,5 +77,123 @@ public class ChangePasswordFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_change_password, container, false);
+    }
+
+    TextView warningOld, warningNew, warningRetype;
+    EditText edtOldPass, edtNewPass, edtRetypePass;
+    String oldPass, newPass, retypePass;
+    Button done;
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        //Init
+        warningOld = view.findViewById(R.id.warning_old);
+        warningNew = view.findViewById(R.id.warning_new);
+        warningRetype = view.findViewById(R.id.warning_retype);
+        edtOldPass = view.findViewById(R.id.old_pass);
+        edtNewPass = view.findViewById(R.id.new_pass);
+        edtRetypePass = view.findViewById(R.id.retype_pass);
+        done = view.findViewById(R.id.confirm_change);
+
+        edtNewPass.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                oldPass = edtOldPass.getText().toString();
+                newPass = edtNewPass.getText().toString();
+                if (oldPass.equals(newPass) || newPass.length() < 6)
+                    warningNew.setVisibility(View.VISIBLE);
+                else warningNew.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+        edtRetypePass.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                newPass = edtNewPass.getText().toString();
+                retypePass = edtRetypePass.getText().toString();
+                if (!newPass.equals(retypePass))
+                    warningRetype.setVisibility(View.VISIBLE);
+                else warningRetype.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        done.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                oldPass = edtOldPass.getText().toString();
+                newPass = edtNewPass.getText().toString();
+                retypePass = edtRetypePass.getText().toString();
+                if (oldPass.isEmpty() || newPass.isEmpty() || retypePass.isEmpty()) {
+                    Toast.makeText(getContext(), "Không được để trống thông tin!", Toast.LENGTH_LONG).show();
+                }
+                else {
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                    AuthCredential auth = EmailAuthProvider.getCredential(user.getEmail(), oldPass);
+                    user.reauthenticate(auth).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            warningOld.setVisibility(View.GONE);
+                            if (passwordValidate()) {
+                                user.updatePassword(newPass).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        Toast.makeText(getContext(), "Đổi mật khẩu thành công!", Toast.LENGTH_LONG).show();
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Toast.makeText(getContext(), "Đổi mật khẩu thất bại!", Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                            } else
+                                Toast.makeText(getContext(), "Vui lòng kiểm tra lại!", Toast.LENGTH_LONG).show();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            warningOld.setVisibility(View.VISIBLE);
+                            System.out.println("Failure: " + e);
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    public boolean passwordValidate() {
+        oldPass = edtOldPass.getText().toString();
+        newPass = edtNewPass.getText().toString();
+        retypePass = edtRetypePass.getText().toString();
+
+        if (newPass.equals(oldPass) || newPass.length() < 6) {
+            warningNew.setVisibility(View.VISIBLE);
+            return false;
+        }
+        if (!newPass.equals(retypePass)) {
+            warningRetype.setVisibility(View.VISIBLE);
+            return false;
+        }
+        return true;
     }
 }

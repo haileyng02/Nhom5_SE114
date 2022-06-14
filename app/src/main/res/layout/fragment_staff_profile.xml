@@ -71,9 +71,10 @@
                             android:textColor="@color/white"
                             android:textStyle="bold"/>
                         <TextView
+                            android:id="@+id/staff_name"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Nguyễn Trần Cẩm Tiên"
+                            android:text=""
                             android:textColor="@color/white"/>
                     </LinearLayout>
                     <LinearLayout
@@ -87,9 +88,10 @@
                             android:textColor="@color/white"
                             android:textStyle="bold"/>
                         <TextView
+                            android:id="@+id/staff_email"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="20522011@gm.uit.edu.vn"
+                            android:text=""
                             android:textColor="@color/white"/>
                     </LinearLayout>
 
@@ -106,9 +108,10 @@
                             android:textStyle="bold" />
 
                         <TextView
+                            android:id="@+id/staff_store"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="400A Huỳnh Tấn Phát"
+                            android:text=""
                             android:textColor="@color/white" />
                     </LinearLayout>
                 </LinearLayout>

@@ -19,18 +19,20 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="340dp"
+                android:layout_height="300dp"
                 android:gravity="center"
                 android:fitsSystemWindows="true"
-                android:background="#795C34">
+                android:background="@drawable/image_home1">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/home_login"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
-                    android:layout_marginLeft="30dp"
-                    android:layout_marginRight="30dp"
+                    android:layout_marginLeft="20dp"
                     android:layout_marginTop="10dp"
-                    android:background="@drawable/shape_white_rounded">
+                    android:layout_marginRight="20dp"
+                    android:background="@drawable/shape_white_rounded"
+                    android:visibility="gone">
 
                     <TextView
                         android:id="@+id/textView2"
@@ -56,7 +58,7 @@
                         android:layout_marginTop="10dp"
                         android:paddingLeft="20dp"
                         android:paddingRight="20dp"
-                        android:text="Sử dụng app để tích điểm và đổi những ưu đãi chỉ dành riêng cho thành viên bạn nhé!"
+                        android:text="Sử dụng app để đặt hàng và nhận những ưu đãi chỉ dành riêng cho thành viên bạn nhé!"
                         android:textAlignment="center"
                         android:textColor="@color/black"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -71,7 +73,7 @@
                         android:layout_marginTop="10dp"
                         android:layout_marginEnd="135dp"
                         android:layout_marginBottom="18dp"
-                        android:backgroundTint="#4B371C"
+                        android:backgroundTint="@color/primary"
                         android:text="Đăng nhập"
                         android:textAllCaps="false"
                         app:cornerRadius="5dp"
@@ -83,6 +85,58 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
+                <LinearLayout
+                    android:id="@+id/home_profile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="20dp"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/shape_white_rounded"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    android:paddingVertical="40dp"
+                    android:paddingHorizontal="15dp">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"
+                            android:layout_marginRight="15dp"
+                            android:src="@drawable/image_home_cafe" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:weightSum="2">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="40dp"
+                                android:layout_weight="1"
+                                android:gravity="center_vertical"
+                                android:text="Chào Bạn!"
+                                android:textColor="@color/black"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="40dp"
+                                android:layout_weight="1"
+                                android:gravity="center_vertical"
+                                android:text="20522011@gm.uit.edu.vn"
+                                android:textColor="@color/black" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
             </LinearLayout>
 
 

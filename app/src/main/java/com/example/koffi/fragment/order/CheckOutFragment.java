@@ -832,6 +832,7 @@ public class CheckOutFragment extends Fragment {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
+                    cart.clear();
                     for (QueryDocumentSnapshot doc : task.getResult()) {
                         db.collection("cartItems").whereEqualTo("cartID", doc.getId())
                                 .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {

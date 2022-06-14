@@ -2,6 +2,7 @@ package com.example.koffi.fragment.other;
 
 import static com.example.koffi.FunctionClass.setListViewHeight;
 
+import android.content.Intent;
 import android.database.DataSetObserver;
 import android.os.Bundle;
 
@@ -20,8 +21,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.koffi.R;
+import com.example.koffi.activity.LoginActivity;
 import com.example.koffi.adapter.CartItemAdapter;
 import com.example.koffi.adapter.OrderAdapter;
 import com.example.koffi.models.CartItem;
@@ -64,7 +68,7 @@ public class OrderHistoryFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        setHasOptionsMenu(true);
+        setHasOptionsMenu(false);
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_order_history, container, false);
     }
@@ -77,8 +81,9 @@ public class OrderHistoryFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        db = FirebaseFirestore.getInstance();
         user = FirebaseAuth.getInstance().getCurrentUser();
+
+        db = FirebaseFirestore.getInstance();
         //Toolbar
         Toolbar toolbar = (Toolbar) view.findViewById(R.id.history_toolbar);
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
@@ -126,6 +131,10 @@ public class OrderHistoryFragment extends Fragment {
                 Bundle bundle = new Bundle();
                 Order order = (Order) listView.getItemAtPosition(i);
                 if (order.status==4 || order.status==5) {
+                    bundle.putString("from", "yes");
+                    if (order.method == 1) {
+                        bundle.putString("nhanhang", "taicho");
+                    }
                     bundle.putString("documentID", order.orderID);
                     Navigation.findNavController(getView()).navigate(R.id.action_orderHistoryFragment_to_orderDetailFragment2, bundle);
                 }
@@ -139,7 +148,6 @@ public class OrderHistoryFragment extends Fragment {
                     bundle.putString("receiverName", order.name);
                     bundle.putString("receiverPhone", order.phoneNumber);
                     bundle.putString("address", order.address);
-                    bundle.putString("from", "history");
                     SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
                     bundle.putString("time", sdf.format(order.date));
                     Navigation.findNavController(getView()).navigate(R.id.action_orderHistoryFragment_to_orderFragment, bundle);

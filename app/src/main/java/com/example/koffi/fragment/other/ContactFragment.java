@@ -94,7 +94,7 @@ public class ContactFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.facebook.com/tienhaileygg")));
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.facebook.com/The.Coffee.House.2014")));
 
             }
         });

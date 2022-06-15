@@ -6,19 +6,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
-import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.navigation.Navigation;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -29,19 +16,27 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.koffi.R;
+import com.example.koffi.adapter.CategoryAdapter;
+import com.example.koffi.adapter.MenuAdapter;
 import com.example.koffi.models.CartItem;
 import com.example.koffi.models.Category;
-import com.example.koffi.adapter.CategoryAdapter;
 import com.example.koffi.models.Item;
-import com.example.koffi.adapter.MenuAdapter;
-import com.example.koffi.R;
-import com.example.koffi.fragment.store.StoreFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -153,12 +148,6 @@ public class MenuFragment extends Fragment {
 
         recyclerView.setAdapter(menuAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
-        //Get arguments
-        if (getArguments()!=null) {
-            //if (getArguments().getString("bottomsheet").equals(""))
-            recyclerView.findViewHolderForAdapterPosition(0).itemView.performClick();
-        }
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

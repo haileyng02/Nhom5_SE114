@@ -1,5 +1,9 @@
 package com.example.koffi.activity;
 
+import android.os.Bundle;
+import android.view.MenuItem;
+import android.view.View;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -7,12 +11,6 @@ import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
-
-import android.app.Activity;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.MenuItem;
-import android.view.View;
 
 import com.example.koffi.R;
 import com.example.koffi.databinding.ActivityMainBinding;
@@ -59,5 +57,10 @@ public class StaffActivity extends AppCompatActivity {
                 return true;
             }
         });
+
+//        //Bottom navigation badge
+//        bottomNavigationView.getOrCreateBadge(R.id.order).setNumber(3);
+//        TabLayout tabLayout = findViewById(R.id.order_tabLayout);
+//        System.out.println(tabLayout);
     }
 }

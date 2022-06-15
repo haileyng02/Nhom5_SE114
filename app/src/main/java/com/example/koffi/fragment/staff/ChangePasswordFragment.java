@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 import android.text.Editable;
@@ -96,6 +97,13 @@ public class ChangePasswordFragment extends Fragment {
         edtNewPass = view.findViewById(R.id.new_pass);
         edtRetypePass = view.findViewById(R.id.retype_pass);
         done = view.findViewById(R.id.confirm_change);
+        Toolbar toolbar = (Toolbar) view.findViewById(R.id.checkout_toolbar);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().onBackPressed();
+            }
+        });
 
         edtNewPass.addTextChangedListener(new TextWatcher() {
             @Override

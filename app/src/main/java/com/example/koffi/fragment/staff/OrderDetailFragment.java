@@ -1,26 +1,14 @@
 package com.example.koffi.fragment.staff;
 
 import static android.content.ContentValues.TAG;
-
 import static com.example.koffi.FunctionClass.setListViewHeight;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.res.ColorStateList;
 import android.database.DataSetObserver;
 import android.graphics.Color;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.navigation.Navigation;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,13 +18,17 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.navigation.Navigation;
 
 import com.example.koffi.R;
-import com.example.koffi.activity.MainActivity;
 import com.example.koffi.adapter.CartItemAdapter;
 import com.example.koffi.dialog.CancelOrderDialog;
-import com.example.koffi.dialog.DialogLogOut;
 import com.example.koffi.models.CartItem;
 import com.example.koffi.models.Topping;
 import com.google.android.gms.tasks.OnCompleteListener;

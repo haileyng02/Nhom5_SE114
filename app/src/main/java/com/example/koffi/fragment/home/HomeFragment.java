@@ -5,6 +5,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,39 +26,25 @@ import androidx.viewpager2.widget.CompositePageTransformer;
 import androidx.viewpager2.widget.MarginPageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
 
-import android.os.Handler;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.TextView;
-
+import com.example.koffi.R;
 import com.example.koffi.activity.LoginActivity;
-import com.example.koffi.activity.StaffActivity;
 import com.example.koffi.adapter.MenuItemAdapter;
 import com.example.koffi.adapter.SliderAdapter;
 import com.example.koffi.models.Item;
 import com.example.koffi.models.Order;
-import com.example.koffi.R;
-import com.example.koffi.models.User;
 import com.example.koffi.models.SliderItem;
-import com.example.koffi.models.Store;
+import com.example.koffi.models.User;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GetTokenResult;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-
-import org.intellij.lang.annotations.Identifier;
 
 import java.util.ArrayList;
 
@@ -62,6 +57,9 @@ public class HomeFragment extends Fragment {
     MenuItemAdapter adapter;
     SharedPreferences sharedPref;
     SharedPreferences.Editor editor;
+    TextView hello;
+    TextView identifier;
+    Task<GetTokenResult> task;;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -94,8 +92,8 @@ public class HomeFragment extends Fragment {
         db = FirebaseFirestore.getInstance();
         ConstraintLayout chuaDN= view.findViewById(R.id.home_login);
         LinearLayout daDN=view.findViewById(R.id.home_profile);
-        TextView hello=view.findViewById(R.id.Hello);
-        TextView identifier=view.findViewById(R.id.identifier);
+        hello=view.findViewById(R.id.Hello);
+        identifier=view.findViewById(R.id.identifier);
         //System.out.println("AAAAAAAA"+user.getIdToken(false).getResult().getSignInProvider());
         //System.out.println("BBBBBBB"+user.getDisplayName());
 //        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(getContext());
@@ -129,16 +127,25 @@ public class HomeFragment extends Fragment {
         if (user != null) {
             daDN.setVisibility(View.VISIBLE);
             chuaDN.setVisibility(View.GONE);
-            if(user.getIdToken(false).getResult().getSignInProvider().toString().equals("google.com"))
-                identifier.setText(user.getEmail().toString());
-            else if(user.getIdToken(false).getResult().getSignInProvider().toString().equals("phone"))
-                identifier.setText(user.getPhoneNumber());
-            else if(user.getIdToken(false).getResult().getSignInProvider().toString().equals("facebook.com"))
-            {
-                if(user.getEmail()!=null&&(!user.getEmail().toString().equals("")))
-                    identifier.setText(user.getEmail().toString());
-                else identifier.setText(user.getPhoneNumber());
-            }
+            task = auth.getCurrentUser().getIdToken(false).addOnSuccessListener(new OnSuccessListener<GetTokenResult>() {
+                @Override
+                public void onSuccess(GetTokenResult getTokenResult) {
+                    String label =  task.getResult().getSignInProvider();
+                    switch (label) {
+                        case "google.com":
+                            identifier.setText(user.getEmail().toString());
+                            break;
+                        case "phone":
+                            identifier.setText(user.getPhoneNumber().replace("+84","0"));
+                            break;
+                        case "facebook.com":
+                            if(user.getEmail()!=null&&(!user.getEmail().toString().equals("")))
+                            identifier.setText(user.getEmail().toString());
+                            else identifier.setText(user.getPhoneNumber());
+                            break;
+                    }
+                }
+            });
             db.collection("users").document(user.getUid()).get()
                     .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                         @Override

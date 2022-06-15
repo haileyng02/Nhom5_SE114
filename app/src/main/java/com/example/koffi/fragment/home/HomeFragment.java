@@ -269,7 +269,7 @@ public class HomeFragment extends Fragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Item item = (Item) listView.getItemAtPosition(i);
                 Bundle bundle = new Bundle();
-                bundle.putString("bottomsheet",item.id);
+                bundle.putParcelable("homeItem",item);
                 Navigation.findNavController(getView()).navigate(R.id.menuFragment,bundle);
             }
         });

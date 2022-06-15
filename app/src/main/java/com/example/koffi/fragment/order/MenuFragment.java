@@ -149,6 +149,14 @@ public class MenuFragment extends Fragment {
         recyclerView.setAdapter(menuAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
+        //Get argument
+        if (getArguments()!=null) {
+            Item homeItem = getArguments().getParcelable("homeItem");
+//            if (homeItem!=null) {
+//                recyclerView.
+//            }
+        }
+
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {

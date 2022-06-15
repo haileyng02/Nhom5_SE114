@@ -176,7 +176,7 @@ public class AddressFragment extends Fragment {
             public void onClick(View view) {
                 Bundle bundle = new Bundle();
                 bundle.putString("type","Normal");
-                if (from.equals("checkout"))
+                if (from != null && from.equals("checkout"))
                     bundle.putString("from","checkoutNew");
                 Navigation.findNavController(getView()).navigate(R.id.action_addressFragment2_to_addAddressFragment,bundle);
             }
@@ -192,10 +192,10 @@ public class AddressFragment extends Fragment {
                 editor.putInt("orderMethod",0);
                 editor.apply();
 
-                if (from.equals("checkout")) {
+                if (from != null && from.equals("checkout")) {
                     Navigation.findNavController(getView()).popBackStack();
                 }
-                else if (from.equals("checkoutNew")) {
+                else if (from != null && from.equals("checkoutNew")) {
                     Navigation.findNavController(getView()).popBackStack();
                     Navigation.findNavController(getView()).popBackStack();
                     Navigation.findNavController(getView()).popBackStack();

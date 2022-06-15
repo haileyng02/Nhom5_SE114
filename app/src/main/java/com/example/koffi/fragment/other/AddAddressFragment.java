@@ -199,17 +199,16 @@ public class AddAddressFragment extends Fragment {
                             Navigation.findNavController(getView()).navigate(R.id.action_addAddressFragment_to_addressFragment2,bundle);
                         }
                     }
-                   else if(!nameEdit.getText().toString().equals(""))
-                    {
-                        //update listview address
-                        if(getArguments().getString("type").equals("editAddress")) {
-                            title.setText("Sửa địa chỉ");
-                            db.collection("users").document(user.getUid()).collection("SaveAddress")
-                                    .document(getArguments().getString("doc")).update("address", addressEdit.getText().toString(),
-                                    "name", nameEdit.getText().toString(), "Ghi chú", noteEdit.getText().toString());
-                            Navigation.findNavController(getView()).navigate(R.id.action_addAddressFragment_to_addressFragment2);
-                        }
-
+                   else if(!nameEdit.getText().toString().equals("")) {
+                    //update listview address
+                    if (getArguments().getString("type").equals("editAddress")) {
+                        title.setText("Sửa địa chỉ");
+                        db.collection("users").document(user.getUid()).collection("SaveAddress")
+                                .document(getArguments().getString("doc")).update("address", addressEdit.getText().toString(),
+                                "name", nameEdit.getText().toString(), "Ghi chú", noteEdit.getText().toString());
+                        Navigation.findNavController(getView()).navigate(R.id.action_addAddressFragment_to_addressFragment2);
+                    }
+                }
                         else
                         {
                             //add new address to listview
@@ -239,7 +238,7 @@ public class AddAddressFragment extends Fragment {
                             }
                         }
                 }
-            }
+
         });
         btnXoa.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -237,6 +237,9 @@ public class AddressFragment extends Fragment {
             addressList=new ArrayList<Address>();
             adapter=new AddressAdapter(getContext(),addressList);
             listView.setAdapter(adapter);
+            addressList.clear();
+            idListAddress.clear();
+            adapter.notifyDataSetChanged();
             db.collection("users").document(user.getUid()).collection("SaveAddress")
                     .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override

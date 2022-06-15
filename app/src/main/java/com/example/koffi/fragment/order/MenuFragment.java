@@ -351,6 +351,9 @@ public class MenuFragment extends Fragment {
                                                 }
                                                 else {
                                                     bottomAppBar.findViewById(R.id.totalPrice).setVisibility(View.VISIBLE);
+                                                    total = 0;
+                                                    number = 0;
+                                                    cartItems = new ArrayList<>();
                                                     for (QueryDocumentSnapshot snapshot : task.getResult()) {
                                                         total += snapshot.getLong("price");
                                                         number += snapshot.getLong("quantity");

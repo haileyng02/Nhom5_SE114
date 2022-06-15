@@ -50,6 +50,7 @@ public class CancelOrderDialog extends Dialog {
                         .update("status",5);
                 db.collection("order").document(OrderDetailFragment.docID)
                         .update("deliveryNote",lydo.getText().toString());
+
                 dismiss();
 
             }

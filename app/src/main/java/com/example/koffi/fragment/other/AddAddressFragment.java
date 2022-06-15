@@ -207,34 +207,49 @@ public class AddAddressFragment extends Fragment {
                                 .document(getArguments().getString("doc")).update("address", addressEdit.getText().toString(),
                                 "name", nameEdit.getText().toString(), "Ghi chú", noteEdit.getText().toString());
                         Navigation.findNavController(getView()).navigate(R.id.action_addAddressFragment_to_addressFragment2);
+                    } else {
+                        if (addressEdit.getText().toString().equals("")) {
+                            Toast.makeText(getContext(), "Bạn chưa nhập địa chỉ!", Toast.LENGTH_LONG).show();
+                        } else {
+                            Address address = new Address(nameEdit.getText().toString(), addressEdit.getText().toString());
+                            db.collection("users").document(user.getUid()).collection("SaveAddress")
+                                    .add(address).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                @Override
+                                public void onSuccess(DocumentReference documentReference) {
+                                    db.collection("users").document(user.getUid()).collection("SaveAddress")
+                                            .document(documentReference.getId()).update("Ghi chú", noteEdit.getText().toString());
+                                }
+                            });
+                            Bundle bundle = new Bundle();
+                            bundle.putString("from", from);
+                            Navigation.findNavController(getView()).navigate(R.id.action_addAddressFragment_to_addressFragment2, bundle);
+                        }
                     }
                 }
                         else
                         {
                             //add new address to listview
-                            Address address;
+
                             if (addressEdit.getText().toString().equals("")) {
                                 Toast.makeText(getContext(), "Bạn chưa nhập địa chỉ!", Toast.LENGTH_LONG).show();
                             } else {
-                                if (nameEdit.getText().toString().equals("")) {
+                                if (nameEdit.getText().toString().isEmpty()) {
+                                    System.out.println("noname");
                                     String a = addressEdit.getText().toString();
                                     String[] name = a.split(",", 2);
-                                    address = new Address(name[0].toString(), addressEdit.getText().toString());
-                                } else {
-                                    address = new Address(nameEdit.getText().toString(), addressEdit.getText().toString());
+                                    Address address = new Address(name[0].toString(), addressEdit.getText().toString());
+                                    db.collection("users").document(user.getUid()).collection("SaveAddress")
+                                            .add(address).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                        @Override
+                                        public void onSuccess(DocumentReference documentReference) {
+                                            db.collection("users").document(user.getUid()).collection("SaveAddress")
+                                                    .document(documentReference.getId()).update("Ghi chú", noteEdit.getText().toString());
+                                        }
+                                    });
+                                    Bundle bundle = new Bundle();
+                                    bundle.putString("from", from);
+                                    Navigation.findNavController(getView()).navigate(R.id.action_addAddressFragment_to_addressFragment2, bundle);
                                 }
-                                db.collection("users").document(user.getUid()).collection("SaveAddress")
-                                        .add(address).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                                    @Override
-                                    public void onSuccess(DocumentReference documentReference) {
-                                        db.collection("users").document(user.getUid()).collection("SaveAddress")
-                                                .document(documentReference.getId()).update("Ghi chú", noteEdit.getText().toString());
-                                    }
-                                });
-                                Bundle bundle = new Bundle();
-                                bundle.putString("from", from);
-                                Navigation.findNavController(getView()).navigate(R.id.action_addAddressFragment_to_addressFragment2, bundle);
-
                             }
                         }
                 }

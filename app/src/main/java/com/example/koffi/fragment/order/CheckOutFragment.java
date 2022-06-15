@@ -185,7 +185,7 @@ public class CheckOutFragment extends Fragment {
         }
         total = subtotal + ship;
         tvSubtotal = view.findViewById(R.id.cart_subtotal);
-        tvSubtotal.setText(subtotal + "");
+        tvSubtotal.setText(subtotal + "đ");
         tvTotal = view.findViewById(R.id.cart_total);
         tvTotal2 = view.findViewById(R.id.cart_total2);
         tvTotal.setText(total + "đ");
@@ -823,7 +823,7 @@ public class CheckOutFragment extends Fragment {
             }
         }
         Button totalBtn = bottomSheetView.findViewById(R.id.itemTotalPrice);
-        totalBtn.setText("Thay đổi: " + (unit + sum + sizePrice) * number);
+        totalBtn.setText("Thay đổi: " + (unit + sum + sizePrice) * number + "đ");
         System.out.println("Unit: " + unit + "\tSum: " + sum + "\tSize price: " + sizePrice + "\tNumber: " + number);
     }
 

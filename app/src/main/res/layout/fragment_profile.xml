@@ -79,6 +79,7 @@
                     app:riv_corner_radius="100dp" />
 
                 <ImageView
+                    android:visibility="gone"
                     android:id="@+id/imageView10"
                     android:layout_width="35dp"
                     android:layout_height="35dp"

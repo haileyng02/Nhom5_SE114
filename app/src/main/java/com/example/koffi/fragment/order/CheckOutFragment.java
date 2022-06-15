@@ -176,6 +176,7 @@ public class CheckOutFragment extends Fragment {
         });
 
         cart = new ArrayList<CartItem>();
+        if (getArguments().getParcelableArrayList("cartItems") != null)
         cart = getArguments().getParcelableArrayList("cartItems");
         total = 0;
         subtotal = 0;

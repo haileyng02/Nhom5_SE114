@@ -4,13 +4,25 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+
+import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.ListView;
+
+import java.util.ArrayList;
+import android.widget.ListAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -217,7 +229,7 @@ public class AddressFragment extends Fragment {
             public void onClick(View view) {
                 Bundle bundle = new Bundle();
                 bundle.putString("type","Normal");
-                if (from.equals("checkout"))
+                if (from != null && from.equals("checkout"))
                     bundle.putString("from","checkoutNew");
                 else
                     bundle.putString("from",from);
@@ -294,6 +306,9 @@ public class AddressFragment extends Fragment {
             addressList=new ArrayList<Address>();
             adapter=new AddressAdapter(getContext(),addressList);
             listView.setAdapter(adapter);
+            addressList.clear();
+            idListAddress.clear();
+            adapter.notifyDataSetChanged();
             db.collection("users").document(user.getUid()).collection("SaveAddress")
                     .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override

@@ -1,5 +1,10 @@
 package com.example.koffi.activity;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.MenuItem;
+import android.view.View;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -7,11 +12,6 @@ import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
-
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.MenuItem;
-import android.view.View;
 
 import com.example.koffi.R;
 import com.example.koffi.databinding.ActivityMainBinding;
@@ -39,10 +39,12 @@ public class MainActivity extends AppCompatActivity {
             task = auth.getCurrentUser().getIdToken(false).addOnSuccessListener(new OnSuccessListener<GetTokenResult>() {
                 @Override
                 public void onSuccess(GetTokenResult getTokenResult) {
-                    if (task.getResult().getSignInProvider().equals("password")) {
-                        Intent intent = new Intent(MainActivity.this,StaffActivity.class);
-                        startActivity(intent);
-                    }
+                    String label = task.getResult().getSignInProvider();
+                    if (!label.equals("phone"))
+                        if (label.equals("password") ) {
+                            Intent intent = new Intent(MainActivity.this,StaffActivity.class);
+                            startActivity(intent);
+                        }
                 }
             });
         }

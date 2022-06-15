@@ -310,7 +310,7 @@ public class OrderFragment extends Fragment {
                                             public void onDismiss(DialogInterface dialogInterface) {
                                                 Bundle bundle = new Bundle();
                                                 bundle.putString("documentID", orderID);
-                                                Navigation.findNavController(getView()).navigate(R.id.action_orderFragment_to_orderDetailFragment2, bundle);
+                                                Navigation.findNavController(getView()).navigate(R.id.action_orderFragment_to_homeFragment2, bundle);
                                             }
                                         });
                                         AlertDialog dialog = alert.create();
@@ -351,7 +351,6 @@ public class OrderFragment extends Fragment {
                                     public void onSuccess(Void unused) {
                                         Bundle bundle = new Bundle();
                                         bundle.putString("documentID", orderID);
-                                        Navigation.findNavController(getView()).navigate(R.id.action_orderFragment_to_orderDetailFragment2, bundle);
                                         Toast.makeText(getContext(), "Hủy đơn hàng thành công", Toast.LENGTH_SHORT).show();
                                         cancelOrderDialog.dismiss();
                                     }

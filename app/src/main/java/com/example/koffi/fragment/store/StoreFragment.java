@@ -2,21 +2,11 @@ package com.example.koffi.fragment.store;
 
 
 import android.content.ActivityNotFoundException;
-
 import android.content.Context;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.Navigation;
-
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -30,12 +20,18 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
+
 import com.example.koffi.R;
-import com.example.koffi.models.Store;
 import com.example.koffi.adapter.StoreAdapter;
+import com.example.koffi.models.Store;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -81,10 +77,12 @@ public class StoreFragment extends Fragment {
         Toolbar toolbar = view.findViewById(R.id.store_toolbar);
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
 
+        //Init
         listView = view.findViewById(R.id.storesListView);
         storeArray = new ArrayList<Store>();
         adapter = new StoreAdapter(getContext(),storeArray);
         listView.setAdapter(adapter);
+
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("stores").get()
@@ -233,6 +231,15 @@ public class StoreFragment extends Fragment {
                         startActivity(intent);
                     }
                 });
+            }
+        });
+
+        //Show map
+        Button mapBtn = view.findViewById(R.id.mapBtn);
+        mapBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Navigation.findNavController(getView()).navigate(R.id.action_storeFragment_to_mapsFragment);
             }
         });
     }

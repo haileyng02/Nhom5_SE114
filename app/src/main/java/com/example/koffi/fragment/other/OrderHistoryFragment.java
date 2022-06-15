@@ -2,7 +2,6 @@ package com.example.koffi.fragment.other;
 
 import static com.example.koffi.FunctionClass.setListViewHeight;
 
-import android.content.Intent;
 import android.database.DataSetObserver;
 import android.os.Bundle;
 
@@ -10,7 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
@@ -21,11 +19,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.koffi.R;
-import com.example.koffi.activity.LoginActivity;
 import com.example.koffi.adapter.CartItemAdapter;
 import com.example.koffi.adapter.OrderAdapter;
 import com.example.koffi.models.CartItem;
@@ -40,13 +35,11 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 
 public class OrderHistoryFragment extends Fragment {

@@ -109,7 +109,11 @@
         android:id="@+id/storeFragment"
         android:name="com.example.koffi.fragment.store.StoreFragment"
         android:label="fragment_store"
-        tools:layout="@layout/fragment_store" />
+        tools:layout="@layout/fragment_store" >
+        <action
+            android:id="@+id/action_storeFragment_to_mapsFragment"
+            app:destination="@id/mapsFragment" />
+    </fragment>
     <fragment
         android:id="@+id/orderHistoryFragment"
         android:name="com.example.koffi.fragment.other.OrderHistoryFragment"
@@ -132,4 +136,9 @@
         android:name="com.example.koffi.fragment.staff.ChangePasswordFragment"
         android:label="fragment_change_password"
         tools:layout="@layout/fragment_change_password" />
+    <fragment
+        android:id="@+id/mapsFragment"
+        android:name="com.example.koffi.fragment.store.MapsFragment"
+        android:label="fragment_maps"
+        tools:layout="@layout/fragment_maps" />
 </navigation>

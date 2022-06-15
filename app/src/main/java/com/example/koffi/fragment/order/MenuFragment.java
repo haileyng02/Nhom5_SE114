@@ -41,6 +41,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomappbar.BottomAppBar;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -75,6 +76,7 @@ public class MenuFragment extends Fragment {
     SharedPreferences sharedPref;
     String address;
     String storeAddress;
+    Item homeItem=null;
 
 
     public MenuFragment() {
@@ -88,7 +90,11 @@ public class MenuFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        super.onCreate(null);
+        //Get argument
+        if (getArguments()!=null) {
+            homeItem = getArguments().getParcelable("homeItem");
+        }
     }
 
     @Override
@@ -143,18 +149,12 @@ public class MenuFragment extends Fragment {
         categoryAdapter = new CategoryAdapter(getContext(),menuArray);
         gridView.setAdapter(categoryAdapter);
 
-
         menuAdapter = new MenuAdapter(getContext(), menuArray);
-
         recyclerView.setAdapter(menuAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        //Get argument
-        if (getArguments()!=null) {
-            Item homeItem = getArguments().getParcelable("homeItem");
-//            if (homeItem!=null) {
-//                recyclerView.
-//            }
+        if (homeItem!=null) {
+            menuAdapter.openBottomSheet(homeItem,getView());
         }
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -256,9 +256,7 @@ public class MenuFragment extends Fragment {
                     public void onClick(View view) {
                         bottomSheetDialog.dismiss();
 
-                        Bundle bundle = new Bundle();
-                        bundle.putString("from","Other");
-                        Navigation.findNavController(getView()).navigate(R.id.action_menuFragment_to_addressFragment2,bundle);
+                        Navigation.findNavController(getView()).navigate(R.id.action_menuFragment_to_addressFragment2);
                     }
                 });
 
@@ -277,6 +275,8 @@ public class MenuFragment extends Fragment {
                     @Override
                     public void onClick(View view) {
                         bottomSheetDialog.dismiss();
+                        BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.main_bottom_nav);
+                        bottomNavigationView.setSelectedItemId(R.id.store);
                         Navigation.findNavController(getView()).navigate(R.id.storeFragment);
                     }
                 });

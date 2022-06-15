@@ -131,7 +131,7 @@ public class MapsFragment extends Fragment {
                 Navigation.findNavController(getView()).navigate(R.id.storeFragment);
             }
         };
-        requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
         client = LocationServices.getFusedLocationProviderClient(getContext());
         ImageButton currentlocationBtn = view.findViewById(R.id.currentlocation_btn);
         currentlocationBtn.setOnClickListener(new View.OnClickListener() {

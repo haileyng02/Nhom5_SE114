@@ -37,6 +37,7 @@ import com.example.koffi.models.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GetTokenResult;
@@ -270,6 +271,8 @@ public class HomeFragment extends Fragment {
                 Item item = (Item) listView.getItemAtPosition(i);
                 Bundle bundle = new Bundle();
                 bundle.putParcelable("homeItem",item);
+                BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.main_bottom_nav);
+                bottomNavigationView.setSelectedItemId(R.id.delivery);
                 Navigation.findNavController(getView()).navigate(R.id.menuFragment,bundle);
             }
         });
@@ -306,5 +309,7 @@ public class HomeFragment extends Fragment {
         editor.apply();
 
         Navigation.findNavController(getView()).navigate(R.id.menuFragment);
+        BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.main_bottom_nav);
+        bottomNavigationView.setSelectedItemId(R.id.delivery);
     }
 }

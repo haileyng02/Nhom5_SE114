@@ -1,16 +1,8 @@
 package com.example.koffi.fragment.other;
 
-import android.app.ActionBar;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,11 +11,15 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
-import com.example.koffi.models.Address;
 import com.example.koffi.R;
+import com.example.koffi.models.Address;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -178,6 +174,7 @@ public class AddAddressFragment extends Fragment {
                         );
                         Bundle bundle = new Bundle();
                         bundle.putString("from",from);
+                        System.out.println("Nhìn: "+from);
                         Navigation.findNavController(getView()).navigate(R.id.action_addAddressFragment_to_addressFragment2,bundle);
                     }
 

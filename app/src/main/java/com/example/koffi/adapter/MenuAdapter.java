@@ -46,8 +46,6 @@ import java.util.Locale;
 
 public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> implements Filterable {
 
-
-
     @Override
     public Filter getFilter() {
         return new Filter() {
@@ -94,36 +92,6 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> im
             listView = itemView.findViewById(R.id.menuList);
             text = itemView.findViewById(R.id.categoryName);
 
-            //Bottom Sheet Dialog
-            bottomSheetDialog = new BottomSheetDialog(itemView.getContext(),R.style.BottomSheetDialogTheme);
-            bottomSheetView = LayoutInflater.from(itemView.getContext()).inflate(R.layout.bottomsheet_itemdetail,
-                    (LinearLayout)itemView.findViewById(R.id.menu_bottomsheet));
-            bottomSheetDialog.setContentView(bottomSheetView);
-
-            //Topping ListView
-            toppingListView = bottomSheetView.findViewById(R.id.topping_listview);
-
-            toppingArray = new ArrayList<Topping>();
-
-            toppingAdapter = new ToppingAdapter(context, toppingArray);
-            toppingListView.setAdapter(toppingAdapter);
-
-            db = FirebaseFirestore.getInstance();
-            db.collection("toppings").get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
-                                Topping topping = new Topping(documentSnapshot.getId(), documentSnapshot.getString("name"),
-                                        documentSnapshot.getLong("price"));
-                                toppingArray.add(topping);
-                            }
-                            toppingAdapter.notifyDataSetChanged();
-                            setListViewHeight(toppingListView);
-                        }
-                    });
-
-
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -135,12 +103,6 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> im
         }
 
     }
-    BottomSheetDialog bottomSheetDialog;
-    View bottomSheetView;
-    ListView toppingListView;
-    ArrayList<Topping> toppingArray;
-    ToppingAdapter toppingAdapter;
-    FirebaseFirestore db;
     long total;
     boolean isL = false;
     long unit;
@@ -151,6 +113,35 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> im
     EditText edtNote;
 
     public void openBottomSheet(Item item, View view) {
+        //Bottom Sheet Dialog
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(view.getContext(),R.style.BottomSheetDialogTheme);
+        View bottomSheetView = LayoutInflater.from(view.getContext()).inflate(R.layout.bottomsheet_itemdetail,
+                (LinearLayout)view.findViewById(R.id.menu_bottomsheet));
+        bottomSheetDialog.setContentView(bottomSheetView);
+
+        //Topping ListView
+        ListView toppingListView = bottomSheetView.findViewById(R.id.topping_listview);
+
+        ArrayList<Topping> toppingArray = new ArrayList<Topping>();
+
+        ToppingAdapter toppingAdapter = new ToppingAdapter(context, toppingArray);
+        toppingListView.setAdapter(toppingAdapter);
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("toppings").get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                            Topping topping = new Topping(documentSnapshot.getId(), documentSnapshot.getString("name"),
+                                    documentSnapshot.getLong("price"));
+                            toppingArray.add(topping);
+                        }
+                        toppingAdapter.notifyDataSetChanged();
+                        setListViewHeight(toppingListView);
+                    }
+                });
+
         //Init
         ImageView imageView = bottomSheetView.findViewById(R.id.itemdetail_image);
         TextView tvName = bottomSheetView.findViewById(R.id.tvName);
@@ -384,6 +375,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> im
         this.menuArray = menuArray;
         this.menuArrayOld = menuArray;
     }
+
 
     @NonNull
     @Override

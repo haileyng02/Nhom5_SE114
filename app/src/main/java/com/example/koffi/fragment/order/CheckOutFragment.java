@@ -11,14 +11,6 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
-
-import androidx.activity.OnBackPressedCallback;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.Navigation;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,17 +25,24 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.RadioButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.koffi.models.CartItem;
-import com.example.koffi.adapter.CartItemAdapter;
-import com.example.koffi.models.Item;
+import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
+
 import com.example.koffi.R;
+import com.example.koffi.adapter.CartItemAdapter;
+import com.example.koffi.adapter.ToppingAdapter;
+import com.example.koffi.models.CartItem;
+import com.example.koffi.models.Item;
 import com.example.koffi.models.Order;
 import com.example.koffi.models.Topping;
-import com.example.koffi.adapter.ToppingAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -120,6 +119,13 @@ public class CheckOutFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
+            @Override
+            public void handleOnBackPressed() {
+                Navigation.findNavController(getView()).navigate(R.id.menuFragment);
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
         db = FirebaseFirestore.getInstance();
 
         //Get store

@@ -26,19 +26,28 @@ import android.widget.ListAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.koffi.models.Address;
-import com.example.koffi.adapter.AddressAdapter;
-import com.example.koffi.activity.LoginActivity;
+import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+
 import com.example.koffi.R;
+import com.example.koffi.activity.LoginActivity;
+import com.example.koffi.adapter.AddressAdapter;
+import com.example.koffi.models.Address;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.ArrayList;
 
 public class AddressFragment extends Fragment {
 
@@ -101,6 +110,16 @@ public class AddressFragment extends Fragment {
             }
         });
 
+        OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
+            @Override
+            public void handleOnBackPressed() {
+                    navController.navigate(R.id.otherFragment);
+
+
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
+
         navController = Navigation.findNavController(getView());
         //Navigate to add address
         addHome.setOnClickListener(new View.OnClickListener() {
@@ -112,27 +131,44 @@ public class AddressFragment extends Fragment {
                     bundle.putString("type", "Nhà");
                     if (from.equals("checkout"))
                         bundle.putString("from","checkoutNew");
+                    else
+                        bundle.putString("from",from);
                     Navigation.findNavController(getView()).navigate(R.id.action_addressFragment2_to_addAddressFragment, bundle);
                 }
-                else if (from.equals("checkoutNew")) {
-                    editor.putString("tendc","Nhà");
-                    editor.putString("dc",addressHome.getText().toString());
-                    editor.apply();
-                    navController.popBackStack();
-                    navController.popBackStack();
-                    navController.popBackStack();
-                }
-                else if(from.equals("Other"))
-                {
-                    Bundle bundle = new Bundle();
-                    bundle.putString("type", "Nhà");
-                    Navigation.findNavController(getView()).navigate(R.id.action_addressFragment2_to_addAddressFragment, bundle);
+                else if (from!=null) {
+                    if (from.equals("checkout")) {
+                        Navigation.findNavController(getView()).popBackStack();
+                        editor.putString("tendc","Nhà");
+                        editor.putString("dc",addressHome.getText().toString());
+                        editor.apply();
+                    }
+                    else if(from.equals("checkoutNew")) {
+                        editor.putString("tendc","Nhà");
+                        editor.putString("dc",addressHome.getText().toString());
+                        editor.apply();
+                        navController.popBackStack();
+                        navController.popBackStack();
+                        navController.popBackStack();
+                    }
+                    else if(from.equals("Other"))
+                    {
+                        Bundle bundle = new Bundle();
+                        bundle.putString("type", "Nhà");
+                        bundle.putString("from",from);
+                        Navigation.findNavController(getView()).navigate(R.id.action_addressFragment2_to_addAddressFragment, bundle);
+                    }
+                    else {
+                        editor.putString("tendc", "Nhà");
+                        editor.putString("dc", addressHome.getText().toString());
+                        editor.apply();
+                        navController.navigate(R.id.menuFragment);
+                    }
                 }
                 else {
                     editor.putString("tendc", "Nhà");
                     editor.putString("dc", addressHome.getText().toString());
                     editor.apply();
-                    navController.popBackStack();
+                    navController.navigate(R.id.menuFragment);
                 }
             }
 
@@ -146,22 +182,39 @@ public class AddressFragment extends Fragment {
                     bundle.putString("type", "Công ty");
                     if (from.equals("checkout"))
                         bundle.putString("from","checkoutNew");
+                    else
+                        bundle.putString("from",from);
                     Navigation.findNavController(getView()).navigate(R.id.action_addressFragment2_to_addAddressFragment, bundle);
                 }
-                else if (from.equals("checkoutNew")) {
-                    editor.putString("tendc", "Công ty");
-                    editor.putString("dc", addressCompany.getText().toString());
-                    editor.apply();
+                else if (from!=null) {
+                    if (from.equals("checkout")) {
+                        Navigation.findNavController(getView()).popBackStack();
+                        editor.putString("tendc","Công ty");
+                        editor.putString("dc",addressCompany.getText().toString());
+                        editor.apply();
+                    }
+                    else if (from.equals("checkoutNew")) {
+                        editor.putString("tendc", "Công ty");
+                        editor.putString("dc", addressCompany.getText().toString());
+                        editor.apply();
 
-                    navController.popBackStack();
-                    navController.popBackStack();
-                    navController.popBackStack();
-                }
-                else if(from.equals("Other"))
-                {
-                    Bundle bundle = new Bundle();
-                    bundle.putString("type", "Công ty");
-                    Navigation.findNavController(getView()).navigate(R.id.action_addressFragment2_to_addAddressFragment, bundle);
+                        navController.popBackStack();
+                        navController.popBackStack();
+                        navController.popBackStack();
+                    }
+                    else if(from.equals("Other"))
+                    {
+                        Bundle bundle = new Bundle();
+                        bundle.putString("from",from);
+                        bundle.putString("type", "Công ty");
+                        Navigation.findNavController(getView()).navigate(R.id.action_addressFragment2_to_addAddressFragment, bundle);
+                    }
+                    else {
+                        editor.putString("tendc", "Công ty");
+                        editor.putString("dc", addressCompany.getText().toString());
+                        editor.apply();
+                        navController.popBackStack();
+                    }
                 }
                 else {
                     editor.putString("tendc", "Công ty");
@@ -178,6 +231,8 @@ public class AddressFragment extends Fragment {
                 bundle.putString("type","Normal");
                 if (from != null && from.equals("checkout"))
                     bundle.putString("from","checkoutNew");
+                else
+                    bundle.putString("from",from);
                 Navigation.findNavController(getView()).navigate(R.id.action_addressFragment2_to_addAddressFragment,bundle);
             }
         });
@@ -192,20 +247,34 @@ public class AddressFragment extends Fragment {
                 editor.putInt("orderMethod",0);
                 editor.apply();
 
-                if (from != null && from.equals("checkout")) {
-                    Navigation.findNavController(getView()).popBackStack();
+                if(from!=null) {
+                    if (from.equals("checkout")) {
+                        Navigation.findNavController(getView()).popBackStack();
+                    }
+                    else if (from.equals("checkoutNew")) {
+                        Navigation.findNavController(getView()).popBackStack();
+                        Navigation.findNavController(getView()).popBackStack();
+                        Navigation.findNavController(getView()).popBackStack();
+                    }
+                    else if (from.equals("Other")) {
+                        Bundle bundle=new Bundle();
+                        bundle.putString("type","editAddress");
+                        bundle.putString("doc",idListAddress.get(i));
+                        bundle.putString("from",from);
+                        Navigation.findNavController(view).navigate(R.id.action_addressFragment2_to_addAddressFragment,bundle);
+                    }
+                    else {
+                        Bundle bundle=new Bundle();
+                        bundle.putString("type","editAddress");
+                        bundle.putString("doc",idListAddress.get(i));
+                        Navigation.findNavController(view).navigate(R.id.menuFragment,bundle);
+                    }
                 }
-                else if (from != null && from.equals("checkoutNew")) {
-                    Navigation.findNavController(getView()).popBackStack();
-                    Navigation.findNavController(getView()).popBackStack();
-                    Navigation.findNavController(getView()).popBackStack();
-                }
-
                 else {
                     Bundle bundle=new Bundle();
                     bundle.putString("type","editAddress");
                     bundle.putString("doc",idListAddress.get(i));
-                    Navigation.findNavController(view).navigate(R.id.action_addressFragment2_to_addAddressFragment,bundle);
+                    Navigation.findNavController(view).navigate(R.id.menuFragment,bundle);
                 }
             }
         });

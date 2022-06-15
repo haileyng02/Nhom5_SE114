@@ -46,8 +46,6 @@ import java.util.Locale;
 
 public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> implements Filterable {
 
-
-
     @Override
     public Filter getFilter() {
         return new Filter() {
@@ -88,197 +86,18 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> im
     public class ViewHolder extends RecyclerView.ViewHolder{
         TextView text;
         ListView listView;
-
         public ViewHolder(@NonNull View itemView){
             super(itemView);
 
             listView = itemView.findViewById(R.id.menuList);
             text = itemView.findViewById(R.id.categoryName);
 
-            //Bottom Sheet Dialog
-            BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(itemView.getContext(),R.style.BottomSheetDialogTheme);
-            View bottomSheetView = LayoutInflater.from(itemView.getContext()).inflate(R.layout.bottomsheet_itemdetail,
-                    (LinearLayout)itemView.findViewById(R.id.menu_bottomsheet));
-            bottomSheetDialog.setContentView(bottomSheetView);
-
-            //Topping ListView
-            ListView toppingListView = bottomSheetView.findViewById(R.id.topping_listview);
-
-            ArrayList<Topping> toppingArray = new ArrayList<Topping>();
-
-            ToppingAdapter toppingAdapter = new ToppingAdapter(context, toppingArray);
-            toppingListView.setAdapter(toppingAdapter);
-
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
-            db.collection("toppings").get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
-                                Topping topping = new Topping(documentSnapshot.getId(), documentSnapshot.getString("name"),
-                                        documentSnapshot.getLong("price"));
-                                toppingArray.add(topping);
-                            }
-                            toppingAdapter.notifyDataSetChanged();
-                            setListViewHeight(toppingListView);
-                        }
-                    });
-
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                     //Assign data
                     Item item = (Item) listView.getItemAtPosition(i);
-                    TextView tvName = bottomSheetView.findViewById(R.id.tvName);
-                    tvName.setText(item.name);
-
-                    ImageView imageView = bottomSheetView.findViewById(R.id.itemdetail_image);
-                    int drawableId = view.getResources().getIdentifier(item.image, "drawable", context.getPackageName());
-                    imageView.setImageResource(drawableId);
-
-                    TextView tvPrice = bottomSheetView.findViewById(R.id.tvPrice);
-                    tvPrice.setText(item.price + "đ");
-
-                    TextView tvDes = bottomSheetView.findViewById(R.id.tvDescription);
-                    tvDes.setText(item.description);
-
-                    ImageButton closeView = bottomSheetDialog.findViewById(R.id.itemdetail_closeBtn);
-                    closeView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            bottomSheetDialog.dismiss();
-                        }
-                    });
-
-                    edtNote = bottomSheetDialog.findViewById(R.id.edtNote);
-                    TextView tvNumber = bottomSheetDialog.findViewById(R.id.tvNumber);
-                    tvNumber.setText("1");
-                    Button totalBtn = bottomSheetView.findViewById(R.id.itemTotalPrice);
-                    totalBtn.setEnabled(false);
-                    number = Integer.parseInt(tvNumber.getText().toString());
-                    tvNumber.setText(Long.toString(number));
-                    unit = item.price;
-                    totalBtn.setText(Long.toString(unit)+"đ");
-
-                    ImageButton plusBtn = bottomSheetDialog.findViewById(R.id.plusButton);
-                    plusBtn.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            number = Integer.parseInt(tvNumber.getText().toString()) + 1;
-                            tvNumber.setText(Long.toString(number));
-                            checkListViewCheckBox(toppingListView, toppingArray, bottomSheetView, number);
-                        }
-                    });
-
-                    ImageButton minusBtn = bottomSheetDialog.findViewById(R.id.minusButton);
-                    minusBtn.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            if (Long.parseLong(tvNumber.getText().toString()) - 1 > 0)
-                            number = Integer.parseInt(tvNumber.getText().toString()) - 1;
-                            if (number > 0) {
-                                tvNumber.setText(Long.toString(number));
-                                checkListViewCheckBox(toppingListView, toppingArray, bottomSheetView, number);
-                            }
-                        }
-                    });
-
-                    RadioButton sizeM = bottomSheetView.findViewById(R.id.sizeM_radio);
-                    RadioButton sizeL = bottomSheetView.findViewById(R.id.sizeL_radio);
-
-                    sizeM.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                        @Override
-                        public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                            if (b) {
-                                sizeL.setChecked(false);
-                                isL = false;
-                            }
-                            if (isL) {
-                                sizePrice = 6000;
-                            }
-                            else {
-                                sizePrice = 0;
-                            }
-                            checkListViewCheckBox(toppingListView, toppingArray, bottomSheetView, number);
-                            totalBtn.setEnabled(true);
-                        }
-                    });
-                    sizeL.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                        @Override
-                        public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                            if (b) {
-                                sizeM.setChecked(false);
-                                isL = true;
-                            }
-                            if (isL) {
-                                sizePrice = 6000;
-                            }
-                            else {
-                                sizePrice = 0;
-                            }
-                            checkListViewCheckBox(toppingListView, toppingArray, bottomSheetView, number);
-                            totalBtn.setEnabled(true);
-                        }
-                    });
-
-                    ArrayList<Topping> toppingToCart = new ArrayList<>();
-                    toppingListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                            CheckBox checkBox = toppingListView.getChildAt(i).findViewById(R.id.checkBox);
-                            checkBox.setChecked(!checkBox.isChecked());
-                            checkListViewCheckBox(toppingListView, toppingArray, bottomSheetView, number);
-                        }
-                    });
-
-                    totalBtn.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                            if (user == null) {
-                                Toast.makeText(bottomSheetDialog.getContext(), "Vui lòng đăng nhập để tiếp tục!", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Query query = db.collection("order")
-                                        .whereEqualTo("userID", FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                        .whereEqualTo("status", 0);
-                                query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                        if (task.isSuccessful()) {
-                                            String totalTxt = totalBtn.getText().toString();
-                                            total = Long.parseLong(totalTxt.substring(0, totalTxt.length() - 1));
-                                            size = sizeL.isChecked() ? "Upsize" : "Vừa";
-                                            for (int i = 0; i < 8; i++) {
-                                                CheckBox checkBox = toppingListView.getChildAt(i).findViewById(R.id.checkBox);
-                                                if (checkBox.isChecked()) {
-                                                    toppingToCart.add(toppingArray.get(i));
-                                                }
-                                            }
-                                            addItemToCart(db, item.name, toppingToCart);
-                                            bottomSheetDialog.dismiss();
-                                        }
-                                    }
-                                });
-                            }
-                        }
-                    });
-
-                    //Dismiss listener
-                    bottomSheetDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                        @Override
-                        public void onDismiss(DialogInterface dialogInterface) {
-                            sizeM.setChecked(false);
-                            sizeL.setChecked(false);
-
-                            for (int n = 0; n < 8; n++) {
-                                CheckBox checkBox = toppingListView.getChildAt(n).findViewById(R.id.checkBox);
-                                checkBox.setChecked(false);
-                            }
-                        }
-                    });
-
-                    //Show dialog
-                    bottomSheetDialog.show();
+                    openBottomSheet(item,view);
                 }
             });
         }
@@ -293,6 +112,187 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> im
     String note;
     EditText edtNote;
 
+    public void openBottomSheet(Item item, View view) {
+        //Bottom Sheet Dialog
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(view.getContext(),R.style.BottomSheetDialogTheme);
+        View bottomSheetView = LayoutInflater.from(view.getContext()).inflate(R.layout.bottomsheet_itemdetail,
+                (LinearLayout)view.findViewById(R.id.menu_bottomsheet));
+        bottomSheetDialog.setContentView(bottomSheetView);
+
+        //Topping ListView
+        ListView toppingListView = bottomSheetView.findViewById(R.id.topping_listview);
+
+        ArrayList<Topping> toppingArray = new ArrayList<Topping>();
+
+        ToppingAdapter toppingAdapter = new ToppingAdapter(context, toppingArray);
+        toppingListView.setAdapter(toppingAdapter);
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("toppings").get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                            Topping topping = new Topping(documentSnapshot.getId(), documentSnapshot.getString("name"),
+                                    documentSnapshot.getLong("price"));
+                            toppingArray.add(topping);
+                        }
+                        toppingAdapter.notifyDataSetChanged();
+                        setListViewHeight(toppingListView);
+                    }
+                });
+
+        //Init
+        ImageView imageView = bottomSheetView.findViewById(R.id.itemdetail_image);
+        TextView tvName = bottomSheetView.findViewById(R.id.tvName);
+        TextView tvPrice = bottomSheetView.findViewById(R.id.tvPrice);
+        TextView tvDes = bottomSheetView.findViewById(R.id.tvDescription);
+        ImageButton closeView = bottomSheetDialog.findViewById(R.id.itemdetail_closeBtn);
+        TextView tvNumber = bottomSheetDialog.findViewById(R.id.tvNumber);
+        Button totalBtn = bottomSheetView.findViewById(R.id.itemTotalPrice);
+        ImageButton plusBtn = bottomSheetDialog.findViewById(R.id.plusButton);
+        ImageButton minusBtn = bottomSheetDialog.findViewById(R.id.minusButton);
+        RadioButton sizeM = bottomSheetView.findViewById(R.id.sizeM_radio);
+        RadioButton sizeL = bottomSheetView.findViewById(R.id.sizeL_radio);
+        edtNote = bottomSheetDialog.findViewById(R.id.edtNote);
+        ArrayList<Topping> toppingToCart = new ArrayList<>();
+
+        //Handle bottom sheet
+        tvName.setText(item.name);
+        int drawableId = view.getResources().getIdentifier(item.image, "drawable", context.getPackageName());
+        imageView.setImageResource(drawableId);
+        tvPrice.setText(item.price + "đ");
+        tvDes.setText(item.description);
+        tvNumber.setText("1");
+        totalBtn.setEnabled(false);
+
+        closeView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bottomSheetDialog.dismiss();
+            }
+        });
+
+        number = Integer.parseInt(tvNumber.getText().toString());
+        tvNumber.setText(Long.toString(number));
+        unit = item.price;
+        totalBtn.setText(Long.toString(unit)+"đ");
+
+
+        plusBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                number = Integer.parseInt(tvNumber.getText().toString()) + 1;
+                tvNumber.setText(Long.toString(number));
+                checkListViewCheckBox(toppingListView, toppingArray, bottomSheetView, number);
+            }
+        });
+
+        minusBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (Long.parseLong(tvNumber.getText().toString()) - 1 > 0)
+                    number = Integer.parseInt(tvNumber.getText().toString()) - 1;
+                if (number > 0) {
+                    tvNumber.setText(Long.toString(number));
+                    checkListViewCheckBox(toppingListView, toppingArray, bottomSheetView, number);
+                }
+            }
+        });
+
+        sizeM.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    sizeL.setChecked(false);
+                    isL = false;
+                }
+                if (isL) {
+                    sizePrice = 6000;
+                }
+                else {
+                    sizePrice = 0;
+                }
+                checkListViewCheckBox(toppingListView, toppingArray, bottomSheetView, number);
+                totalBtn.setEnabled(true);
+            }
+        });
+        sizeL.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    sizeM.setChecked(false);
+                    isL = true;
+                }
+                if (isL) {
+                    sizePrice = 6000;
+                }
+                else {
+                    sizePrice = 0;
+                }
+                checkListViewCheckBox(toppingListView, toppingArray, bottomSheetView, number);
+                totalBtn.setEnabled(true);
+            }
+        });
+
+        toppingListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                CheckBox checkBox = toppingListView.getChildAt(i).findViewById(R.id.checkBox);
+                checkBox.setChecked(!checkBox.isChecked());
+                checkListViewCheckBox(toppingListView, toppingArray, bottomSheetView, number);
+            }
+        });
+
+        totalBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                if (user == null) {
+                    Toast.makeText(bottomSheetDialog.getContext(), "Vui lòng đăng nhập để tiếp tục!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Query query = db.collection("order")
+                            .whereEqualTo("userID", FirebaseAuth.getInstance().getCurrentUser().getUid())
+                            .whereEqualTo("status", 0);
+                    query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                String totalTxt = totalBtn.getText().toString();
+                                total = Long.parseLong(totalTxt.substring(0, totalTxt.length() - 1));
+                                size = sizeL.isChecked() ? "Upsize" : "Vừa";
+                                for (int i = 0; i < 8; i++) {
+                                    CheckBox checkBox = toppingListView.getChildAt(i).findViewById(R.id.checkBox);
+                                    if (checkBox.isChecked()) {
+                                        toppingToCart.add(toppingArray.get(i));
+                                    }
+                                }
+                                addItemToCart(db, item.name, toppingToCart);
+                                bottomSheetDialog.dismiss();
+                            }
+                        }
+                    });
+                }
+            }
+        });
+
+        //Dismiss listener
+        bottomSheetDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                sizeM.setChecked(false);
+                sizeL.setChecked(false);
+
+                for (int n = 0; n < 8; n++) {
+                    CheckBox checkBox = toppingListView.getChildAt(n).findViewById(R.id.checkBox);
+                    checkBox.setChecked(false);
+                }
+            }
+        });
+
+        //Show dialog
+        bottomSheetDialog.show();
+    }
     private void checkListViewCheckBox(ListView toppingListView, ArrayList<Topping> toppingArray, View bottomSheetView, long number) {
         long sum = 0;
         for (int n = 0; n < 8; n++) {
@@ -375,6 +375,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> im
         this.menuArray = menuArray;
         this.menuArrayOld = menuArray;
     }
+
 
     @NonNull
     @Override

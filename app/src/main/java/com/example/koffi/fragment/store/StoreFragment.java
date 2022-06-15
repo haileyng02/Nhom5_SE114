@@ -32,6 +32,7 @@ import com.example.koffi.adapter.StoreAdapter;
 import com.example.koffi.models.Store;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -170,6 +171,8 @@ public class StoreFragment extends Fragment {
                             Navigation.findNavController(getView()).popBackStack();
                         }
                         else {
+                            BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.main_bottom_nav);
+                            bottomNavigationView.setSelectedItemId(R.id.delivery);
                             Navigation.findNavController(getView()).navigate(R.id.menuFragment);
                         }
 

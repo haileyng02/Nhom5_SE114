@@ -166,7 +166,9 @@ public class DeliveryTabFragment extends Fragment {
                                         db.collection("order").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                             @Override
                                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                if (task.isSuccessful())
+                                                if (task.isSuccessful()){
+                                                    orderArray.clear();
+                                                    idList.clear();
                                                     for (QueryDocumentSnapshot document : task.getResult()) {
                                                         if (document1.getString("store").toString().equals(document.getString("storeID"))) {
                                                             if (document.getLong("method") == 0)
@@ -188,6 +190,9 @@ public class DeliveryTabFragment extends Fragment {
                                                         }
                                                         tabLayout.getTabAt(0).getOrCreateBadge().setNumber(orderArray.size());
                                                     }
+                                                }
+
+
 
                                                 else {
                                                     Log.w(TAG, "Error getting documents.", task.getException());
